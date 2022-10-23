@@ -1,12 +1,16 @@
 import { useState } from "react";
 
-function App() {
-  return(
+import Navbar from "./components/Navbar";
+import SearchSection from "./components/SearchSection";
 
+function App() {
+  const [searchSection, setSearchSection] = useState(false);
+  return (
     <>
-    <h1>hi</h1>
-  </>
-)
+      <Navbar setSearchSection={setSearchSection} />
+      <SearchSection searchSection={searchSection} />
+    </>
+  );
 }
 
 export default App;
