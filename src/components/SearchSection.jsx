@@ -1,10 +1,7 @@
 import React from "react";
 import SearchForm from "./SearchForm";
 
-
-const SearchSection = ({ searchSection }) => {
-  if (!searchSection) return null;
-
+const SearchSection = () => {
   return (
     <section className="search-section">
       <h1>Search for something!</h1>
