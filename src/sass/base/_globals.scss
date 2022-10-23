@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
 *,
 *::before,
 ::after {
@@ -5,9 +6,20 @@
   margin: 0;
   padding: 0;
 }
-body{
-  background-color: rgb(32, 53, 85);
+body {
+  background-color: #000000;
   color: white;
+  font-family: "DM Sans", sans-serif;
+  text-shadow: 3px 3px 10px black;
 }
-a{text-decoration: none;}
-ul{list-style: none;}
+a {text-decoration: none;}
+ul { list-style: none;}
+
+button {
+  border-radius: 25px;
+  padding: 0.7rem 2.5rem;
+  cursor: pointer;
+  background-color: #009771;
+  color: white;
+  border: none;
+}
