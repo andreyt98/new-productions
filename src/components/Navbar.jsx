@@ -11,8 +11,8 @@ const Navbar = () => {
       <Link to="/" end><i className="bi bi-bullseye" id="logo"></i></Link>
 
       <ul className={`${navBarState} links`}>
-        <li><NavLink to="tvshows">TV Shows</NavLink></li>
-        <li><NavLink to="movies">Movies</NavLink></li>
+        <li><NavLink to="tvshows" onClick={() => {setNavBar(false)}}>TV Shows</NavLink></li>
+        <li><NavLink to="movies" onClick={() => {setNavBar(false)}}>Movies</NavLink></li>
       </ul>
 
       <NavLink to="search" id="search-btn"><i className="bi bi-search"></i></NavLink>
