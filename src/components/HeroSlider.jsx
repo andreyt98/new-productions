@@ -20,6 +20,18 @@ const HeroSlider = ({category, mediaType, limit}) => {
       })
   }, [HeroSlider]);
 
+  function handleImageClick(event, result) {
+
+    setActiveImage(result.id)
+
+    results.forEach((element)=>{
+        if(event.target.dataset.id == element.id){
+        setHeroBackground(window.innerWidth >= 640? `${imageWallpaper}${element.backdrop_path}` : `${imagePoster}${element.poster_path}`)
+        setTitle(element.name || element.title );
+        }
+    })
+  }
+
   return (
     <div className="hero-slider" style={{ backgroundImage: `url(${heroBackground})` }}>
       <div className="overlay"></div>
