@@ -1,9 +1,9 @@
-import HeroSlider from './HeroSlider'
+import Hero from './Hero'
 
 const MovieSection = () => {
   return (
     <section>
-        <HeroSlider category={"trending"} mediaType={"movie"} limit={4} /> 
+        <Hero category={"trending"} mediaType={"movie"} limit={4} /> 
     </section>
   )
 }
