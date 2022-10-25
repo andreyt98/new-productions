@@ -1,17 +1,21 @@
-import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MovieSection from "./components/MovieSection";
 
 import Navbar from "./components/Navbar";
 import SearchSection from "./components/SearchSection";
+import TvSection from "./components/tvSection";
 
 function App() {
-  const [searchSection, setSearchSection] = useState(false);
   return (
     <div className="App">
       <BrowserRouter>
-        <Navbar setSearchSection={setSearchSection} />
+        <Navbar/>
+        
         <Routes>
-          <Route path="/search" element={<SearchSection searchSection={searchSection}/>}></Route>           
+          <Route path="/" element={<TvSection/>} ></Route>
+          <Route path="/tvshows" element={<TvSection/>} ></Route>
+          <Route path="/movies" element={<MovieSection/>} ></Route>
+          <Route path="/search" element={<SearchSection/>}></Route>           
         </Routes>
       </BrowserRouter>
     </div>
