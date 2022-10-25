@@ -2,14 +2,14 @@ import { useState,useEffect } from "react";
 import { fetchData} from "../helpers/fetchData";
 import { imagePoster, imageWallpaper } from "../helpers/api.config";
 
-const Hero = ({category, mediaType, limit}) => {
+const Hero = ({mediaType, category, limit}) => {
   const [heroBackground, setHeroBackground] = useState("");
   const [results, setResults] = useState([]);
   const [title, setTitle] = useState("");
   const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
-    fetchData({ category, mediaType, limit })
+    fetchData({ mediaType, category, limit })
       .then((data) => {
         data.forEach(() => {
           setResults(data);
