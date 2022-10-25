@@ -79,4 +79,10 @@
       margin-left: initial;
     }
   }
+
+  .active{
+    @media #{$md} {
+      color: #00d8a2;
+    }   
+  }
 }
