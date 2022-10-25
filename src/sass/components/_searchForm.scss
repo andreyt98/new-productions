@@ -3,6 +3,7 @@
     background-color: white;
     border-radius: 15px;
     padding: 0.2rem 0.7rem;
+    width: 100%;
 
     @media #{$md}{
         width: 50%;
@@ -10,6 +11,7 @@
     }
 
     input[type=search]{
+        text-align: center;
         border: none;
        outline: none;
        width: 100%;

@@ -1,5 +1,7 @@
 .search-section{
-
+    @extend .flex-col-center;
+    gap: 1rem;
     text-align: center;
-    padding: 1rem;
+    padding-top: 5rem;
+    padding-inline: 1.5rem;
 }
