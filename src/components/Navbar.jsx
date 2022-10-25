@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import SearchSection from "./searchSection";
-import TvSection from "./tvSection";
+import { Link, NavLink } from "react-router-dom";
 
 const Navbar = () => {
   const [navBar, setNavBar] = useState(false);
@@ -10,16 +8,14 @@ const Navbar = () => {
 
   return (
     <nav className="nav">
-      <NavLink to="/" end><i className="bi bi-bullseye" id="logo"></i></NavLink>
+      <Link to="/" end><i className="bi bi-bullseye" id="logo"></i></Link>
 
       <ul className={`${navBarState} links`}>
-        <li><NavLink to="tvshows" element={<TvSection/>}>TV Shows</NavLink></li>
+        <li><NavLink to="tvshows">TV Shows</NavLink></li>
         <li><NavLink to="movies">Movies</NavLink></li>
       </ul>
 
-    <NavLink to="search" id="search-btn" element={<SearchSection/>}>
-      <i className="bi bi-search"  ></i>
-    </NavLink>
+      <NavLink to="search" id="search-btn"><i className="bi bi-search"></i></NavLink>
 
       <i className="bi bi-list" id="menu-icon" onClick={() => {setNavBar(!navBar)}}></i>
     </nav>
