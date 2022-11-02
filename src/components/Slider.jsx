@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { image } from "../helpers/api.config";
 import { fetchData } from "../helpers/fetchData";
 
-const Slider = ({ title, mediaType, category, limit }) => {
+const Slider = ({mediaType, category, limit }) => {
   const [results, setResults] = useState([]);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ const Slider = ({ title, mediaType, category, limit }) => {
   return (
     <div className="slider">
       <div className="slider__header">
-        <h2>{title.toUpperCase()}</h2>
+        <h2>| {category.toUpperCase()} <span>{mediaType.toUpperCase()} SHOWS</span></h2>
 
         <div className="controls">
           <i className="bi bi-chevron-left left"></i>
