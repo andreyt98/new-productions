@@ -3,7 +3,7 @@ import Hero from './Hero'
 const MovieSection = () => {
   return (
     <section>
-        <Hero category={"popular"} mediaType={"movie"} limit={4} /> 
+        <Hero category={"trending"} mediaType={"movie"} limit={4} /> 
     </section>
   )
 }

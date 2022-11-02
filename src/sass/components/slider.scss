@@ -23,6 +23,7 @@
   }
 
   &__content {
+    scroll-behavior: smooth;
     .content {
       position: relative;
       .overlay {
