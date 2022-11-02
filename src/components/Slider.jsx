@@ -17,7 +17,7 @@ const Slider = ({ mediaType, category, limit, openTrailer, setOpenTrailer }) => 
   }, [Slider]);
 
   function handleTrailerClick(id) {
-    getMovies(id, "tv").then((data) => {
+    getMovies(id, mediaType).then((data) => {
       data.results.forEach((element) => {
         if (element.type === "Trailer") {
           setTrailerKey(element.key);
@@ -41,7 +41,7 @@ const Slider = ({ mediaType, category, limit, openTrailer, setOpenTrailer }) => 
     <div className="slider">
       <div className="slider__header">
         <h2>
-          | {category.toUpperCase()} <span>{mediaType.toUpperCase()} SHOWS</span>
+          | {category.toUpperCase()} <span>{mediaType.toUpperCase()}{mediaType === 'tv'? ' SHOWS' : 'S' }</span>
         </h2>
 
         <div className="controls">
