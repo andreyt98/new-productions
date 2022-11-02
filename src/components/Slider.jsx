@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { imagePoster } from "../helpers/api.config";
+import { image } from "../helpers/api.config";
 import { fetchData } from "../helpers/fetchData";
 
 const Slider = ({title, mediaType, category,  limit}) => {
@@ -29,7 +29,7 @@ const Slider = ({title, mediaType, category,  limit}) => {
       <div className="slider__content">
         {results.map((element)=>{
           return(
-            <img src={`${imagePoster}${element.poster_path}`} alt="" key={element.id} />
+            <img src={`${image({size:500})}${element.poster_path}`} alt="" key={element.id} />
           )
 
         })}

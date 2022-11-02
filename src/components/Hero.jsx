@@ -1,6 +1,6 @@
 import { useState,useEffect } from "react";
 import { fetchData} from "../helpers/fetchData";
-import { imagePoster, imageWallpaper } from "../helpers/api.config";
+import { image} from "../helpers/api.config";
 
 const Hero = ({mediaType, category, limit}) => {
   const [heroBackground, setHeroBackground] = useState("");
@@ -11,11 +11,14 @@ const Hero = ({mediaType, category, limit}) => {
   useEffect(() => {
     fetchData({ mediaType, category, limit })
       .then((data) => {
+        const [firstResult] = data;
+        let initialBackground = window.innerWidth >= 600 ? `${image({size: 1280})}${firstResult.backdrop_path}` :`${image({size: 500})}${firstResult.poster_path}`
+
         data.forEach(() => {
           setResults(data);
-          setHeroBackground(window.innerWidth >= 600 ? `${imageWallpaper}${data[0].backdrop_path}` : `${imagePoster}${data[0].poster_path}`);
-          setTitle(data[0].name || data[0].title );
-          setActiveImage(data[0].id)
+          setHeroBackground(initialBackground);
+          setTitle(firstResult.name || firstResult.title );
+          setActiveImage(firstResult.id)
         });
       })
   }, [Hero]);
@@ -46,7 +49,7 @@ const Hero = ({mediaType, category, limit}) => {
         {results.map((result) => {
             return (
               <img
-                src={window.innerWidth >= 600 ? `${imageWallpaper}${result.poster_path}` : `${imagePoster}${result.poster_path}`}
+                src={window.innerWidth >= 600 ? `${image({size: 1280})}${result.backdrop_path}` :`${image({size: 500})}${result.poster_path}`}
                 className={activeImage === result.id ? "isActive" : ""}
                 key={result.id}
                 data-id={result.id}
