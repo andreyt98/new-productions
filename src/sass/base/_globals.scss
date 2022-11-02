@@ -1,4 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
+:root{
+  --primary:#009771;
+}
 *,
 *::before,
 ::after {
@@ -19,7 +22,7 @@ button {
   border-radius: 25px;
   padding: 0.7rem 2.5rem;
   cursor: pointer;
-  background-color: #009771;
+  background-color: var(--primary);
   color: white;
   border: none;
 }
