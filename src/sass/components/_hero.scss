@@ -47,24 +47,23 @@
       width: 20%;
       transition: all 0.3s;
       border-radius: 12px;
-      border: 1px solid #b4b4b400;
-      opacity: 0.6;
-
-      &:hover {
-        border: 1px solid #b3b3b3dc;
-      }
+      border: 1px solid #b4b4b463;
+      opacity: 0.45;
 
       @media #{$sm} {
+        width: 17%;
+      }
+      @media #{$md} {
         width: 12%;
       }
       @media #{$xl} {
-        width: 8.5%;
+        width: 10%;
       }
     }
   }
   .movies .isActive {
     transform: scale(1.1) translateY(-10px);
-    box-shadow: 1px 1px 10px #b3b3b3;
+    box-shadow: 1px 1px 8px #b3b3b3;
     border: 1px solid #b3b3b3;
     opacity: 1;
   }

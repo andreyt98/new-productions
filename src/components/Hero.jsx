@@ -12,7 +12,7 @@ const Hero = ({mediaType, category, limit}) => {
     fetchData({ mediaType, category, limit })
       .then((data) => {
         const [firstResult] = data;
-        let initialBackground = window.innerWidth >= 600 ? `${image({size: 1280})}${firstResult.backdrop_path}` :`${image({size: 500})}${firstResult.poster_path}`
+        let initialBackground = window.innerWidth >= 640 ? `${image({size: 1280})}${firstResult.backdrop_path}` :`${image({size: 500})}${firstResult.poster_path}`
 
         data.forEach(() => {
           setResults(data);
@@ -29,8 +29,8 @@ const Hero = ({mediaType, category, limit}) => {
 
     results.forEach((element)=>{
         if(event.target.dataset.id == element.id){
-        setHeroBackground(window.innerWidth >= 640? `${imageWallpaper}${element.backdrop_path}` : `${imagePoster}${element.poster_path}`)
-        setTitle(element.name || element.title );
+          setHeroBackground(window.innerWidth >= 640? `${image({size: 1280})}${element.backdrop_path}` : `${image({size: 500})}${element.poster_path}`)
+          setTitle(element.name || element.title );
         }
     })
   }
@@ -49,7 +49,7 @@ const Hero = ({mediaType, category, limit}) => {
         {results.map((result) => {
             return (
               <img
-                src={window.innerWidth >= 600 ? `${image({size: 1280})}${result.backdrop_path}` :`${image({size: 500})}${result.poster_path}`}
+                src={`${image({size: 500})}${result.poster_path}`}
                 className={activeImage === result.id ? "isActive" : ""}
                 key={result.id}
                 data-id={result.id}
