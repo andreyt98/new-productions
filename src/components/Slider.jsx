@@ -29,7 +29,7 @@ const Slider = ({title, mediaType, category,  limit}) => {
       <div className="slider__content">
         {results.map((element)=>{
           return(
-            <img src={`${imagePoster}${element.poster_path}`} alt="" />
+            <img src={`${imagePoster}${element.poster_path}`} alt="" key={element.id} />
           )
 
         })}
