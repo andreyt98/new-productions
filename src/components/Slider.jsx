@@ -98,6 +98,9 @@ const Slider = ({ mediaType, category, limit, trailerKey, setTrailerKey,openTrai
             </div>
           );
         })}
+        <div className="more">
+          <button className="more-btn">More</button>
+        </div>
       </div>
 
       <Trailer openTrailer={openTrailer} setOpenTrailer={setOpenTrailer} trailerKey={trailerKey} />

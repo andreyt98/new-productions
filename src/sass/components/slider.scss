@@ -1,6 +1,6 @@
 .slider {
   padding: 0.5rem;
-  
+
   &__header {
     @extend .flex-row-space-between;
     padding: 0.3rem;
@@ -32,12 +32,18 @@
         background: linear-gradient(to top, #002c21a2, #001611da, #000f0be1);
         i {
           font-size: 2.5rem;
-          @media #{$lg} {font-size: 3rem;}
-          @media #{$xl} {font-size: 4.5rem;}
-           
+          @media #{$lg} {
+            font-size: 3rem;
+          }
+          @media #{$xl} {
+            font-size: 4.5rem;
+          }
+
           cursor: pointer;
           transition: all 0.3s;
-          &:hover{transform: scale(1.2);}
+          &:hover {
+            transform: scale(1.2);
+          }
         }
       }
       &:hover .overlay {
@@ -66,7 +72,7 @@
       border-radius: 15px;
     }
 
-    .provider{
+    .provider {
       background-color: var(--primary);
       border-radius: 0 0 15px 15px;
       font-size: 80%;
@@ -76,5 +82,15 @@
       position: absolute;
       bottom: 0;
     }
+  }
+
+  .more {
+    position: relative;
+  }
+  .more-btn {
+    cursor: pointer;
+    top: 50%;
+    @extend .horizontal-center;
+    padding: .7rem 1.8rem;
   }
 }
