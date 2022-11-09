@@ -8,6 +8,8 @@ import TvSection from "./components/tvSection";
 
 function App() {
   const [openTrailer, setOpenTrailer] = useState("");
+  const [trailerKey, setTrailerKey] = useState("");
+
   return (
     <div className="App">
       <BrowserRouter>
