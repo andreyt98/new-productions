@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { image } from "../helpers/api.config";
 import { fetchData } from "../helpers/fetchData";
-import { getMovies } from "../helpers/getMovies";
+import { getTrailer } from "../helpers/getTrailer";
 import { getProvider } from "../helpers/getProviders";
 import Trailer from "./Trailer";
 
@@ -19,7 +19,7 @@ const Slider = ({ mediaType, category, limit, openTrailer, setOpenTrailer }) => 
   }, []);
 
   function handleTrailerClick(id) {
-    getMovies(id, mediaType).then((data) => {
+    getTrailer(id, mediaType).then((data) => {
       data.results.forEach((element) => {
         if (element.type === "Trailer") {
           setTrailerKey(element.key);
@@ -37,17 +37,15 @@ const Slider = ({ mediaType, category, limit, openTrailer, setOpenTrailer }) => 
     }
   }
 
-
-  function changeProvider(id){
-    results.forEach((result)=>{
-      if(result.id === id){
-        getProvider(result.id, mediaType)
-        .then((element)=>{
-          setProvider(element.results.US.flatrate[0].provider_name)
-        })
+  function changeProvider(id) {
+    results.forEach((result) => {
+      if (result.id === id) {
+        getProvider(result.id, mediaType).then((element) => {
+          setProvider(element.results.US.flatrate[0].provider_name);
+        });
       }
-    })
- }
+    });
+  }
   return (
     <div className="slider">
       <div className="slider__header">
@@ -79,7 +77,15 @@ const Slider = ({ mediaType, category, limit, openTrailer, setOpenTrailer }) => 
         {results.map((element) => {
           return (
             <div className="content" key={element.id}>
-              <div className="overlay" onMouseEnter={()=>{changeProvider(element.id)}} onMouseLeave={()=>{setProvider("")}}>
+              <div
+                className="overlay"
+                onMouseEnter={() => {
+                  changeProvider(element.id);
+                }}
+                onMouseLeave={() => {
+                  setProvider("");
+                }}
+              >
                 <i
                   className="bi bi-play-circle-fill"
                   data-id={element.id}
