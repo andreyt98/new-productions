@@ -2,13 +2,16 @@ import { useState, useEffect } from "react";
 import { fetchData } from "../helpers/fetchData";
 import { image } from "../helpers/api.config";
 import { getProvider } from "../helpers/getProviders";
+import { getTrailer } from "../helpers/getTrailer";
+import Trailer from "./Trailer";
 
-const Hero = ({ mediaType, category, limit,trailerKey, setTrailerKey }) => {
+const Hero = ({ mediaType, category, limit, trailerKey, setTrailerKey,openTrailer, setOpenTrailer }) => {
   const [heroBackground, setHeroBackground] = useState("");
   const [results, setResults] = useState([]);
   const [title, setTitle] = useState("");
   const [activeImage, setActiveImage] = useState(0);
   const [provider, setProvider] = useState("");
+  const [id, setId] = useState("");
 
   useEffect(() => {
     fetchData({ mediaType, category, limit }).then((data) => {
@@ -29,11 +32,15 @@ const Hero = ({ mediaType, category, limit,trailerKey, setTrailerKey }) => {
           setProvider("");
         }
       });
+
+      setId(firstResult.id)
+
     });
   }, []);
 
   function handleImageClick(event, result) {
     setActiveImage(result.id);
+    setId(result.id);
 
     results.forEach((element) => {
       if (event.target.dataset.id == element.id) {
@@ -51,7 +58,16 @@ const Hero = ({ mediaType, category, limit,trailerKey, setTrailerKey }) => {
     });
   }
 
-  
+  function handleTrailerClick(id) {
+    getTrailer(id, mediaType).then((data) => {
+      data.results.forEach((element) => {
+        if (element.type === "Trailer") {
+          setTrailerKey(element.key);
+          setOpenTrailer(true);
+        }
+      });
+    });
+  }
 
   return (
     <div className="hero" style={{ backgroundImage: `url(${heroBackground})` }}>
@@ -61,29 +77,38 @@ const Hero = ({ mediaType, category, limit,trailerKey, setTrailerKey }) => {
           {title}
           <span className="provider"> {provider}</span>
         </h1>
-        <button> <span> 
-        <i className="bi bi-play-circle-fill "></i>
-        </span>{" "} 
-        Play Trailer
-         </button>
+        <button
+          data-id={id}
+          onClick={() => {
+            handleTrailerClick(id);
+          }}
+        >
+          {" "}
+          <span>
+            <i className="bi bi-play-circle-fill "></i>
+          </span>{" "}
+          Play Trailer
+        </button>
       </div>
 
       <div className="movies">
         {results.map((result) => {
           return (
             <div
-              className={ "movie " + (activeImage === result.id ? "isActive" : "")}
+              className={"movie " + (activeImage === result.id ? "isActive" : "")}
               onClick={(event) => {
                 handleImageClick(event, result);
               }}
             >
               <img src={`${image({ size: 500 })}${result.poster_path}`} key={result.id} data-id={result.id} alt="media-image" />
-              <i className="bi bi-arrow-right-circle-fill more" style={{display: (activeImage === result.id ? "block" : "")}}></i>
+              <i className="bi bi-arrow-right-circle-fill more" style={{ display: activeImage === result.id ? "block" : "" }}></i>
             </div>
           );
         })}
       </div>
-    </div>
+
+      <Trailer openTrailer={openTrailer} setOpenTrailer={setOpenTrailer} trailerKey={trailerKey} />
+    </div>    
   );
 };
 
