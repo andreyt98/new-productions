@@ -17,8 +17,8 @@ function App() {
         
         <Routes>
           <Route path="/" element={<TvSection/>} ></Route>
-          <Route path="/tvshows" element={<TvSection openTrailer={openTrailer} setOpenTrailer={setOpenTrailer}/>} ></Route>
-          <Route path="/movies" element={<MovieSection openTrailer={openTrailer} setOpenTrailer={setOpenTrailer}/>} ></Route>
+          <Route path="/tvshows" element={<TvSection trailerKey={trailerKey} setTrailerKey={setTrailerKey} openTrailer={openTrailer} setOpenTrailer={setOpenTrailer}/>} ></Route>
+          <Route path="/movies" element={<MovieSection trailerKey={trailerKey} setTrailerKey={setTrailerKey} openTrailer={openTrailer} setOpenTrailer={setOpenTrailer}/>} ></Route>
           <Route path="/search" element={<SearchSection/>}></Route>           
         </Routes>
       </BrowserRouter>

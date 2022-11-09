@@ -5,9 +5,8 @@ import { getTrailer } from "../helpers/getTrailer";
 import { getProvider } from "../helpers/getProviders";
 import Trailer from "./Trailer";
 
-const Slider = ({ mediaType, category, limit, openTrailer, setOpenTrailer }) => {
+const Slider = ({ mediaType, category, limit, trailerKey, setTrailerKey,openTrailer, setOpenTrailer }) => {
   const [results, setResults] = useState([]);
-  const [trailerKey, setTrailerKey] = useState("");
   const [provider, setProvider] = useState("");
 
   useEffect(() => {

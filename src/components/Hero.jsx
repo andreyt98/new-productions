@@ -3,7 +3,7 @@ import { fetchData } from "../helpers/fetchData";
 import { image } from "../helpers/api.config";
 import { getProvider } from "../helpers/getProviders";
 
-const Hero = ({ mediaType, category, limit }) => {
+const Hero = ({ mediaType, category, limit,trailerKey, setTrailerKey }) => {
   const [heroBackground, setHeroBackground] = useState("");
   const [results, setResults] = useState([]);
   const [title, setTitle] = useState("");
@@ -50,6 +50,8 @@ const Hero = ({ mediaType, category, limit }) => {
       }
     });
   }
+
+  
 
   return (
     <div className="hero" style={{ backgroundImage: `url(${heroBackground})` }}>
