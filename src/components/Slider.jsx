@@ -5,7 +5,7 @@ import { getTrailer } from "../helpers/getTrailer";
 import { getProvider } from "../helpers/getProviders";
 import Trailer from "./Trailer";
 
-const Slider = ({ mediaType, category, limit, trailerKey, setTrailerKey,openTrailer, setOpenTrailer }) => {
+const Slider = ({ mediaType, category, limit, trailerKey, setTrailerKey, openTrailer, setOpenTrailer }) => {
   const [results, setResults] = useState([]);
   const [provider, setProvider] = useState("");
 
@@ -40,7 +40,28 @@ const Slider = ({ mediaType, category, limit, trailerKey, setTrailerKey,openTrai
     results.forEach((result) => {
       if (result.id === id) {
         getProvider(result.id, mediaType).then((element) => {
-          setProvider(element.results.US.flatrate[0].provider_name);
+          if (Object.keys(element.results).length < 1) {
+            setProvider("Provider not found")
+            return;
+          }
+
+          if (mediaType === "movie") {
+            if (element.results.US) {
+              setProvider(element.results.US.flatrate[0].provider_name);
+            } else {
+              if (Object.values(element.results)[0].flatrate) {
+                setProvider(Object.values(element.results)[0].flatrate[0].provider_name);
+              } else {
+                setProvider(Object.values(element.results)[0].buy[0].provider_name);
+              }
+            }
+          } else {
+            if (element.results.US) {
+              setProvider(element.results.US.flatrate[0].provider_name);
+            } else {
+              setProvider(Object.values(element.results)[0].flatrate[0].provider_name);
+            }
+          }
         });
       }
     });
