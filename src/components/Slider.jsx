@@ -5,9 +5,11 @@ import { getTrailer } from "../helpers/getTrailer";
 import { getProvider } from "../helpers/getProviders";
 import Trailer from "./Trailer";
 
-const Slider = ({ mediaType, category, limit, trailerKey, setTrailerKey, openTrailer, setOpenTrailer }) => {
+const Slider = ({ mediaType, category, limit }) => {
   const [results, setResults] = useState([]);
   const [provider, setProvider] = useState("");
+  const [trailerKey, setTrailerKey] = useState("");
+  const [openTrailer, setOpenTrailer] = useState("");
 
   useEffect(() => {
     fetchData({ mediaType, category, limit }).then((data) => {

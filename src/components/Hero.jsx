@@ -5,13 +5,14 @@ import { getProvider } from "../helpers/getProviders";
 import { getTrailer } from "../helpers/getTrailer";
 import Trailer from "./Trailer";
 
-const Hero = ({ mediaType, category, limit, trailerKey, setTrailerKey,openTrailer, setOpenTrailer }) => {
+const Hero = ({ mediaType, category, limit }) => {
   const [heroBackground, setHeroBackground] = useState("");
   const [results, setResults] = useState([]);
   const [title, setTitle] = useState("");
-  const [activeImage, setActiveImage] = useState(0);
   const [provider, setProvider] = useState("");
   const [id, setId] = useState("");
+  const [trailerKey, setTrailerKey] = useState("");
+  const [openTrailer, setOpenTrailer] = useState("");
 
   useEffect(() => {
     fetchData({ mediaType, category, limit }).then((data) => {
@@ -22,7 +23,6 @@ const Hero = ({ mediaType, category, limit, trailerKey, setTrailerKey,openTraile
         setResults(data);
         setHeroBackground(initialBackground);
         setTitle(firstResult.name || firstResult.title);
-        setActiveImage(firstResult.id);
       });
 
       getProvider(firstResult.id, mediaType).then((providerData) => {
@@ -39,7 +39,6 @@ const Hero = ({ mediaType, category, limit, trailerKey, setTrailerKey,openTraile
   }, []);
 
   function handleImageClick(event, result) {
-    setActiveImage(result.id);
     setId(result.id);
 
     results.forEach((element) => {
@@ -95,13 +94,14 @@ const Hero = ({ mediaType, category, limit, trailerKey, setTrailerKey,openTraile
         {results.map((result) => {
           return (
             <div
-              className={"movie " + (activeImage === result.id ? "isActive" : "")}
+              className={"movie " + (id === result.id ? "isActive" : "")}
               onClick={(event) => {
                 handleImageClick(event, result);
               }}
+              key={result.id}
             >
               <img src={`${image({ size: 500 })}${result.poster_path}`} key={result.id} data-id={result.id} alt="media-image" />
-              <i className="bi bi-arrow-right-circle-fill more" style={{ display: activeImage === result.id ? "block" : "" }}></i>
+              <i className="bi bi-arrow-right-circle-fill more" style={{ display: id === result.id ? "block" : "" }}></i>
             </div>
           );
         })}

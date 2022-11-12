@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MovieSection from "./components/MovieSection";
 
@@ -7,8 +6,6 @@ import SearchSection from "./components/SearchSection";
 import TvSection from "./components/tvSection";
 
 function App() {
-  const [openTrailer, setOpenTrailer] = useState("");
-  const [trailerKey, setTrailerKey] = useState("");
 
   return (
     <div className="App">
@@ -17,8 +14,8 @@ function App() {
         
         <Routes>
           <Route path="/" element={<TvSection/>} ></Route>
-          <Route path="/tvshows" element={<TvSection trailerKey={trailerKey} setTrailerKey={setTrailerKey} openTrailer={openTrailer} setOpenTrailer={setOpenTrailer}/>} ></Route>
-          <Route path="/movies" element={<MovieSection trailerKey={trailerKey} setTrailerKey={setTrailerKey} openTrailer={openTrailer} setOpenTrailer={setOpenTrailer}/>} ></Route>
+          <Route path="/tvshows" element={<TvSection/>} ></Route>
+          <Route path="/movies" element={<MovieSection/>} ></Route>
           <Route path="/search" element={<SearchSection/>}></Route>           
         </Routes>
       </BrowserRouter>
