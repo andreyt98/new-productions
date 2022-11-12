@@ -4,12 +4,18 @@
   top: 0;
   left: 0;
   width: 100%;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   z-index: 10;
-  a {color: white;}
-  i {cursor: pointer;}
+  a {
+    color: white;
+  }
+  i {
+    cursor: pointer;
+  }
 
-  #logo {font-size: 180%;}
+  #logo {
+    font-size: 180%;
+  }
 
   .links {
     @extend .flex-col-center;
@@ -42,9 +48,10 @@
       cursor: pointer;
       border: 2px solid #ffffff00;
       transition: all 0.4s;
-      @media #{$md} {
-          &:hover{
-          color: #00d8a2;      
+      &:hover {
+        color: #000000;
+        @media #{$md} {
+          color: #00d8a2;
         }
       }
     }
@@ -72,7 +79,7 @@
   #search-btn {
     margin-left: auto;
     margin-right: 10px;
-    &:hover{
+    &:hover {
       transform: scale(1.1);
     }
     @media #{$md} {
@@ -80,9 +87,10 @@
     }
   }
 
-  .active{
+  .active {
+    color: #000000;
     @media #{$md} {
       color: #00d8a2;
-    }   
+    }
   }
 }
