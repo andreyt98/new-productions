@@ -35,9 +35,9 @@
   }
 
   .movies {
-    @extend .flex-row-space-between;
-    gap: 1rem;
-    padding: 0 .5rem;
+    @extend .flex-row-center;
+    gap: .3rem;
+    padding: 0 1rem;
     z-index: 3;
 
     position: absolute;
@@ -45,13 +45,27 @@
     
     @media #{$xss} {
       bottom: 10px;
-      gap: 2rem;
-      justify-content: center;
-      padding-inline: 1rem;
+    }
+
+    .isActive {
+      transform: translateY(-10px);
+      border: 1px solid #b3b3b3;
+      opacity: 1;
     }
 
     .movie {
+      position: relative;
       width: 25%;
+      border: 1px solid #b4b4b463;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s;
+
+      &:not(.isActive) {
+        cursor: pointer;
+        filter: grayscale(1);
+        opacity: 0.60;
+      }
 
       @media #{$sm} {
         width: 17%;
@@ -62,15 +76,8 @@
       @media #{$xl} {
         width: 10%;
       }
-      transition: all 0.3s;
-      border-radius: 12px;
-      border: 1px solid #b4b4b463;
-      overflow: hidden;
-      position: relative;
-      opacity: 0.30;
-      &:not(.isActive) {
-        cursor: pointer;
-      }
+      
+      
       img {
         width: 100%;
         height: 100%;
@@ -78,26 +85,16 @@
       }
 
       .more {
-        position: absolute;
-        right: 5%;
-        bottom: 3%;
-        cursor: pointer;
-        font-size: 150%;
+        padding-block: 0.3rem;
+        font-size: 90%;
         display: none;
         transition: all 0.3s;
         color: white;
         &:hover {
-          transform: scale(1.1);
-          color: #00dda6;
-          
+          color: #00dda6;          
         }
       }
     }
-  }
-  .movies .isActive {
-    transform: scale(1.1) translateY(-10px);
-    box-shadow: 1px 1px 8px #b3b3b3;
-    border: 1px solid #b3b3b3;
-    opacity: 1;
+    
   }
 }

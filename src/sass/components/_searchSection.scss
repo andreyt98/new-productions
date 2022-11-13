@@ -4,4 +4,48 @@
     text-align: center;
     padding-top: 5rem;
     padding-inline: 1.5rem;
+
+    .results{
+        padding: 0.5rem;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        @media #{$xss} {
+          grid-template-columns: repeat(3,1fr);
+        }
+        @media #{$sm} {
+          grid-template-columns: repeat(4,1fr);
+        }
+        @media #{$md} {
+          grid-template-columns: repeat(5,1fr);
+        }
+
+        gap: 1rem;
+
+        img{
+            width: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .content {
+            position: relative;
+            .overlay {
+              display: none;
+              background: linear-gradient(to top, #002c21a2, #001611da, #000f0be1);
+              i {
+                font-size: 2.5rem;
+                @media #{$lg} {font-size: 3rem;}
+                @media #{$xl} {font-size: 4.5rem;}
+                 
+                cursor: pointer;
+                transition: all 0.3s;
+                &:hover{transform: scale(1.2);}
+              }
+            }
+            &:hover .overlay {
+              @extend .flex-row-center;
+            }
+          }
+    }
 }
