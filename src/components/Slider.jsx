@@ -1,15 +1,19 @@
-import { useState, useEffect } from "react";
-import { image } from "../helpers/api.config";
-import { fetchData } from "../helpers/fetchData";
-import { getTrailer } from "../helpers/getTrailer";
-import { getProvider } from "../helpers/getProviders";
-import Trailer from "./Trailer";
+import { useState, useEffect } from 'react';
+import { fetchData } from '../helpers/fetchData';
+import Trailer from './Trailer';
+import SliderCard from './SliderCard';
+
+
+/*
+TODO: move results state to App component to have it on every section and have different value based on type of search
+(movie, tv or multisearch)
+*/ 
 
 const Slider = ({ mediaType, category, limit }) => {
   const [results, setResults] = useState([]);
-  const [provider, setProvider] = useState("");
-  const [trailerKey, setTrailerKey] = useState("");
-  const [openTrailer, setOpenTrailer] = useState("");
+  const [provider, setProvider] = useState('');
+  const [trailerKey, setTrailerKey] = useState('');
+  const [openTrailer, setOpenTrailer] = useState('');
 
   useEffect(() => {
     fetchData({ mediaType, category, limit }).then((data) => {
@@ -19,75 +23,35 @@ const Slider = ({ mediaType, category, limit }) => {
     });
   }, []);
 
-  function handleTrailerClick(id) {
-    getTrailer(id, mediaType).then((data) => {
-      data.results.forEach((element) => {
-        if (element.type === "Trailer") {
-          setTrailerKey(element.key);
-          setOpenTrailer(true);
-        }
-      });
-    });
-  }
-
   function moveSlider(e) {
-    if (e.target.matches(".left")) {
+    if (e.target.matches('.left')) {
       e.target.parentElement.parentElement.nextElementSibling.scrollBy(-(window.innerWidth / 2), 0);
     } else {
       e.target.parentElement.parentElement.nextElementSibling.scrollBy(window.innerWidth / 2, 0);
     }
   }
 
-  function changeProvider(id) {
-    results.forEach((result) => {
-      if (result.id === id) {
-        getProvider(result.id, mediaType).then((element) => {
-          if (Object.keys(element.results).length < 1) {
-            setProvider("Provider not found")
-            return;
-          }
-
-          if (mediaType === "movie") {
-            if (element.results.US) {
-              setProvider(element.results.US.flatrate[0].provider_name);
-            } else {
-              if (Object.values(element.results)[0].flatrate) {
-                setProvider(Object.values(element.results)[0].flatrate[0].provider_name);
-              } else {
-                setProvider(Object.values(element.results)[0].buy[0].provider_name);
-              }
-            }
-          } else {
-            if (element.results.US) {
-              setProvider(element.results.US.flatrate[0].provider_name);
-            } else {
-              setProvider(Object.values(element.results)[0].flatrate[0].provider_name);
-            }
-          }
-        });
-      }
-    });
-  }
   return (
-    <div className="slider">
-      <div className="slider__header">
+    <div className='slider'>
+      <div className='slider__header'>
         <h2>
-          | {category.toUpperCase()}{" "}
+          | {category.toUpperCase()}{' '}
           <span>
+            {' '}
             {mediaType.toUpperCase()}
-            {mediaType === "tv" ? " SHOWS" : "S"}
+            {mediaType === 'tv' ? ' SHOWS' : 'S'}{' '}
           </span>
         </h2>
 
-        <div className="controls">
+        <div className='controls'>
           <i
-            className="bi bi-chevron-left left"
+            className='bi bi-chevron-left left'
             onClick={(e) => {
               moveSlider(e);
             }}
           ></i>
           <i
-            className="bi bi-chevron-right right"
+            className='bi bi-chevron-right right'
             onClick={(e) => {
               moveSlider(e);
             }}
@@ -95,34 +59,12 @@ const Slider = ({ mediaType, category, limit }) => {
         </div>
       </div>
 
-      <div className="slider__content">
-        {results.map((element) => {
-          return (
-            <div className="content" key={element.id}>
-              <div
-                className="overlay"
-                onMouseEnter={() => {
-                  changeProvider(element.id);
-                }}
-                onMouseLeave={() => {
-                  setProvider("");
-                }}
-              >
-                <i
-                  className="bi bi-play-circle-fill"
-                  data-id={element.id}
-                  onClick={() => {
-                    handleTrailerClick(element.id);
-                  }}
-                ></i>{" "}
-                <p className="provider">{provider}</p>
-              </div>
-              <img src={`${image({ size: 500 })}${element.poster_path}`} alt="" />
-            </div>
-          );
+      <div className='slider__content'>
+        {results.map((result) => {
+          return <SliderCard results={results} result={result} provider={provider} setProvider={setProvider} mediaType={mediaType} setTrailerKey={setTrailerKey} setOpenTrailer={setOpenTrailer} />;
         })}
-        <div className="more">
-          <button className="more-btn">More</button>
+        <div className='more'>
+          <button className='more-btn'>More</button>
         </div>
       </div>
 
