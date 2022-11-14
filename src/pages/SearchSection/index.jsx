@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { image } from "../helpers/api.config";
+import { image } from "../../helpers/api.config";
 import SearchForm from "./SearchForm";
 
 const SearchSection = () => {

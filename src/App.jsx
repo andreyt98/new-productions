@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MovieSection from "./components/MovieSection";
 
 import Navbar from "./components/Navbar";
-import SearchSection from "./components/SearchSection";
+import SearchSection from "./pages/SearchSection/index";
 import TvSection from "./components/tvSection";
 
 function App() {
