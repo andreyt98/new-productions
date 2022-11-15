@@ -6,8 +6,7 @@ const Trailer = ({ openTrailer, setOpenTrailer, trailerKey }) => {
 
   return PortalReactDom.createPortal(
     <div className="trailer">
-      <i className="bi bi-x-circle-fill" onClick={() => {setOpenTrailer(false)}} ></i>
-      
+      <button className="close-btn" onClick={() => {setOpenTrailer(false)}}>Close X</button>      
       <ReactPlayer url={`https://www.youtube.com/watch?v=${trailerKey}`}     
       width="100%"
       height="100%"
