@@ -1,15 +1,18 @@
+import { useState } from 'react';
 import { image } from '../helpers/api.config';
 import { getProvider } from '../helpers/getProviders';
 import { getTrailer } from '../helpers/getTrailer';
 
-const SliderCard = ({ results, result, provider, setProvider, mediaType, setTrailerKey, setOpenTrailer }) => {
+const SliderCard = ({ results,result, mediaType,setOpenTrailer ,setTrailerKey }) => {
+  const [provider, setProvider] = useState('');
 
   function changeProvider(id) {
     results.forEach((result) => {
       if (result.id === id) {
+
         getProvider(result.id, mediaType).then((element) => {
           if (Object.keys(element.results).length < 1) {
-            setProvider('On theaters');
+            setProvider('');
             return;
           }
 
@@ -39,8 +42,9 @@ const SliderCard = ({ results, result, provider, setProvider, mediaType, setTrai
     getTrailer(id, mediaType).then((data) => {
       data.results.forEach((element) => {
         if (element.type === 'Trailer') {
-          setTrailerKey(element.key);
+           setTrailerKey(element.key);
           setOpenTrailer(true);
+          console.log(mediaType)
         }
       });
     });
@@ -51,10 +55,10 @@ const SliderCard = ({ results, result, provider, setProvider, mediaType, setTrai
       <div
         className='overlay'
         onMouseEnter={() => {
-          changeProvider(result.id);
+           changeProvider(result.id);
         }}
         onMouseLeave={() => {
-          setProvider('');
+           setProvider('');
         }}
       >
         <p className='provider'>{provider}</p>

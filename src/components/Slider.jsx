@@ -11,7 +11,6 @@ TODO: move results state to App component to have it on every section and have d
 
 const Slider = ({ mediaType, category, limit }) => {
   const [results, setResults] = useState([]);
-  const [provider, setProvider] = useState('');
   const [trailerKey, setTrailerKey] = useState('');
   const [openTrailer, setOpenTrailer] = useState('');
 
@@ -61,8 +60,9 @@ const Slider = ({ mediaType, category, limit }) => {
 
       <div className='slider__content'>
         {results.map((result) => {
-          return <SliderCard results={results} result={result} provider={provider} setProvider={setProvider} mediaType={mediaType} setTrailerKey={setTrailerKey} setOpenTrailer={setOpenTrailer} />;
+          return <SliderCard results={results} result={result} mediaType={mediaType} setOpenTrailer={setOpenTrailer} setTrailerKey={setTrailerKey}/>;
         })}
+
         <div className='more'>
           <button className='more-btn'>More</button>
         </div>
