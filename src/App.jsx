@@ -13,7 +13,7 @@ function App() {
         <Navbar/>
         
         <Routes>
-          <Route path="/" element={<TvSection/>} ></Route>
+          <Route path="/" element={<MovieSection/>} ></Route>
           <Route path="/tvshows" element={<TvSection/>} ></Route>
           <Route path="/movies" element={<MovieSection/>} ></Route>
           <Route path="/search" element={<SearchSection/>}></Route>           
