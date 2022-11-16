@@ -5,6 +5,7 @@ import { getTrailer } from '../helpers/getTrailer';
 
 const SliderCard = ({ results,result, mediaType,setOpenTrailer ,setTrailerKey }) => {
   const [provider, setProvider] = useState('');
+  const [saveStyle, setSaveStyle] = useState(false);
 
   function changeProvider(id) {
     results.forEach((result) => {
@@ -50,6 +51,10 @@ const SliderCard = ({ results,result, mediaType,setOpenTrailer ,setTrailerKey })
     });
   }
 
+  function changeSaveStyle(){
+    setSaveStyle(!saveStyle);
+  }
+
   return (
     <div className='content' key={result.id}>
       <div
@@ -73,6 +78,8 @@ const SliderCard = ({ results,result, mediaType,setOpenTrailer ,setTrailerKey })
           more {''}
           <i className='bi bi-arrow-right-circle-fill'></i>
         </a>
+        <i className={saveStyle? 'bi bi-bookmark-check-fill save-btn' : "bi bi-bookmark-plus-fill save-btn"}
+         style={{color: `${saveStyle? '#00c190': ""}`}} onClick={()=>{changeSaveStyle()}}></i>
       </div>
       <img src={`${image({ size: 500 })}${result.poster_path}`} alt='' />
     </div>
