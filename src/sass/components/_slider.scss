@@ -1,0 +1,57 @@
+.slider {
+  padding: 3rem 0.5rem;
+
+  &__header {
+    @extend .flex-row-space-between;
+    padding: 0.3rem;
+    color: #ffffffd8;
+    .controls {
+      @extend .flex-row-space-between;
+      gap: 0.5rem;
+      i {
+        cursor: pointer;
+        font-size: 170%;
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+    span {
+      font-weight: 300;
+      color: var(--primary);
+    }
+  }
+
+  &__content {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 45%;
+    gap: .5rem;
+    overflow: auto;
+    padding: 0.5rem;
+    scroll-behavior: smooth;
+    @media #{$xss} {
+      grid-auto-columns: 35%;
+    }
+    @media #{$sm} {
+      grid-auto-columns: 25%;
+    }
+    @media #{$md} {
+      grid-auto-columns: 23%;
+    }
+    @media #{$lg} {
+      grid-auto-columns: 18%;
+    }
+    &::-webkit-scrollbar {
+      height: 0;
+    }
+    
+  }
+
+  .more-btn {
+    cursor: pointer;
+    top: 50%;
+    @extend .horizontal-center;
+    padding: 0.7rem 1.8rem;
+  }
+}
