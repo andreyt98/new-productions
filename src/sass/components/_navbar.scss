@@ -1,69 +1,53 @@
 .nav {
-  @extend .flex-row-space-between;
+  @extend .flex-row-center;
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding-block: 1.3rem;
   z-index: 10;
+  background-color: rgba(255, 255, 255, 0.075);
+  backdrop-filter: blur(12px);
+  
+  @media #{$sm} {
+    top: 0;
+    bottom: unset;
+    background: none;
+    justify-content: space-between;
+    background: none;
+    backdrop-filter: none;
+    padding-inline: 1rem;
+  }
   a {
     color: white;
-  }
-  i {
-    cursor: pointer;
   }
 
   #logo {
     font-size: 180%;
+    display: none;
+    @media #{$sm} {
+      display: block;
+    }
   }
 
   .links {
-    @extend .flex-col-center;
-    gap: 1rem;
-    position: absolute;
-    top: 55px;
-    right: 7px;
-    height: 120px;
-    width: 200px;
-    padding: 1rem;
+    @extend .flex-row-center;
+    gap: .6rem;
+    padding-inline: .7rem;
     z-index: 10;
-    display: none;
-
-    box-shadow: -5px 5px 10px rgba(0, 0, 0, 0.603);
-    background-color: #009771;
-    border-radius: 12px;
-
-    @media #{$md} {
-      position: initial;
-      top: unset;
-      right: unset;
-      background: none;
-      flex-direction: row;
-      height: auto;
-      width: auto;
-      box-shadow: none;
+    
+    @media #{$xss} {
+      padding-inline: 1.5rem;
     }
 
     li a {
       cursor: pointer;
       border: 2px solid #ffffff00;
       transition: all 0.4s;
-      &:hover {
-        color: #000000;
-        @media #{$md} {
-          color: #00d8a2;
-        }
-      }
-    }
-  }
 
-  .links-active {
-    display: flex;
-  }
-  .links-inactive {
-    display: none;
-    @media #{$md} {
-      display: flex;
+      &:hover {
+        color: #00d8a2;
+      }
     }
   }
 
@@ -77,20 +61,22 @@
   }
 
   #search-btn {
-    margin-left: auto;
-    margin-right: 10px;
-    &:hover {
-      transform: scale(1.1);
-    }
-    @media #{$md} {
-      margin-left: initial;
+
+    margin-right: .5rem;
+    @media #{$sm} {
+      order: +1;
     }
   }
 
   .active {
-    color: #000000;
-    @media #{$md} {
-      color: #00d8a2;
+    background-color: #ffffff2d;
+    color: #00d8a2;
+    padding-inline: 0.5rem;
+    border-radius: 25px;
+
+    @media #{$sm} {
+      background: none;
+      padding: 0;
     }
   }
 }
