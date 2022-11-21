@@ -4,7 +4,7 @@ const Navbar = () => {
 
   return (
     <nav className="nav">
-      <Link to="/" end><i className="bi bi-bullseye" id="logo"></i></Link>
+      <Link to="/"><i className="bi bi-bullseye" id="logo"></i></Link>
 
       <NavLink to="search" id="search-btn"><i className="bi bi-search"></i></NavLink>
       <ul className={` links`}>
