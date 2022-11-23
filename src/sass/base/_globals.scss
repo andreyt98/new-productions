@@ -9,6 +9,12 @@
   margin: 0;
   padding: 0;
 }
+
+html{
+  @media #{$xxl}{
+    font-size: 1.7rem;
+  }
+}
 body {
   background-color: #000000;
   color: white;
