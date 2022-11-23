@@ -1,35 +1,41 @@
-import { useState } from "react";
-import PortalReactDom from "react-dom";
-import ReactPlayer from "react-player";
+import { useState } from 'react';
+import PortalReactDom from 'react-dom';
+import ReactPlayer from 'react-player';
 
 const Trailer = ({ openTrailer, setOpenTrailer, trailerKey }) => {
   if (!openTrailer) return null;
 
-  const [min,setMin] = useState(false);
-  const [minText,setMinText] = useState("Minimize");
-  
-  function handleMin(){
-    setMin(!min)
+  const [minBtn, setMinBtn] = useState(false);
+  const [minBtnClass, setMinBtnClass] = useState('bi bi-fullscreen-exit');
 
-    if(min){
-      setMinText("Minimize")
-    }else{
-      setMinText("Maximize")
-    }
+  function handleMin() {
+    setMinBtn(!minBtn);
+
+    minBtn ? setMinBtnClass('bi bi-fullscreen-exit') : setMinBtnClass('bi bi-fullscreen');
   }
 
   return PortalReactDom.createPortal(
-    <div className={min? 'min' : 'trailer'}>
-      <button className="trailer-btn close-btn" onClick={() => {setOpenTrailer(false)}}>Close X</button>      
-      <button className="trailer-btn min-btn" onClick={() => {handleMin()}}>{minText}</button>      
-      <ReactPlayer url={`https://www.youtube.com/watch?v=${trailerKey}`}     
-      width="100%"
-      height="100%"
-      controls
-      playing
-      />
+    <div className={minBtn ? 'min' : 'trailer'}>
+      <button
+        className='trailer-btn close-btn'
+        onClick={() => {
+          setOpenTrailer(false);
+        }}
+      >
+        <i className='bi bi-x-lg'></i>
+      </button>
+      <button
+        className='trailer-btn min-btn'
+        onClick={() => {
+          handleMin();
+        }}
+      >
+        {' '}
+        <i className={minBtnClass}></i>
+      </button>
+      <ReactPlayer url={`https://www.youtube.com/watch?v=${trailerKey}`} width='100%' height='100%' controls playing />
     </div>,
-    document.querySelector(".portal")
+    document.querySelector('.portal')
   );
 };
 
