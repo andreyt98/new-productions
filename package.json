@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host --open",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "firebase deploy --only hosting"
   },
   "dependencies": {
     "bootstrap-icons": "^1.9.1",
