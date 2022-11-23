@@ -26,6 +26,29 @@ const Hero = ({ mediaType, category, limit }) => {
       });
 
       getProvider(firstResult.id, mediaType).then((providerData) => {
+        if (Object.keys(providerData.results).length < 1) {
+          setProvider('');
+          return;
+        }
+
+        if (mediaType === 'movie') {
+          if (providerData.results.US) {q
+            setProvider(providerData.results.US.flatrate[0].provider_name);
+          } else {
+            if (Object.values(providerData.results)[0].flatrate) {
+              setProvider(Object.values(providerData.results)[0].flatrate[0].provider_name);
+            } else {
+              setProvider(Object.values(providerData.results)[0].buy[0].provider_name);
+            }
+          }
+        } else {
+          if (providerData.results.US) {
+            setProvider(providerData.results.US.flatrate[0].provider_name);
+          } else {
+            setProvider(Object.values(providerData.results)[0].flatrate[0].provider_name);
+          }
+        }
+
         if (providerData.results.US) {
           setProvider("(" + providerData.results.US.flatrate[0].provider_name + ")");
         } else {
@@ -47,6 +70,31 @@ const Hero = ({ mediaType, category, limit }) => {
         setTitle(element.name || element.title);
 
         getProvider(element.id, mediaType).then((providerData) => {
+          if (Object.keys(providerData.results).length < 1) {
+            setProvider('');
+            return;
+          }
+
+          if (mediaType === 'movie') {
+            if (providerData.results.US.flatrate) {
+              console.log(providerData);
+              setProvider(`(${providerData.results.US.flatrate[0].provider_name})`);
+            } else {
+              if (Object.values(providerData.results)[0].flatrate) {
+                setProvider(
+                  `(${Object.values(providerData.results)[0].flatrate[0].provider_name})`
+                );
+              } else {
+                setProvider(`(${Object.values(providerData.results)[0].buy[0].provider_name})`);
+              }
+            }
+          } else {
+            if (providerData.results.US) {
+              setProvider(providerData.results.US.flatrate[0].provider_name);
+            } else {
+              setProvider(Object.values(providerData.results)[0].flatrate[0].provider_name);
+            }
+          }
           if (providerData.results.US) {
             setProvider("(" + providerData.results.US.flatrate[0].provider_name + ")");
           } else {
