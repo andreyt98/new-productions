@@ -5,6 +5,8 @@ import { getProvider } from '../helpers/getProviders';
 import { getTrailer } from '../helpers/getTrailer';
 import { Link } from 'react-router-dom';
 import Trailer from './Trailer';
+import { useContext } from 'react';
+import { Context } from '../context/Context';
 
 const Hero = ({ mediaType, category, limit }) => {
   const [heroBackground, setHeroBackground] = useState('');
@@ -14,6 +16,7 @@ const Hero = ({ mediaType, category, limit }) => {
   const [id, setId] = useState('');
   const [trailerKey, setTrailerKey] = useState('');
   const [openTrailer, setOpenTrailer] = useState('');
+  const {setCurrentId} = useContext(Context)
 
   useEffect(() => {
     fetchData({ mediaType, category, limit }).then((data) => {
@@ -151,7 +154,12 @@ const Hero = ({ mediaType, category, limit }) => {
               key={result.id}
             >
               <img src={`${image({ size: 500 })}${result.poster_path}`} key={result.id} data-id={result.id} alt='media-image' />
-              <Link to={`${title}`}>
+              <Link
+                to={`${title}`}
+                onClick={() => {
+                  setCurrentId(id);
+                }}
+              >
                 <i className='bi bi-arrow-right-circle-fill more' style={{ display: id === result.id ? 'block' : '' }}></i>
               </Link>
             </div>
