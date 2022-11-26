@@ -3,6 +3,7 @@ import { fetchData } from '../helpers/fetchData';
 import { image } from '../helpers/api.config';
 import { getProvider } from '../helpers/getProviders';
 import { getTrailer } from '../helpers/getTrailer';
+import { Link } from 'react-router-dom';
 import Trailer from './Trailer';
 
 const Hero = ({ mediaType, category, limit }) => {
@@ -28,35 +29,34 @@ const Hero = ({ mediaType, category, limit }) => {
       getProvider(firstResult.id, mediaType).then((providerData) => {
         const { results: providerResults } = providerData;
         const noProvider = Object.keys(providerData.results).length < 1;
-          if (noProvider) {
-            setProvider('');
-            return;
-          }
+        if (noProvider) {
+          setProvider('');
+          return;
+        }
 
-          if (providerResults) {
-            Object.values(providerResults).map((result) => {
-              if (providerResults.US != undefined) {
-                if(providerResults.US.flatrate != undefined){
-
-                  Object.values(providerResults.US.flatrate).map((flatrateResult, index) => {
-                    if (index === 0) {
-                      setProvider(flatrateResult.provider_name);
-                    }
-                  });
-                }else{
-                  Object.values(providerResults.US)[1].map((AnyResult, index) => {
-                    if (index === 0) {
-                      setProvider(AnyResult.provider_name);
-                    }
-                  });
-                }
+        if (providerResults) {
+          Object.values(providerResults).map((result) => {
+            if (providerResults.US != undefined) {
+              if (providerResults.US.flatrate != undefined) {
+                Object.values(providerResults.US.flatrate).map((flatrateResult, index) => {
+                  if (index === 0) {
+                    setProvider(flatrateResult.provider_name);
+                  }
+                });
               } else {
-                Object.values(result)[1].map((fromAnyLanguage) => {
-                  setProvider(Object.values(fromAnyLanguage)[2]);
+                Object.values(providerResults.US)[1].map((AnyResult, index) => {
+                  if (index === 0) {
+                    setProvider(AnyResult.provider_name);
+                  }
                 });
               }
-            });
-          }
+            } else {
+              Object.values(result)[1].map((fromAnyLanguage) => {
+                setProvider(Object.values(fromAnyLanguage)[2]);
+              });
+            }
+          });
+        }
       });
 
       setId(firstResult.id);
@@ -82,14 +82,13 @@ const Hero = ({ mediaType, category, limit }) => {
           if (results) {
             Object.values(results).map((result) => {
               if (results.US != undefined) {
-                if(results.US.flatrate != undefined){
-
+                if (results.US.flatrate != undefined) {
                   Object.values(results.US.flatrate).map((flatrateResult, index) => {
                     if (index === 0) {
                       setProvider(flatrateResult.provider_name);
                     }
                   });
-                }else{
+                } else {
                   Object.values(results.US)[1].map((AnyResult, index) => {
                     if (index === 0) {
                       setProvider(AnyResult.provider_name);
@@ -152,8 +151,9 @@ const Hero = ({ mediaType, category, limit }) => {
               key={result.id}
             >
               <img src={`${image({ size: 500 })}${result.poster_path}`} key={result.id} data-id={result.id} alt='media-image' />
-
+              <Link to={`${title}`}>
                 <i className='bi bi-arrow-right-circle-fill more' style={{ display: id === result.id ? 'block' : '' }}></i>
+              </Link>
             </div>
           );
         })}
