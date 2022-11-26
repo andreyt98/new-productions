@@ -3,36 +3,45 @@ import { image } from '../helpers/api.config';
 import { getProvider } from '../helpers/getProviders';
 import { getTrailer } from '../helpers/getTrailer';
 
-const SliderCard = ({ results,result, mediaType,setOpenTrailer ,setTrailerKey }) => {
+const SliderCard = ({ results, result, mediaType, setOpenTrailer, setTrailerKey }) => {
   const [provider, setProvider] = useState('');
   const [saveStyle, setSaveStyle] = useState(false);
 
   function changeProvider(id) {
     results.forEach((result) => {
       if (result.id === id) {
-
-        getProvider(result.id, mediaType).then((element) => {
-          if (Object.keys(element.results).length < 1) {
+        getProvider(result.id, mediaType).then((providerData) => {
+          const { results: providerResults } = providerData;
+          const noProvider = Object.keys(providerData.results).length < 1;
+          if (noProvider) {
             setProvider('');
             return;
           }
 
-          if (mediaType === 'movie') {
-            if (element.results.US) {
-              setProvider(element.results.US.flatrate[0].provider_name);
-            } else {
-              if (Object.values(element.results)[0].flatrate) {
-                setProvider(Object.values(element.results)[0].flatrate[0].provider_name);
+
+          if (providerResults) {
+            Object.values(providerResults).map((result) => {
+              if (providerResults.US != undefined) {
+                if(providerResults.US.flatrate != undefined){
+
+                  Object.values(providerResults.US.flatrate).map((flatrateResult, index) => {
+                    if (index === 0) {
+                      setProvider(flatrateResult.provider_name);
+                    }
+                  });
+                }else{
+                  Object.values(providerResults.US)[1].map((AnyResult, index) => {
+                    if (index === 0) {
+                      setProvider(AnyResult.provider_name);
+                    }
+                  });
+                }
               } else {
-                setProvider(Object.values(element.results)[0].buy[0].provider_name);
+                Object.values(result)[1].map((fromAnyLanguage) => {
+                  setProvider(Object.values(fromAnyLanguage)[2]);
+                });
               }
-            }
-          } else {
-            if (element.results.US) {
-              setProvider(element.results.US.flatrate[0].provider_name);
-            } else {
-              setProvider(Object.values(element.results)[0].flatrate[0].provider_name);
-            }
+            });
           }
         });
       }
@@ -43,15 +52,15 @@ const SliderCard = ({ results,result, mediaType,setOpenTrailer ,setTrailerKey })
     getTrailer(id, mediaType).then((data) => {
       data.results.forEach((element) => {
         if (element.type === 'Trailer') {
-           setTrailerKey(element.key);
+          setTrailerKey(element.key);
           setOpenTrailer(true);
-          console.log(mediaType)
+          console.log(mediaType);
         }
       });
     });
   }
 
-  function changeSaveStyle(){
+  function changeSaveStyle() {
     setSaveStyle(!saveStyle);
   }
 
@@ -60,10 +69,10 @@ const SliderCard = ({ results,result, mediaType,setOpenTrailer ,setTrailerKey })
       <div
         className='overlay'
         onMouseEnter={() => {
-           changeProvider(result.id);
+          changeProvider(result.id);
         }}
         onMouseLeave={() => {
-           setProvider('');
+          setProvider('');
         }}
       >
         <p className='provider'>{provider}</p>
@@ -78,8 +87,13 @@ const SliderCard = ({ results,result, mediaType,setOpenTrailer ,setTrailerKey })
           more {''}
           <i className='bi bi-arrow-right-circle-fill'></i>
         </a>
-        <i className={saveStyle? 'bi bi-bookmark-check-fill save-btn' : "bi bi-bookmark-plus-fill save-btn"}
-         style={{color: `${saveStyle? '#00c190': ""}`}} onClick={()=>{changeSaveStyle()}}></i>
+        <i
+          className={saveStyle ? 'bi bi-bookmark-check-fill save-btn' : 'bi bi-bookmark-plus-fill save-btn'}
+          style={{ color: `${saveStyle ? '#00c190' : ''}` }}
+          onClick={() => {
+            changeSaveStyle();
+          }}
+        ></i>
       </div>
       <img src={`${image({ size: 500 })}${result.poster_path}`} alt='' />
     </div>
