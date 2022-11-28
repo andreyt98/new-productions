@@ -2,17 +2,13 @@ import { useState, useEffect } from 'react';
 import { fetchData } from '../helpers/fetchData';
 import Trailer from './Trailer';
 import SliderCard from './SliderCard';
-
-
-/*
-TODO: move results state to App component to have it on every section and have different value based on type of search
-(movie, tv or multisearch)
-*/ 
+import { useRef } from 'react';
 
 const Slider = ({ mediaType, category, limit }) => {
   const [results, setResults] = useState([]);
   const [trailerKey, setTrailerKey] = useState('');
   const [openTrailer, setOpenTrailer] = useState('');
+  const sliderRef = useRef();
 
   useEffect(() => {
     fetchData({ mediaType, category, limit }).then((data) => {
@@ -23,11 +19,7 @@ const Slider = ({ mediaType, category, limit }) => {
   }, []);
 
   function moveSlider(e) {
-    if (e.target.matches('.left')) {
-      e.target.parentElement.parentElement.nextElementSibling.scrollBy(-(window.innerWidth / 2), 0);
-    } else {
-      e.target.parentElement.parentElement.nextElementSibling.scrollBy(window.innerWidth / 2, 0);
-    }
+    e.target.matches('.right') ? sliderRef.current.scrollBy(window.innerWidth / 2, 0) : sliderRef.current.scrollBy(-(window.innerWidth / 2), 0);
   }
 
   return (
@@ -58,9 +50,9 @@ const Slider = ({ mediaType, category, limit }) => {
         </div>
       </div>
 
-      <div className='slider__content'>
+      <div className='slider__content' ref={sliderRef}>
         {results.map((result) => {
-          return <SliderCard results={results} result={result} mediaType={mediaType} setOpenTrailer={setOpenTrailer} setTrailerKey={setTrailerKey}/>;
+          return <SliderCard results={results} result={result} mediaType={mediaType} setOpenTrailer={setOpenTrailer} setTrailerKey={setTrailerKey} key={result.id} />;
         })}
 
         <div className='more'>
