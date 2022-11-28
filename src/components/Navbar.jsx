@@ -8,12 +8,15 @@ const Navbar = () => {
   useEffect(() => {
    window.addEventListener("scroll", ()=> {
 
-    if(window.scrollY>0){
-      navRef.current.style.backgroundColor = "#0007"
-      navRef.current.style.backdropFilter = "blur(8px)"
-    }else{
-      navRef.current.style.background = "none"
-      navRef.current.style.backdropFilter = "none"
+    if(window.innerWidth >= 640){
+
+      if(window.scrollY>0){
+        navRef.current.style.backgroundColor = "#0007"
+        navRef.current.style.backdropFilter = "blur(8px)"
+      }else{
+        navRef.current.style.background = "none"
+        navRef.current.style.backdropFilter = "none"
+      }
     }
    })
   }, [])

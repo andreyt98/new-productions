@@ -6,7 +6,8 @@
   width: 100%;
   padding-block: 1.3rem;
   z-index: 10;
-  background-color: rgba(255, 255, 255, 0.075);
+  background: #0007;
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   
   @media #{$sm} {
@@ -15,6 +16,7 @@
     background: none;
     justify-content: space-between;
     background: none;
+    -webkit-backdrop-filter: none;
     backdrop-filter: none;
     padding-inline: 1rem;
     padding-block: .8rem;
