@@ -3,6 +3,7 @@ import { fetchData } from '../helpers/fetchData';
 import Trailer from './Trailer';
 import SliderCard from './SliderCard';
 import { useRef } from 'react';
+import { moveSlider } from '../helpers/moveSlider';
 
 const Slider = ({ mediaType, category, limit }) => {
   const [results, setResults] = useState([]);
@@ -17,10 +18,6 @@ const Slider = ({ mediaType, category, limit }) => {
       });
     });
   }, []);
-
-  function moveSlider(e) {
-    e.target.matches('.right') ? sliderRef.current.scrollBy(window.innerWidth / 2, 0) : sliderRef.current.scrollBy(-(window.innerWidth / 2), 0);
-  }
 
   return (
     <div className='slider'>
@@ -37,14 +34,14 @@ const Slider = ({ mediaType, category, limit }) => {
         <div className='controls'>
           <i
             className='bi bi-chevron-left left'
-            onClick={(e) => {
-              moveSlider(e);
+            onClick={(event) => {
+              moveSlider(event,sliderRef)
             }}
           ></i>
           <i
             className='bi bi-chevron-right right'
-            onClick={(e) => {
-              moveSlider(e);
+            onClick={(event) => {
+              moveSlider(event,sliderRef)
             }}
           ></i>
         </div>
