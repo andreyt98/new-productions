@@ -17,7 +17,7 @@ const SearchSection = () => {
         {results.map((result) => {
           if (result.media_type !== 'person') {
             return (
-              <SliderCard results={results} result={result} mediaType={result.media_type} setOpenTrailer={setOpenTrailer} setTrailerKey={setTrailerKey} />
+              <SliderCard results={results} result={result} mediaType={result.media_type} setOpenTrailer={setOpenTrailer} setTrailerKey={setTrailerKey} key={result.id}/>
             );
           }
         })}
