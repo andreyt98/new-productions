@@ -4,6 +4,8 @@ import { search } from '../../helpers/search';
 const SearchForm = ({ setResults }) => {
   function handleSearch(e) {
     e.preventDefault();
+    setResults(null)
+
     search(e.target.firstElementChild.value).then((data) => {
       setResults(data.results);
     });

@@ -1,6 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
-:root{
-  --primary:#009771;
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+:root {
+  --primary:#00a87e;
 }
 *,
 *::before,
@@ -10,20 +10,27 @@
   padding: 0;
 }
 
-html{
-  @media #{$xxl}{
+html {
+  @media #{$xxl} {
     font-size: 1.7rem;
   }
 }
 body {
-  background-color: #000000;
+  background: linear-gradient(to bottom, rgb(0, 0, 0), #01090c);
   color: white;
-  font-family: "DM Sans", sans-serif;
+  font-family: 'DM Sans', sans-serif;
   text-shadow: 3px 3px 10px black;
 }
-a {text-decoration: none;}
-ul { list-style: none;}
-button, i{cursor: pointer;}
+a {
+  text-decoration: none;
+}
+ul {
+  list-style: none;
+}
+button,
+i {
+  cursor: pointer;
+}
 
 button {
   border-radius: 25px;
@@ -32,4 +39,69 @@ button {
   background-color: var(--primary);
   color: white;
   border: none;
+}
+
+.info-component {
+
+  height: 100vh;
+
+  .hero2 {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    background-position: center;
+    background-size: 50%;
+    background-repeat: no-repeat;
+    z-index: 5;
+    @extend .flex-col-center;
+    border: 1px solid red;
+
+    img {
+      object-fit: cover;
+      height: 100%;
+      width: 100%;
+    }
+
+    .bi-play-circle-fill {
+      font-size: 2rem;
+      // position: absolute;
+      // @extend .horizontal-center;
+      // top: 45%;
+      z-index: 5;
+      @media #{$lg} {
+        font-size: 5rem;
+        // top: 35%;
+      }
+    }
+  }
+
+  h2 {
+    // text-align: center;
+    color: var(--primary);
+    // font-size: 160%;
+  }
+
+  .main {
+    padding: 0 1rem;
+    position: relative;
+    z-index: 5;
+    // @extend .flex-col-center;
+    gap: 1rem;
+    border: 1px solid red;
+
+    // background-color: green;
+    // &__header {
+    // }
+
+    .info {
+      // @extend .flex-col-center;
+      gap: 0.5rem;
+    }
+  }
+}
+
+.spinner{
+  @extend .horizontal-center;
+  height: 300px;
 }
