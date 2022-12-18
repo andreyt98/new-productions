@@ -18,24 +18,14 @@ const SliderCard = ({ results, result, mediaType, setOpenTrailer, setTrailerKey 
             return;
           }
 
-
           if (providerResults) {
             Object.values(providerResults).map((result) => {
               if (providerResults.US != undefined) {
-                if(providerResults.US.flatrate != undefined){
-
-                  Object.values(providerResults.US.flatrate).map((flatrateResult, index) => {
-                    if (index === 0) {
-                      setProvider(flatrateResult.provider_name);
-                    }
-                  });
-                }else{
-                  Object.values(providerResults.US)[1].map((AnyResult, index) => {
-                    if (index === 0) {
-                      setProvider(AnyResult.provider_name);
-                    }
-                  });
-                }
+                Object.values(providerResults.US)[1].map((AnyResult, index) => {
+                  if (index === 0) {
+                    setProvider(AnyResult.provider_name);
+                  }
+                });
               } else {
                 Object.values(result)[1].map((fromAnyLanguage) => {
                   setProvider(Object.values(fromAnyLanguage)[2]);
