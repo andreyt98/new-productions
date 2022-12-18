@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { image } from '../helpers/api.config';
 import { getProvider } from '../helpers/getProviders';
@@ -6,6 +7,13 @@ import { getTrailer } from '../helpers/getTrailer';
 const SliderCard = ({ results, result, mediaType, setOpenTrailer, setTrailerKey }) => {
   const [provider, setProvider] = useState('');
   const [saveStyle, setSaveStyle] = useState(false);
+  const [poster, setPoster] = useState(null);
+
+  useEffect(() => {
+    if (result.poster_path != null) {
+      setPoster(`${image({ size: 500 })}${result.poster_path}`);
+    }
+  }, []);
 
   function changeProvider(id) {
     results.forEach((result) => {
@@ -54,6 +62,7 @@ const SliderCard = ({ results, result, mediaType, setOpenTrailer, setTrailerKey 
   }
 
   return (
+    poster && 
     <div className='content' key={result.id}>
       <div
         className='overlay'
@@ -84,7 +93,7 @@ const SliderCard = ({ results, result, mediaType, setOpenTrailer, setTrailerKey 
           }}
         ></i>
       </div>
-      <img src={`${image({ size: 500 })}${result.poster_path}`} alt='' />
+      <img src={poster} alt='' />
     </div>
   );
 };
