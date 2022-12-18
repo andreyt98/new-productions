@@ -44,7 +44,6 @@ const SliderCard = ({ results, result, mediaType, setOpenTrailer, setTrailerKey 
         if (element.type === 'Trailer') {
           setTrailerKey(element.key);
           setOpenTrailer(true);
-          console.log(mediaType);
         }
       });
     });
