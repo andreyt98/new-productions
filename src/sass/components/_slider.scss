@@ -44,14 +44,6 @@
     }
     &::-webkit-scrollbar {
       height: 0;
-    }
-    
-  }
-
-  .more-btn {
-    cursor: pointer;
-    top: 50%;
-    @extend .horizontal-center;
-    padding: 0.7rem 1.8rem;
+    }    
   }
 }
