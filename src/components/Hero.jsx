@@ -111,13 +111,17 @@ const Hero = ({ mediaType, category, limit }) => {
   }
 
   function handleTrailerClick(id) {
+    setOpenTrailer(true);
     getTrailer(id, mediaType).then((data) => {
-      data.results.forEach((element) => {
-        if (element.type === 'Trailer') {
-          setTrailerKey(element.key);
-          setOpenTrailer(true);
-        }
-      });
+      if(data.results.length<1){
+        setTrailerKey(null)
+      }else{
+        data.results.forEach((element) => {
+          if (element.type === 'Trailer') {
+            setTrailerKey(element.key);
+          }
+        });
+      }
     });
   }
 

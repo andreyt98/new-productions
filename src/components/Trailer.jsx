@@ -24,6 +24,8 @@ const Trailer = ({ openTrailer, setOpenTrailer, trailerKey }) => {
       >
         <i className='bi bi-x-lg'></i>
       </button>
+
+      {trailerKey &&
       <button
         className='trailer-btn min-btn'
         onClick={() => {
@@ -33,7 +35,10 @@ const Trailer = ({ openTrailer, setOpenTrailer, trailerKey }) => {
         {' '}
         <i className={minBtnClass}></i>
       </button>
-      <ReactPlayer url={`https://www.youtube.com/watch?v=${trailerKey}`} width='100%' height='100%' controls playing />
+      }
+
+      {trailerKey === null ? <h2 style={{position: "absolute", top: "50%", left: "50%", transform: "translateX(-50%)" }}>No trailer :/</h2> :
+       <ReactPlayer url={`https://www.youtube.com/watch?v=${trailerKey}`} width='100%' height='100%' controls playing />}
     </div>,
     document.querySelector('.portal')
   );
