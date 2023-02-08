@@ -15,7 +15,7 @@ const Trailer = ({ openTrailer, setOpenTrailer, trailerKey }) => {
   }
 
   return PortalReactDom.createPortal(
-    <div className={minBtn ? 'min' : 'trailer'}>
+    <div className={minBtn ? 'min' : 'trailer'} style={{backgroundColor: trailerKey === null && 'black'}}>
       <button
         className='trailer-btn close-btn'
         onClick={() => {
