@@ -1,16 +1,16 @@
 import React from 'react';
+import { useContext } from 'react';
 import { useState } from 'react';
 import SliderCard from '../../components/SliderCard';
-import Trailer from '../../components/Trailer';
+import { Context } from '../../context/Context';
 import SearchForm from './SearchForm';
 
 const SearchSection = () => {
   const [results, setResults] = useState([]);
-  const [trailerKey, setTrailerKey] = useState('');
-  const [openTrailer, setOpenTrailer] = useState('');
+  const {setTrailerKey,openTrailer, setOpenTrailer} = useContext(Context)
 
   return (
-    <section className='search-section'>
+    <section className={`search-section ${openTrailer && 'on-trailer'}`}>
       <h1>Search for something!</h1>
       <SearchForm setResults={setResults} />
       <div className='results'>
@@ -23,8 +23,6 @@ const SearchSection = () => {
             }
           })
         )}
-
-        <Trailer openTrailer={openTrailer} setOpenTrailer={setOpenTrailer} trailerKey={trailerKey} />
       </div>
     </section>
   );

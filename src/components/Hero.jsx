@@ -4,7 +4,6 @@ import { image } from '../helpers/api.config';
 import { getProvider } from '../helpers/getProviders';
 import { getTrailer } from '../helpers/getTrailer';
 import { Link } from 'react-router-dom';
-import Trailer from './Trailer';
 import { useContext } from 'react';
 import { Context } from '../context/Context';
 
@@ -14,9 +13,7 @@ const Hero = ({ mediaType, category, limit }) => {
   const [title, setTitle] = useState('');
   const [provider, setProvider] = useState('');
   const [id, setId] = useState('');
-  const [trailerKey, setTrailerKey] = useState('');
-  const [openTrailer, setOpenTrailer] = useState('');
-  const {setCurrentId} = useContext(Context)
+  const { setCurrentId,setOpenTrailer,setTrailerKey} = useContext(Context)
 
   useEffect(() => {
     fetchData({ mediaType, category, limit }).then((data) => {
@@ -170,8 +167,6 @@ const Hero = ({ mediaType, category, limit }) => {
           );
         })}
       </div>
-
-      <Trailer openTrailer={openTrailer} setOpenTrailer={setOpenTrailer} trailerKey={trailerKey} />
     </div>
   );
 };

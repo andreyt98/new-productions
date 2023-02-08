@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { fetchData } from '../helpers/fetchData';
-import Trailer from './Trailer';
 import SliderCard from './SliderCard';
 import { useRef } from 'react';
 import { moveSlider } from '../helpers/moveSlider';
+import { useContext } from 'react';
+import { Context } from '../context/Context';
 
 const Slider = ({ mediaType, category, limit }) => {
   const [results, setResults] = useState([]);
-  const [trailerKey, setTrailerKey] = useState('');
-  const [openTrailer, setOpenTrailer] = useState('');
+  const {setTrailerKey,openTrailer, setOpenTrailer} = useContext(Context)
   const sliderRef = useRef();
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const Slider = ({ mediaType, category, limit }) => {
         </div>
       </div>
 
-      <div className='slider__content' ref={sliderRef}>
+      <div className={`slider__content ${openTrailer && 'on-trailer'}` } ref={sliderRef}>
         {results.map((result) => {
           return <SliderCard results={results} result={result} mediaType={mediaType} setOpenTrailer={setOpenTrailer} setTrailerKey={setTrailerKey} key={result.id} />;
         })}
@@ -56,8 +56,6 @@ const Slider = ({ mediaType, category, limit }) => {
           <button className='more-btn'>More</button>
         </div>
       </div>
-
-      <Trailer openTrailer={openTrailer} setOpenTrailer={setOpenTrailer} trailerKey={trailerKey} />
     </div>
   );
 };
