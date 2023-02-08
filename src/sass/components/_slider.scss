@@ -28,7 +28,6 @@
     grid-auto-columns: 45%;
     gap: .5rem;
     overflow: auto;
-    padding: 0.5rem;
     scroll-behavior: smooth;
     @media #{$xss} {
       grid-auto-columns: 35%;
@@ -37,10 +36,10 @@
       grid-auto-columns: 25%;
     }
     @media #{$md} {
-      grid-auto-columns: 23%;
+      grid-auto-columns: 20%;
     }
     @media #{$lg} {
-      grid-auto-columns: 18%;
+      grid-auto-columns: 15%;
     }
     &::-webkit-scrollbar {
       height: 0;
