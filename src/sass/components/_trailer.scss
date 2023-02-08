@@ -9,12 +9,10 @@
 
   .close-btn {
     top: 12%;
-  
   }
   .min-btn {
     top: 12%;
   }
-  
 }
 .min {
   width: 100%;
@@ -25,16 +23,19 @@
   position: fixed;
   padding-top: 1.55rem;
   padding-inline: 0.5rem;
-
   @media #{$xss} {
-    width: 70%;
-    height: 45%;
-    top: 48%;
+    width: 90%;
+    height: 35%;
+    top: 55%;
   }
   @media #{$md} {
-    width: 50%;
-    height: 50%;
-    top: 45%;
+    height: 40%;
+    top: 58%;
+  }
+  @media #{$lg} {
+    width: 55%;
+    height: 45%;
+    top: 55%;
   }
 }
 iframe {
@@ -57,7 +58,6 @@ iframe {
 .close-btn {
   right: 5%;
   top: 0%;
-
 }
 .min-btn {
   left: 5%;
