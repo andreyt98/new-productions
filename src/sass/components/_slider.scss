@@ -27,7 +27,7 @@
     grid-auto-flow: column;
     grid-auto-columns: 45%;
     gap: .5rem;
-    overflow: auto;
+    overflow-y: hidden;
     scroll-behavior: smooth;
     @media #{$xss} {
       grid-auto-columns: 35%;
