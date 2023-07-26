@@ -52,9 +52,9 @@ const Slider = ({ mediaType, category, limit }) => {
           return <SliderCard results={results} result={result} mediaType={mediaType} setOpenTrailer={setOpenTrailer} setTrailerKey={setTrailerKey} key={result.id} />;
         })}
 
-        <div className='more'>
+        {/* <div className='more'>
           <button className='more-btn'>More</button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
