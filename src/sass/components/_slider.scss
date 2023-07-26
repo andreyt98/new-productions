@@ -1,5 +1,6 @@
 .slider {
-  padding: 3rem 0.5rem;
+  padding-inline: 0.5rem;
+  padding-block: 1rem 5rem;
 
   &__header {
     @extend .flex-row-space-between;
