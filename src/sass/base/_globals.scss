@@ -10,11 +10,6 @@
   padding: 0;
 }
 
-html {
-  @media #{$xxl} {
-    font-size: 1.7rem;
-  }
-}
 body {
   background: linear-gradient(to bottom, rgb(0, 0, 0), #01090c);
   color: white;
