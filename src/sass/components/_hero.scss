@@ -1,5 +1,5 @@
 .hero {
-  height: calc(100vh - 54px);
+  height:  800px;
   @extend .overlay;
   @extend .flex-col-center;
   text-align: center;
@@ -41,10 +41,16 @@
     z-index: 3;
 
     position: absolute;
-    bottom: 60px;
+    bottom: 160px;
     
-    @media #{$xss} {
-      bottom: 10px;
+    @media #{$sm} {
+      bottom: 120px;
+    }
+    @media #{$md} {
+      bottom: 130px;
+    }
+    @media #{$xl} {
+      bottom: 80px;
     }
 
     .isActive {
@@ -67,14 +73,17 @@
         opacity: 0.60;
       }
 
-      @media #{$sm} {
-        width: 17%;
+      @media #{$xss} {
+        width: 22%;
       }
       @media #{$md} {
+        width: 17%;
+      }
+      @media #{$lg} {
         width: 12%;
       }
-      @media #{$xl} {
-        width: 10%;
+      @media #{$xxl} {
+        width: 9%;
       }
       
       
