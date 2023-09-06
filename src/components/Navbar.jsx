@@ -17,6 +17,9 @@ const Navbar = () => {
         navRef.current.style.background = "none"
         navRef.current.style.backdropFilter = "none"
       }
+    }else{
+      navRef.current.style.backgroundColor = "#0007"
+      navRef.current.style.backdropFilter = "blur(8px)"
     }
    })
   }, [])
