@@ -5,9 +5,12 @@ export const fetchData = async ({ mediaType, category, limit }) => {
   const data = await fetch(`${apiUrl}${path}?api_key=${API_KEY}&page=1`);
   const json = await data.json();
 
-  if (limit === undefined) {
-    limit = json.results.length;
-  }
+  if (data.ok) {
+    if (limit === undefined) limit = json.results.length;
+    
+    return json.results.slice(0, limit);
 
-  return json.results.slice(0, limit);
+  } else {
+    return []; 
+  }
 };
