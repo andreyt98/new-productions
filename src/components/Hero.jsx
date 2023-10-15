@@ -15,52 +15,66 @@ const Hero = ({ mediaType, category, limit }) => {
   const [id, setId] = useState('');
   const { setCurrentId,setOpenTrailer,setTrailerKey} = useContext(Context)
 
-  useEffect(() => {
-    fetchData({ mediaType, category, limit }).then((data) => {
-      const [firstResult] = data;
-      let initialBackground = window.innerWidth >= 640 ? `${image({ size: 1280 })}${firstResult.backdrop_path}` : `${image({ size: 500 })}${firstResult.poster_path}`;
+  async function callFetch({ mediaType, category, limit }){
+    try{
+      const data = await fetchData({ mediaType, category, limit })
 
-      data.forEach(() => {
-        setResults(data);
-        setHeroBackground(initialBackground);
-        setTitle(firstResult.name || firstResult.title);
-      });
-
-      getProvider(firstResult.id, mediaType).then((providerData) => {
-        const { results: providerResults } = providerData;
-        const noProvider = Object.keys(providerData.results).length < 1;
-        if (noProvider) {
-          setProvider('');
-          return;
-        }
-
-        if (providerResults) {
-          Object.values(providerResults).map((result) => {
-            if (providerResults.US != undefined) {
-              if (providerResults.US.flatrate != undefined) {
-                Object.values(providerResults.US.flatrate).map((flatrateResult, index) => {
-                  if (index === 0) {
-                    setProvider(flatrateResult.provider_name);
-                  }
-                });
+      if(data.length>0){
+        const [firstResult] = data;
+        let initialBackground = window.innerWidth >= 640 ? `${image({ size: 1280 })}${firstResult.backdrop_path}` : `${image({ size: 500 })}${firstResult.poster_path}`;
+    
+        data.forEach(() => {
+          setResults(data);
+          setHeroBackground(initialBackground);
+          setTitle(firstResult.name || firstResult.title);
+        });
+    
+        getProvider(firstResult.id, mediaType).then((providerData) => {
+          const { results: providerResults } = providerData;
+          const noProvider = Object.keys(providerData.results).length < 1;
+          if (noProvider) {
+            setProvider('');
+            return;
+          }
+    
+          if (providerResults) {
+            Object.values(providerResults).map((result) => {
+              if (providerResults.US != undefined) {
+                if (providerResults.US.flatrate != undefined) {
+                  Object.values(providerResults.US.flatrate).map((flatrateResult, index) => {
+                    if (index === 0) {
+                      setProvider(flatrateResult.provider_name);
+                    }
+                  });
+                } else {
+                  Object.values(providerResults.US)[1].map((AnyResult, index) => {
+                    if (index === 0) {
+                      setProvider(AnyResult.provider_name);
+                    }
+                  });
+                }
               } else {
-                Object.values(providerResults.US)[1].map((AnyResult, index) => {
-                  if (index === 0) {
-                    setProvider(AnyResult.provider_name);
-                  }
+                Object.values(result)[1].map((fromAnyLanguage) => {
+                  setProvider(Object.values(fromAnyLanguage)[2]);
                 });
               }
-            } else {
-              Object.values(result)[1].map((fromAnyLanguage) => {
-                setProvider(Object.values(fromAnyLanguage)[2]);
-              });
-            }
-          });
-        }
-      });
+            });
+          }
+        });
+    
+        setId(firstResult.id);
+      }else{
+        throw new Error
+      }
+    }catch(e){     
+      console.log("enter error here")
+    }
+  }
 
-      setId(firstResult.id);
-    });
+  useEffect( () => {
+
+      callFetch({ mediaType, category, limit })
+
   }, []);
 
   function handleImageClick(event, result) {
