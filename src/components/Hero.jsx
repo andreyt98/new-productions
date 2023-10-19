@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useContext } from 'react';
 import { fetchData } from '../helpers/fetchData';
 import { image } from '../helpers/api.config';
 import { getProvider } from '../helpers/getProviders';
 import { getTrailer } from '../helpers/getTrailer';
 import { Link } from 'react-router-dom';
-import { useContext } from 'react';
 import { Context } from '../context/Context';
 
 const Hero = ({ mediaType, category, limit }) => {
@@ -30,7 +29,7 @@ const Hero = ({ mediaType, category, limit }) => {
         });
     
         assignProvider(firstResult)
-        
+
         setId(firstResult.id);
       }else{
         throw new Error
@@ -64,44 +63,39 @@ const Hero = ({ mediaType, category, limit }) => {
   }
 
 
-const assignProvider = (element) =>{
-  getProvider(element.id, mediaType).then((providerData) => {
-    const noProvider = Object.keys(providerData.results).length < 1;
+const assignProvider = async (element) =>{
+
+  try{
+    const providerResults = await getProvider(element.id, mediaType);
+
+    const noProvider = Object.keys(providerResults.results).length < 1;
     if (noProvider) {
       setProvider('');
       return;
     }
-    const { results } = providerData;
+
+    const { results } = providerResults;
 
     if (results) {
       Object.values(results).map((result) => {
-        results.US? setProviderFromUsa(results) : setProviderFromAnyCountry(result)       
+        results.US? setProviderFromUsa(results) : setProvider(Object.values(result)[1][0].provider_name)       
       });
     }
-  });
+
+  }catch{
+    console.log("error on provider")
+  }
+
 }
 
   const setProviderFromUsa = (results)=> {
 
     if (results.US.flatrate) {
-      Object.values(results.US.flatrate).map((flatrateResult, index) => {
-        if (index === 0) {
-          setProvider(flatrateResult.provider_name);
-        }
-      });
-    } else {
-      Object.values(results.US)[1].map((AnyResult, index) => {
-        if (index === 0) {
-          setProvider(AnyResult.provider_name);
-        }
-      });
-    }
-  }
+      setProvider( Object.values(results.US.flatrate[0].provider_name));
 
-  const setProviderFromAnyCountry = (result)=> {
-    Object.values(result)[1].map((fromAnyLanguage) => {
-      setProvider(Object.values(fromAnyLanguage)[2]);
-    });
+    } else { 
+      setProvider( Object.values(results.US)[1][0].provider_name);
+    }
   }
 
   function handleTrailerClick(id) {
