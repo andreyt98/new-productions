@@ -1,114 +1,54 @@
-import { useState, useEffect,useContext } from 'react';
-import { fetchData } from '../helpers/fetchData';
+import { useState, useEffect, useContext } from 'react';
 import { image } from '../helpers/api.config';
-import { getProvider } from '../helpers/getProviders';
-import { getTrailer } from '../helpers/getTrailer';
+import { assignProvider } from '../helpers/getProviders';
+import { handleTrailerClick } from '../helpers/getTrailer';
 import { Link } from 'react-router-dom';
 import { Context } from '../context/Context';
 
-const Hero = ({ mediaType, category, limit }) => {
+const Hero = () => {
   const [heroBackground, setHeroBackground] = useState('');
   const [results, setResults] = useState([]);
   const [title, setTitle] = useState('');
   const [provider, setProvider] = useState('');
   const [id, setId] = useState('');
-  const { setCurrentId,setOpenTrailer,setTrailerKey} = useContext(Context)
+  const { setCurrentId, setOpenTrailer, setTrailerKey, apiData, currentMediaType } = useContext(Context);
 
-  async function callFetch({ mediaType, category, limit }){
-    try{
-      const data = await fetchData({ mediaType, category, limit })
+  useEffect(() => {
+    renderContent();
+  }, [apiData]);
 
-      if(data.length>0){
-        const [firstResult] = data;
-        let initialBackground = window.innerWidth >= 640 ? `${image({ size: 1280 })}${firstResult.backdrop_path}` : `${image({ size: 500 })}${firstResult.poster_path}`;
-    
-        data.forEach(() => {
-          setResults(data);
-          setHeroBackground(initialBackground);
-          setTitle(firstResult.name || firstResult.title);
-        });
-    
-        assignProvider(firstResult)
+  function renderContent() {
+    try {
+      let mediaData;
+      if (apiData.length > 0) {
+        mediaData = currentMediaType === 'movies' ? apiData[0] : apiData[1];
+        const [trendingResults] = mediaData
 
-        setId(firstResult.id);
-      }else{
-        throw new Error
+        setResults(trendingResults);
+
+        let initialBackground = window.innerWidth >= 640 ? `${image({ size: 1280 })}${trendingResults[0].backdrop_path}` : `${image({ size: 500 })}${trendingResults[0].poster_path}`;
+        setHeroBackground(initialBackground);
+        setTitle(trendingResults[0].name || trendingResults[0].title);
+        setId(trendingResults[0].id);
+        assignProvider(trendingResults[0].id,currentMediaType,setProvider);
       }
-    }catch(e){     
-      console.log("enter error here")
+
+    } catch (e) {
+      console.log('enter error here', e);
     }
   }
-
-  useEffect( () => {
-
-      callFetch({ mediaType, category, limit })
-
-  }, []);
-
   function handleImageClick(event, result) {
     setId(result.id);
 
-    const clickedElement = event.target.dataset.id
-    
-    results.forEach((element) => {
+    const clickedElement = event.target.dataset.id;
 
-      const elementExistInApi = clickedElement == element.id
+    results.forEach((element) => {
+      const elementExistInApi = clickedElement == element.id;
 
       if (elementExistInApi) {
         setHeroBackground(window.innerWidth >= 640 ? `${image({ size: 1280 })}${element.backdrop_path}` : `${image({ size: 500 })}${element.poster_path}`);
         setTitle(element.name || element.title);
-        assignProvider(element)
-      }
-    });
-  }
-
-
-const assignProvider = async (element) =>{
-
-  try{
-    const providerResults = await getProvider(element.id, mediaType);
-
-    const noProvider = Object.keys(providerResults.results).length < 1;
-    if (noProvider) {
-      setProvider('');
-      return;
-    }
-
-    const { results } = providerResults;
-
-    if (results) {
-      Object.values(results).map((result) => {
-        results.US? setProviderFromUsa(results) : setProvider(Object.values(result)[1][0].provider_name)       
-      });
-    }
-
-  }catch{
-    console.log("error on provider")
-  }
-
-}
-
-  const setProviderFromUsa = (results)=> {
-
-    if (results.US.flatrate) {
-      setProvider( Object.values(results.US.flatrate[0].provider_name));
-
-    } else { 
-      setProvider( Object.values(results.US)[1][0].provider_name);
-    }
-  }
-
-  function handleTrailerClick(id) {
-    setOpenTrailer(true);
-    getTrailer(id, mediaType).then((data) => {
-      if(data.results.length<1){
-        setTrailerKey(null)
-      }else{
-        data.results.forEach((element) => {
-          if (element.type === 'Trailer') {
-            setTrailerKey(element.key);
-          }
-        });
+        assignProvider(element.id,currentMediaType,setProvider);
       }
     });
   }
@@ -124,7 +64,7 @@ const assignProvider = async (element) =>{
         <button
           data-id={id}
           onClick={() => {
-            handleTrailerClick(id);
+            handleTrailerClick(setOpenTrailer,id,currentMediaType,setTrailerKey);
           }}
         >
           {' '}

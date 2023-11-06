@@ -1,33 +1,33 @@
-import { useState, useEffect } from 'react';
-import { fetchData } from '../helpers/fetchData';
+import { useState, useEffect,useContext } from 'react';
 import SliderCard from './SliderCard';
 import { useRef } from 'react';
 import { moveSlider } from '../helpers/moveSlider';
-import { useContext } from 'react';
 import { Context } from '../context/Context';
 
-const Slider = ({ mediaType, category, limit }) => {
+const Slider = () => {
   const [results, setResults] = useState([]);
-  const {setTrailerKey,openTrailer, setOpenTrailer} = useContext(Context)
+  const {setTrailerKey,openTrailer, setOpenTrailer, apiData,currentMediaType} = useContext(Context)
   const sliderRef = useRef();
 
   useEffect(() => {
-    fetchData({ mediaType, category, limit }).then((data) => {
-      data.forEach(() => {
-        setResults(data);
-      });
-    });
-  }, []);
+
+    try{
+      if (apiData.length > 0) {
+         const mediaData = currentMediaType === 'movies' ? apiData[0] : apiData[1];
+         const [,popularResults] = mediaData
+         setResults(popularResults)     
+      }
+      }catch{}
+  }, [apiData]);
 
   return (
     <div className='slider'>
       <div className='slider__header'>
         <h2>
-          | {category.toUpperCase()}{' '}
+          | { "POPULAR"}{' '}
           <span>
             {' '}
-            {mediaType.toUpperCase()}
-            {mediaType === 'tv' ? ' SHOWS' : 'S'}{' '}
+            {currentMediaType.toUpperCase()}
           </span>
         </h2>
 
@@ -49,7 +49,7 @@ const Slider = ({ mediaType, category, limit }) => {
 
       <div className={`slider__content ${openTrailer && 'on-trailer'}` } ref={sliderRef}>
         {results.map((result) => {
-          return <SliderCard results={results} result={result} mediaType={mediaType} setOpenTrailer={setOpenTrailer} setTrailerKey={setTrailerKey} key={result.id} />;
+          return <SliderCard result={result} setOpenTrailer={setOpenTrailer} setTrailerKey={setTrailerKey} key={result.id} />;
         })}
 
         {/* <div className='more'>
