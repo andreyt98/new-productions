@@ -1,10 +1,11 @@
-import { useRef } from "react";
-import { useEffect } from "react";
+import { useRef,useEffect, useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { Context } from "../context/Context";
 
 const Navbar = () => {
   const navRef = useRef();
-
+  const {setCurrentMediaType} = useContext(Context)
+  
   useEffect(() => {
    window.addEventListener("scroll", ()=> {
 
@@ -31,8 +32,8 @@ const Navbar = () => {
 
       <NavLink to="search" id="search-btn"><i className="bi bi-search"></i></NavLink>
       <ul className={` links`}>
-        <li><NavLink to="movies"> Movies</NavLink></li>
-        <li><NavLink to="tvshows"> TV Shows</NavLink></li>
+         <li><NavLink to="movies" onClick={()=>{setCurrentMediaType('movies')}}> Movies</NavLink></li>
+        <li><NavLink to="tvshows" onClick={()=>{setCurrentMediaType('tvshows')}}> TV Shows</NavLink></li> 
         <li><NavLink to="Saved">  Favorites</NavLink></li>
       </ul>
     </nav>
