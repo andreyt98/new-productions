@@ -23,7 +23,8 @@ const AppRouter = () => {
 
         <Route path='/movies/:id' element={<Hero info={true}  id2={currentId}/>}></Route>
         <Route path='/tvshows/:id' element={<Hero info={true} id2={currentId}/>}></Route>
-
+        <Route path='/search/:id' element={<Hero info={true} id2={currentId}/>}></Route>
+        
         <Route path='*' element={<Navigate to='/movies' />} /> 
       </Routes>
       <Trailer openTrailer={openTrailer} setOpenTrailer={setOpenTrailer} trailerKey={trailerKey} />

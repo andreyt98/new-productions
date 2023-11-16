@@ -7,7 +7,7 @@ import SearchForm from './SearchForm';
 
 const SearchSection = () => {
   const [results, setResults] = useState([]);
-  const {setTrailerKey,openTrailer, setOpenTrailer} = useContext(Context)
+  const {openTrailer} = useContext(Context)
 
   return (
     <section className={`search-section ${openTrailer && 'on-trailer'}`}>
@@ -19,7 +19,7 @@ const SearchSection = () => {
         ) : (
           results.map((result) => {
             if (result.media_type !== 'person') {
-              return <SliderCard result={result} setOpenTrailer={setOpenTrailer} setTrailerKey={setTrailerKey} key={result.id} />;
+              return <SliderCard result={result} />;
             }
           })
         )}
