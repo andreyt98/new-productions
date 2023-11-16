@@ -12,7 +12,6 @@
   background-repeat: no-repeat;
 
   overflow: hidden;
-  border: 1px solid red;
 
   .info {
     @extend .flex-col-center;
@@ -162,7 +161,6 @@
     justify-content: center;
     gap: 1rem;
     width: 100%;
-    border: 1px solid red;
     padding: .5rem;
   }
   
@@ -184,6 +182,5 @@
   overflow: hidden;
   max-width: 800px;
   padding: 1rem;
-  border: 1px solid red;
 }
 
