@@ -10,7 +10,6 @@ export const getTrailer = async (id, mediaType) => {
 
 
 export function handleTrailerClick(setOpenTrailer,id,currentMediaType,setTrailerKey) {
-  setOpenTrailer(true);
   const mediaType = currentMediaType === 'movies' ? 'movie' : 'tv'
   getTrailer(id, mediaType).then((data) => {
     if (data.results.length < 1) {
@@ -22,5 +21,6 @@ export function handleTrailerClick(setOpenTrailer,id,currentMediaType,setTrailer
         }
       });
     }
+    setOpenTrailer(true);
   });
 }

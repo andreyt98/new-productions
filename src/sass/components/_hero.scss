@@ -1,5 +1,5 @@
 .hero {
-  height:  800px;
+  height: 800px;
   @extend .overlay;
   @extend .flex-col-center;
   text-align: center;
@@ -12,6 +12,7 @@
   background-repeat: no-repeat;
 
   overflow: hidden;
+  border: 1px solid red;
 
   .info {
     @extend .flex-col-center;
@@ -36,21 +37,21 @@
 
   .movies {
     @extend .flex-row-center;
-    gap: .3rem;
+    gap: 0.3rem;
     padding: 0 1rem;
     z-index: 3;
 
     position: absolute;
-    bottom: 160px;
-    
+    bottom: 250px;
+
     @media #{$sm} {
-      bottom: 120px;
+      bottom: 170px;
     }
     @media #{$md} {
-      bottom: 130px;
+      bottom: 180px;
     }
     @media #{$xl} {
-      bottom: 80px;
+      bottom: 160px;
     }
 
     .isActive {
@@ -70,23 +71,19 @@
       &:not(.isActive) {
         cursor: pointer;
         filter: grayscale(1);
-        opacity: 0.60;
+        opacity: 0.6;
       }
 
       @media #{$xss} {
-        width: 22%;
+        width: 19%;
       }
       @media #{$md} {
-        width: 17%;
+        width: 15%;
       }
       @media #{$lg} {
-        width: 12%;
+        width: 10%;
       }
-      @media #{$xxl} {
-        width: 9%;
-      }
-      
-      
+
       img {
         width: 100%;
         height: 100%;
@@ -100,10 +97,93 @@
         transition: all 0.3s;
         color: white;
         &:hover {
-          color: #00dda6;          
+          color: #00dda6;
         }
       }
     }
-    
   }
 }
+
+.hero-info {
+  height: 700px;
+  @extend .flex-col-center;
+  text-align: center;
+  padding: 1.3rem;
+  position: relative;
+  z-index: 1;
+
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  overflow: hidden;
+
+  @media #{$lg} {
+    margin: 4rem;
+    border-radius: 25px;
+  }
+
+  .bi-arrow-left{
+    position: absolute;
+    top: 60px;
+    left: 40px;
+    z-index: 5;
+    font-size: 140%;
+    @media #{$lg} {
+      top: 40px;
+      left: 25px;
+    }
+  }
+  .overlay {
+    background: linear-gradient(to top, #000000, #000000f1, #00000010);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+  }
+
+  .bi-play-circle-fill {
+    z-index: 5;
+    font-size: 400%;
+      position: absolute;
+      top: 30%;
+      transform: translate(-30%, -50%);
+    
+  }
+  .data-container {
+    z-index: 5;
+    position: absolute;
+    bottom: 200px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    border: 1px solid red;
+    padding: .5rem;
+  }
+  
+  .data {
+    gap: 0.4rem;
+    display: flex;
+  
+    span {
+      background-color: #59595958;
+      padding: 0.2rem 0.5rem;
+      border-radius: 25px;
+    }
+  }
+}
+
+
+.overview {
+  height: 60px;
+  overflow: hidden;
+  max-width: 800px;
+  padding: 1rem;
+  border: 1px solid red;
+}
+
