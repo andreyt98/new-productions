@@ -94,7 +94,8 @@ const Hero = ({ info = false, id2 = null }) => {
       <div className='overlay'></div>
 
       <>
-        {!info ? (
+        {!info && (
+          <>
           <div className='info'>
             <h1 className='title'>{title}</h1>
 
@@ -121,18 +122,8 @@ const Hero = ({ info = false, id2 = null }) => {
               <button> Details </button>
             </Link>
           </div>
-        ) : (
-          <i
-            className='bi bi-play-circle-fill'
-            data-id={id2}
-            onClick={() => {
-              handleTrailerClick(setOpenTrailer, id2, currentMediaType, setTrailerKey);
-            }}
-          ></i>
-        )}
-      </>
-      {!info && (
-        <div className='movies'>
+
+          <div className='movies'>
           {results.map((result) => {
             return (
               <div
@@ -146,9 +137,21 @@ const Hero = ({ info = false, id2 = null }) => {
               </div>
             );
           })}
-        </div>
-      )}
+          </div>
+          </>
+
+        ) }
+      </>
+     
       {info && (
+        <>
+         <i
+         className='bi bi-play-circle-fill'
+         data-id={id2}
+         onClick={() => {
+           handleTrailerClick(setOpenTrailer, id2, currentMediaType, setTrailerKey);
+         }}
+       ></i>
         <div className='data-container'>
             <img src={poster} alt='' id='poster' />
 
@@ -169,7 +172,7 @@ const Hero = ({ info = false, id2 = null }) => {
                   {` ${vote}`}
                 </span>                
               </div>
-              
+
               <div className='overview'>
                 <div className='overview_data'>
                   <p>{overview}</p>
@@ -178,6 +181,7 @@ const Hero = ({ info = false, id2 = null }) => {
             </div>
           
         </div>
+        </>
       )}
     </div>
   );
