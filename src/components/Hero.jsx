@@ -165,9 +165,11 @@ const Hero = ({ info = false, id2 = null }) => {
             </span>
           </span>
 
-          <span className='overview'>
+          <div className='overview'>
+          <div className='overview_data'>
             <p>{overview}</p>
-          </span>
+          </div>
+          </div>
         </div>
       )}
     </div>

@@ -176,11 +176,23 @@
   }
 }
 
-
 .overview {
-  height: 60px;
-  overflow: hidden;
-  max-width: 800px;
-  padding: 1rem;
-}
+  height: 80px;
+  overflow: auto;
+  
+  &::-webkit-scrollbar{
+    width: 7px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #434343;
+    border-radius: 12px;
+  } 
+  &::-webkit-scrollbar-thumb {
+    background: #dedede;
+    border-radius: 12px;
+  }
 
+  &_data{
+    max-width: 800px;
+  }
+}
