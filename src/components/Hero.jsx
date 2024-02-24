@@ -109,6 +109,18 @@ const Hero = ({ info = false, id2 = null }) => {
               </span>{' '}
               Play Trailer
             </button>
+            
+
+            <Link className='details'
+              to={`${title}`}
+              onClick={() => {
+                setCurrentId(id);
+              }}
+            >
+              <button> Details </button>
+            </Link>
+
+
           </div>
         ) : (
           <i
@@ -132,14 +144,6 @@ const Hero = ({ info = false, id2 = null }) => {
                 key={result.id}
               >
                 <img src={`${image({ size: 500 })}${result.poster_path}`} key={result.id} data-id={result.id} alt='media-image' />
-                <Link
-                  to={`${title}`}
-                  onClick={() => {
-                    setCurrentId(id);
-                  }}
-                >
-                  <i className='bi bi-arrow-right-circle-fill more' style={{ display: id === result.id ? 'block' : '' }}></i>
-                </Link>
               </div>
             );
           })}
