@@ -12,6 +12,8 @@ const Hero = ({ info = false, id2 = null }) => {
   const [title, setTitle] = useState('');
   const [provider, setProvider] = useState('');
   const [id, setId] = useState('');
+  const [poster, setPoster] = useState('');
+
   const { setCurrentId, setOpenTrailer, setTrailerKey, apiData, currentMediaType } = useContext(Context);
 
   // for info
@@ -41,7 +43,8 @@ const Hero = ({ info = false, id2 = null }) => {
       let initialBackground = window.innerWidth >= 640 ? `${image({ size: 1280 })}${backdrop_path}` : `${image({ size: 500 })}${poster_path}`;
 
       setHeroBackground(initialBackground);
-      
+      let post = `${image({ size: 500 })}${poster_path}`;
+      setPoster(post);
     });
   }, [apiData]);
 
@@ -81,9 +84,9 @@ const Hero = ({ info = false, id2 = null }) => {
   }
   function handleBackClick() {
     window.scrollTo(0, 0);
-    const fullPath = window.location.pathname
-    const lastPath = fullPath.lastIndexOf('/')
-    navigate(fullPath.substring(0, lastPath))
+    const fullPath = window.location.pathname;
+    const lastPath = fullPath.lastIndexOf('/');
+    navigate(fullPath.substring(0, lastPath));
   }
   return (
     <div className={info ? 'hero-info' : 'hero'} style={{ backgroundImage: `url(${heroBackground})` }}>
@@ -93,9 +96,7 @@ const Hero = ({ info = false, id2 = null }) => {
       <>
         {!info ? (
           <div className='info'>
-            <h1 className='title'>
-              {title}
-            </h1>
+            <h1 className='title'>{title}</h1>
 
             <button
               data-id={id}
@@ -109,9 +110,9 @@ const Hero = ({ info = false, id2 = null }) => {
               </span>{' '}
               Play Trailer
             </button>
-            
 
-            <Link className='details'
+            <Link
+              className='details'
               to={`${title}`}
               onClick={() => {
                 setCurrentId(id);
@@ -119,8 +120,6 @@ const Hero = ({ info = false, id2 = null }) => {
             >
               <button> Details </button>
             </Link>
-
-
           </div>
         ) : (
           <i
@@ -151,29 +150,33 @@ const Hero = ({ info = false, id2 = null }) => {
       )}
       {info && (
         <div className='data-container'>
-          <h1 className='title'>
-            {title}
-            <span className='provider'> {provider}</span>
-          </h1>
+            <img src={poster} alt='' id='poster' />
 
-          <span className='data'>
-            <span>{releaseDate}</span>
-            <span>
-              {genres.slice(0,1).join(', ', (genre) => {
-                return <span>{genre}</span>;
-              })}
-            </span>
-            <span>
-              <i className='bi bi-star-fill' style={{ color: 'yellow' }}></i>
-              {` ${vote}`}
-            </span>
-          </span>
+            <div className='data-element'>
+              <h1 className='title'>
+                {title}
+              </h1>
 
-          <div className='overview'>
-          <div className='overview_data'>
-            <p>{overview}</p>
-          </div>
-          </div>
+              <div className='info'>
+                <span>{releaseDate}</span>
+                <span>
+                  {genres.slice(0, 1).join(', ', (genre) => {
+                    return <span>{genre}</span>;
+                  })}
+                </span>
+                <span>
+                  <i className='bi bi-star-fill' style={{ color: 'yellow' }}></i>
+                  {` ${vote}`}
+                </span>                
+              </div>
+              
+              <div className='overview'>
+                <div className='overview_data'>
+                  <p>{overview}</p>
+                </div>
+              </div>
+            </div>
+          
         </div>
       )}
     </div>
