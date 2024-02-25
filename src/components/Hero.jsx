@@ -124,7 +124,8 @@ const Hero = ({ info = false, id2 = null }) => {
           </div>
 
           <div className='movies'>
-          {results.map((result) => {
+            
+          {results.slice(0,4).map((result) => {
             return (
               <div
                 className={'movie ' + (id === result.id ? 'isActive' : '')}

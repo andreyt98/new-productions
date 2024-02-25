@@ -15,7 +15,9 @@ const Slider = () => {
       if (apiData.length > 0) {
          const mediaData = currentMediaType === 'movies' ? apiData[0] : apiData[1];
          const [,popularResults] = mediaData
-         setResults(popularResults)     
+         const [trendingResults] = mediaData
+
+         setResults(currentMediaType == 'movies' ? popularResults : trendingResults.slice(5,20))     
       }
       }catch{}
   }, [apiData]);

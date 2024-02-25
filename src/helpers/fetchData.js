@@ -3,22 +3,23 @@ import { apiUrl, API_KEY } from "./api.config";
 export const fetchData = async (obj) => {
 
   const {mediaType, category, limit  } = obj;
-  const path1 = `${category[0]}/${mediaType}/day`;
-  const path2 = `${mediaType}/${category[1]}`;
 
-  const trendingData = await fetch(`${apiUrl}${path1}?api_key=${API_KEY}&page=1`);
-  const popularData = await fetch(`${apiUrl}${path2}?api_key=${API_KEY}&page=1`);
+  const trendingUrl = `${apiUrl}${category[0]}/${mediaType}/day?api_key=${API_KEY}&page=1`
+  const popularUrl = `${apiUrl}${mediaType}/${category[1]}?api_key=${API_KEY}&page=1`
+  
+  const trendingData = await fetch(trendingUrl);
+  const popularData = await fetch(popularUrl);
 
-  const json1 = await trendingData.json();
-  const json2 = await popularData.json();
+  const jsonTrendingRequest = await trendingData.json();
+  const jsonPopularRequest = await popularData.json();
 
   if(trendingData.ok && popularData.ok){
 
-    const jsonTrendingData = json1.results.slice(0, limit[0])
-    const jsonPopularData = json2.results.slice(0, limit[1])
+    const jsonTrendingResults = jsonTrendingRequest.results.slice(0, mediaType == 'movie' ? limit[0] : limit[2])
+    const jsonPopularResults = jsonPopularRequest.results.slice(0, limit[1])
 
     const dataArray = []
-    dataArray.push(jsonTrendingData, jsonPopularData)
+    dataArray.push(jsonTrendingResults, jsonPopularResults)
 
     return dataArray
 

@@ -3,7 +3,7 @@ import { Context } from '../context/Context';
 import { fetchData } from '../helpers/fetchData';
 
 const category= ['trending', 'popular']
-const limit= [4, 7]
+const limit= [4,15,20]
 
 export const mediaProperties = {
 
