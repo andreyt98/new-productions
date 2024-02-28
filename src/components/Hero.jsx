@@ -5,6 +5,7 @@ import { handleTrailerClick } from '../helpers/getTrailer';
 import { Link, useNavigate } from 'react-router-dom';
 import { Context } from '../context/Context';
 import { getById } from '../helpers/getById';
+import { getCast } from '../helpers/getCast';
 
 const Hero = ({ info = false, id2 = null }) => {
   const [heroBackground, setHeroBackground] = useState('');
@@ -14,7 +15,7 @@ const Hero = ({ info = false, id2 = null }) => {
   const [id, setId] = useState('');
   const [poster, setPoster] = useState('');
 
-  const { setCurrentId, setOpenTrailer, setTrailerKey, apiData, currentMediaType } = useContext(Context);
+  const { setCurrentId, setOpenTrailer, setTrailerKey, apiData, currentMediaType, reviews, setReviews, cast, setCast } = useContext(Context);
 
   // for info
   const [overview, setOverview] = useState('');
@@ -45,6 +46,10 @@ const Hero = ({ info = false, id2 = null }) => {
       setHeroBackground(initialBackground);
       let post = `${image({ size: 500 })}${poster_path}`;
       setPoster(post);
+    
+      getCast(mediaType, id2).then((data) => {
+        setCast(data);
+      });
     });
   }, [apiData]);
 
@@ -89,102 +94,132 @@ const Hero = ({ info = false, id2 = null }) => {
     navigate(fullPath.substring(0, lastPath));
   }
   return (
-    <div className={info ? 'hero-info' : 'hero'} style={{ backgroundImage: `url(${heroBackground})` }}>
-      {info && <i className='bi bi-arrow-left' onClick={handleBackClick}></i>}
-      <div className='overlay'></div>
+    <>
+      <div className={info ? 'hero-info' : 'hero'} style={{ backgroundImage: `url(${heroBackground})` }}>
+        <div className='overlay'></div>
 
-      <>
-        {!info && (
+        {!info ? (
           <>
-          <div className='info'>
-            <h1 className='title'>{title}</h1>
+            <div className='info'>
+              <h1 className='title'>{title}</h1>
 
-            <button
-              data-id={id}
-              onClick={() => {
-                handleTrailerClick(setOpenTrailer, id, currentMediaType, setTrailerKey);
-              }}
-            >
-              {' '}
-              <span>
-                <i className='bi bi-play-circle-fill '></i>
-              </span>{' '}
-              Play Trailer
-            </button>
-
-            <Link
-              className='details'
-              to={`${title}`}
-              onClick={() => {
-                setCurrentId(id);
-              }}
-            >
-              <button> Details </button>
-            </Link>
-          </div>
-
-          <div className='movies'>
-            
-          {results.slice(0,4).map((result) => {
-            return (
-              <div
-                className={'movie ' + (id === result.id ? 'isActive' : '')}
-                onClick={(event) => {
-                  handleImageClick(event, result);
+              <button
+                data-id={id}
+                onClick={() => {
+                  handleTrailerClick(setOpenTrailer, id, currentMediaType, setTrailerKey);
                 }}
-                key={result.id}
               >
-                <img src={`${image({ size: 500 })}${result.poster_path}`} key={result.id} data-id={result.id} alt='media-image' />
-              </div>
-            );
-          })}
-          </div>
+                {' '}
+                <span>
+                  <i className='bi bi-play-circle-fill '></i>
+                </span>{' '}
+                Play Trailer
+              </button>
+
+              <Link
+                className='details'
+                to={`${title}`}
+                onClick={() => {
+                  setCurrentId(id);
+                }}
+              >
+                <button> Details </button>
+              </Link>
+            </div>
+
+            <div className='movies'>
+              {results.slice(0, 4).map((result) => {
+                return (
+                  <div
+                    className={'movie ' + (id === result.id ? 'isActive' : '')}
+                    onClick={(event) => {
+                      handleImageClick(event, result);
+                    }}
+                    key={result.id}
+                  >
+                    <img src={`${image({ size: 500 })}${result.poster_path}`} key={result.id} data-id={result.id} alt='media-image' />
+                  </div>
+                );
+              })}
+            </div>
           </>
+        ):
+          <i className='bi bi-arrow-left' onClick={handleBackClick}></i>        
+        }
+      </div>
 
-        ) }
-      </>
-     
       {info && (
-        <>
-         <i
-         className='bi bi-play-circle-fill'
-         data-id={id2}
-         onClick={() => {
-           handleTrailerClick(setOpenTrailer, id2, currentMediaType, setTrailerKey);
-         }}
-       ></i>
-        <div className='data-container'>
-            <img src={poster} alt='' id='poster' />
 
+          <div className='data-container'>
             <div className='data-element'>
-              <h1 className='title'>
-                {title}
-              </h1>
+              <img src={poster} alt='' id='poster' />
 
-              <div className='info'>
-                <span>{releaseDate}</span>
-                <span>
-                  {genres.slice(0, 1).join(', ', (genre) => {
-                    return <span>{genre}</span>;
-                  })}
-                </span>
-                <span>
-                  <i className='bi bi-star-fill' style={{ color: 'yellow' }}></i>
-                  {` ${vote}`}
-                </span>                
-              </div>
+              <div className='other'>
+                <h1 className='title'>{title}</h1>
+                <div className='info'>
+                  <span>{releaseDate}</span>
+                  <span>
+                    {genres.slice(0, 1).join(', ', (genre) => {
+                      return <span>{genre}</span>;
+                    })}
+                  </span>
+                  <span>
+                    <i className='bi bi-star-fill' style={{ color: 'yellow' }}></i>
+                    {` ${vote}`}
+                  </span>
+                </div>
 
-              <div className='overview'>
-                <div className='overview_data'>
-                  <p>{overview}</p>
+                <div className='overview'>
+                  <div className='overview_data'>
+                    <p>{overview}</p>
+                  </div>
+                </div>
+                <div className='options'>
+                  <button
+                    data-id={id2}
+                    onClick={() => {
+                      handleTrailerClick(setOpenTrailer, id2, currentMediaType, setTrailerKey);
+                    }}
+                  >
+                    Play Trailer
+                  </button>
+                  {/* <button
+                data-id={id2}
+                onClick={() => {
+                  handleTrailerClick(setOpenTrailer, id2, currentMediaType, setTrailerKey);
+                  }}
+                  >
+                  Add to favorites
+              </button> */}
                 </div>
               </div>
             </div>
-          
-        </div>
-        </>
+
+            <section className='selected-media-cast'>
+              <h3>Cast</h3>
+              <div className='cast'>
+                {cast &&
+                  cast.map((cast) => {
+                    return (
+                      <div className='cast__member'>
+                        <img
+                          src={
+                            cast.profile_path
+                              ? `${image({ size: 500 })}${cast.profile_path}`
+                              : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
+                          }
+                          alt='cast-member'
+                        />
+                        <p className='cast__member__name'>{cast.name}</p>
+                        <p className='cast__member__character'>{cast.character}</p>
+                      </div>
+                    );
+                  })}
+              </div>
+            </section>      
+          </div>
       )}
-    </div>
+    </>
   );
 };
 
