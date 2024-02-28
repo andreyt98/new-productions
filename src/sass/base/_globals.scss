@@ -10,6 +10,19 @@
   padding: 0;
 }
 
+*{
+  &::-webkit-scrollbar{
+    width: 7px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #434343;
+    border-radius: 12px;
+  } 
+  &::-webkit-scrollbar-thumb {
+    background: #dedede97;
+    border-radius: 12px;
+  }
+}
 body {
   background: linear-gradient(to bottom, rgb(0, 0, 0), #01090c);
   color: white;
