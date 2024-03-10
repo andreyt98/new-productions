@@ -46,7 +46,7 @@ const Hero = ({ info = false, id2 = null }) => {
       setHeroBackground(initialBackground);
       let post = `${image({ size: 500 })}${poster_path}`;
       setPoster(post);
-    
+
       getCast(mediaType, id2).then((data) => {
         setCast(data);
       });
@@ -143,81 +143,72 @@ const Hero = ({ info = false, id2 = null }) => {
               })}
             </div>
           </>
-        ):
-          <i className='bi bi-arrow-left' onClick={handleBackClick}></i>        
-        }
+        ) : (
+          <i className='bi bi-arrow-left' onClick={handleBackClick}></i>
+        )}
       </div>
 
       {info && (
+        <div className='data-container'>
+          <div className='data-element'>
+            <img src={poster} alt='' id='poster' />
 
-          <div className='data-container'>
-            <div className='data-element'>
-              <img src={poster} alt='' id='poster' />
+            <div className='other'>
+              <h1 className='title'>{title}</h1>
+              <div className='info'>
+                <span>{releaseDate}</span>
+                <span>
+                  {genres.slice(0, 1).join(', ', (genre) => {
+                    return <span>{genre}</span>;
+                  })}
+                </span>
+                <span>
+                  <i className='bi bi-star-fill' style={{ color: 'yellow' }}></i>
+                  {` ${vote}`}
+                </span>
+              </div>
 
-              <div className='other'>
-                <h1 className='title'>{title}</h1>
-                <div className='info'>
-                  <span>{releaseDate}</span>
-                  <span>
-                    {genres.slice(0, 1).join(', ', (genre) => {
-                      return <span>{genre}</span>;
-                    })}
-                  </span>
-                  <span>
-                    <i className='bi bi-star-fill' style={{ color: 'yellow' }}></i>
-                    {` ${vote}`}
-                  </span>
+              <div className='overview'>
+                <div className='overview_data'>
+                  <p>{overview}</p>
                 </div>
-
-                <div className='overview'>
-                  <div className='overview_data'>
-                    <p>{overview}</p>
-                  </div>
-                </div>
-                <div className='options'>
-                  <button
-                    data-id={id2}
-                    onClick={() => {
-                      handleTrailerClick(setOpenTrailer, id2, currentMediaType, setTrailerKey);
-                    }}
-                  >
-                    Play Trailer
-                  </button>
-                  {/* <button
-                data-id={id2}
-                onClick={() => {
-                  handleTrailerClick(setOpenTrailer, id2, currentMediaType, setTrailerKey);
+              </div>
+              <div className='options'>
+                <button
+                  data-id={id2}
+                  onClick={() => {
+                    handleTrailerClick(setOpenTrailer, id2, currentMediaType, setTrailerKey);
                   }}
-                  >
-                  Add to favorites
-              </button> */}
-                </div>
+                >
+                  Play Trailer
+                </button>
               </div>
             </div>
-
-            <section className='selected-media-cast'>
-              <h3>Cast</h3>
-              <div className='cast'>
-                {cast &&
-                  cast.map((cast) => {
-                    return (
-                      <div className='cast__member'>
-                        <img
-                          src={
-                            cast.profile_path
-                              ? `${image({ size: 500 })}${cast.profile_path}`
-                              : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
-                          }
-                          alt='cast-member'
-                        />
-                        <p className='cast__member__name'>{cast.name}</p>
-                        <p className='cast__member__character'>{cast.character}</p>
-                      </div>
-                    );
-                  })}
-              </div>
-            </section>      
           </div>
+
+          <section className='selected-media-cast'>
+            <h3>Cast</h3>
+            <div className='cast'>
+              {cast &&
+                cast.map((cast) => {
+                  return (
+                    <div className='cast__member'>
+                      <img
+                        src={
+                          cast.profile_path
+                            ? `${image({ size: 500 })}${cast.profile_path}`
+                            : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
+                        }
+                        alt='cast-member'
+                      />
+                      <p className='cast__member__name'>{cast.name}</p>
+                      <p className='cast__member__character'>{cast.character}</p>
+                    </div>
+                  );
+                })}
+            </div>
+          </section>
+        </div>
       )}
     </>
   );
