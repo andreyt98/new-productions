@@ -17,7 +17,7 @@
     height: 100vh;
   }
 
-  .info {
+  .hero-media-selection {
     z-index: 3;
     position: absolute;
     top: 30%;
@@ -63,7 +63,7 @@
     display: inline;
   }
 
-  .movies {
+  .hero-media-thumbnails {
     @extend .flex-row-center;
     gap: 0.3rem;
     padding: 0 1rem;
@@ -148,10 +148,9 @@
   }
 }
 
-.data-container {
+.hero-selected-media {
   @extend .flex-col-center;
   gap: 2rem;
-  // border: 1px solid white;
   z-index: 5;
   background: linear-gradient(rgba(0, 0, 0, 0), black);
   position: absolute;
@@ -195,13 +194,13 @@
   }
 }
 
-.data-element {
+.selected-media-info-container {
   display: flex;
   justify-content: start;
   gap: 1.3rem;
   width: 100%;
 
-  .other {
+  .selected-media-info {
     justify-content: start;
     display: flex;
     flex-direction: column;
