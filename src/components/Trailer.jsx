@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import PortalReactDom from 'react-dom';
 import ReactPlayer from 'react-player';
+import {Context} from '../context/Context'
 
-const Trailer = ({ openTrailer, setOpenTrailer, trailerKey }) => {
+const Trailer = () => {
+  const {openTrailer, setOpenTrailer, trailerKey} = useContext(Context)
+
   if (!openTrailer) return null;
 
   const [minBtn, setMinBtn] = useState(false);
