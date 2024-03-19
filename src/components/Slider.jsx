@@ -6,7 +6,7 @@ import { Context } from '../context/Context';
 
 const Slider = () => {
   const [results, setResults] = useState([]);
-  const {setTrailerKey,openTrailer, setOpenTrailer, apiData,currentMediaType} = useContext(Context)
+  const {openTrailer, apiData,currentMediaType} = useContext(Context)
   const sliderRef = useRef();
 
   useEffect(() => {
@@ -51,12 +51,8 @@ const Slider = () => {
 
       <div className={`slider__content ${openTrailer && 'on-trailer'}` } ref={sliderRef}>
         {results.map((result) => {
-          return <SliderCard result={result} setOpenTrailer={setOpenTrailer} setTrailerKey={setTrailerKey} key={result.id} />;
+          return <SliderCard result={result} />;
         })}
-
-        {/* <div className='more'>
-          <button className='more-btn'>More</button>
-        </div> */}
       </div>
     </div>
   );
