@@ -11,7 +11,7 @@ function App() {
   const [apiData, setApiData] = useState([]);
   const [userClicked, setUserClicked] = useState(false);
   const [userLogged, setUserLogged] = useState(false);
-  const [noAccount, setNoAccount] = useState(false);
+  const [noAccount, setNoAccount] = useState(true);
 
   const contextValues = {
     currentId,

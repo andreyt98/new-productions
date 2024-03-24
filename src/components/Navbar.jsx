@@ -1,11 +1,16 @@
-import { useRef, useEffect, useContext } from 'react';
+import { useRef, useEffect, useContext, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Context } from '../context/Context';
+import { createUser } from '../firebase/createUser';
+import { loginUser } from '../firebase/loginUser';
+
+import { auth } from '../firebase/firebase.config';
 
 const Navbar = () => {
   const navRef = useRef();
   const { setCurrentMediaType, userClicked, setUserClicked, userLogged, setUserLogged, noAccount, setNoAccount } = useContext(Context);
 
+  const [userData, setUserData] = useState({ username: '', email: '', password: '' });
   useEffect(() => {
     window.addEventListener('scroll', () => {
       if (window.innerWidth >= 640) {
@@ -22,6 +27,17 @@ const Navbar = () => {
       }
     });
   }, []);
+
+  const handleSubmit = async (evt) => {
+    evt.preventDefault();
+
+    noAccount
+      ? createUser(userData).then(() => setUserLogged(true), setUserClicked(false))
+      : loginUser(userData).then(() =>  setUserLogged(true), setUserClicked(false));
+  };
+  const handleLogout = async () => {
+    auth.signOut().then((e) => setUserLogged(false));
+  };
 
   return (
     <nav className='nav' ref={navRef}>
@@ -64,36 +80,58 @@ const Navbar = () => {
               <Link>
                 <i className='bi bi-person'></i> Profile{' '}
               </Link>
-              <Link onClick={() => setUserLogged(false)}>
+              <Link onClick={handleLogout}>
                 <i className='bi bi-box-arrow-right'></i> Log out
               </Link>
             </>
           ) : (
             <>
-              <form onClick={(e) => handleSubmit(e)}>
-                {noAccount || (
+              <form onSubmit={(e) => handleSubmit(e)}>
+                {noAccount && (
                   <>
                     <label htmlFor=''>Username</label>
-                    <input type='text' required />
+                    <input
+                      type='text'
+                      value={userData.username}
+                      onChange={(e) => {
+                        setUserData({ ...userData, username: e.target.value });
+                      }}
+                      required
+                    />
                   </>
                 )}
                 <label htmlFor=''>Email</label>
-                <input type='Email' required />
+                <input
+                  type='Email'
+                  onChange={(e) => {
+                    setUserData({ ...userData, email: e.target.value });
+                  }}
+                  required
+                />
 
                 <label htmlFor=''>Password</label>
-                <input type='password' required />
+                <input
+                  type='password'
+                  onChange={(e) => {
+                    setUserData({ ...userData, password: e.target.value });
+                  }}
+                  required
+                />
 
-                <button type='submit'>{noAccount ? 'Login' : 'Create account'}</button>
+                <button type='submit'>{noAccount ? 'Create account' : 'Login'}</button>
               </form>
               {noAccount ? (
                 <p>
-                  Don't have an account? <Link onClick={() => setNoAccount(false)} class='opt'>Create account</Link>
+                  Already have an account?{' '}
+                  <Link onClick={() => setNoAccount(false)} class='opt'>
+                    Login
+                  </Link>
                 </p>
               ) : (
                 <p>
-                  Already have an account?{' '}
+                  Don't have an account?{' '}
                   <Link onClick={() => setNoAccount(true)} class='opt'>
-                    Login
+                    Create account
                   </Link>
                 </p>
               )}
