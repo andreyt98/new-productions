@@ -18,7 +18,6 @@ const AppRouter = () => {
         <Route path='/movies' element={<MovieSection />}></Route>
         <Route path='/tvshows' element={<TvSection />}></Route> 
         <Route path='/search' element={<SearchSection />}></Route>
-        <Route path='/saved' element={<img src="https://www.londonvirginhair.com/cdn/shop/products/f186d1_8a28db63b7574babb9854cfd0805842e_mv2_900x.gif?v=1602073168" style={{height:'100vh',width:'100%', objectFit:'cover'}} />}></Route>
 
         <Route path='/movies/:id' element={<SelectedMedia />}></Route>
         <Route path='/tvshows/:id' element={<SelectedMedia />}></Route>
