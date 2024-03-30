@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { Context } from '../context/Context';
 import { createUser } from '../firebase/createUser';
 import { loginUser } from '../firebase/loginUser';
+import Error from './Error';
 
 import { auth } from '../firebase/firebase.config';
 
@@ -11,6 +12,8 @@ const Navbar = () => {
   const { setCurrentMediaType, userClicked, setUserClicked, userLogged, setUserLogged, noAccount, setNoAccount } = useContext(Context);
 
   const [userData, setUserData] = useState({ username: '', email: '', password: '' });
+  const [errorMessage, setErrorMessage] = useState({ active: false, text: '' });
+
   useEffect(() => {
     window.addEventListener('scroll', () => {
       if (window.innerWidth >= 640) {
@@ -32,11 +35,54 @@ const Navbar = () => {
     evt.preventDefault();
 
     noAccount
-      ? createUser(userData).then(() => setUserLogged(true), setUserClicked(false))
-      : loginUser(userData).then(() =>  setUserLogged(true), setUserClicked(false));
+      ? createUser(userData)
+          .then((user) => {
+            user.user.displayName = userData.username;
+            setUserLogged(true);
+            setUserClicked(false);
+            setErrorMessage({ active: false, text: '' });
+            setUserData({ username: '', email: '', password: '' });
+          })
+          .catch((error) => {
+            switch (error.code) {
+              case 'auth/email-already-in-use':
+                setErrorMessage({ active: true, text: 'That email is already registered' });
+                break;
+            }
+            switch (error.code) {
+              case 'auth/weak-password':
+                setErrorMessage({ active: true, text: 'password should have at least 6 characters' });
+                break;
+            }
+          })
+      : loginUser(userData)
+          .then(() => {
+            setUserLogged(true);
+            setUserClicked(false);
+            setErrorMessage({ active: false, text: '' });
+            setUserData({ username: '', email: '', password: '' });
+          })
+          .catch((error) => {
+            switch (error.code) {
+              case 'auth/invalid-credential':
+                setErrorMessage({ active: true, text: 'Correo o password incorrecto, intente nuevamente.' });
+                break;
+            }
+            switch (error.code) {
+              case 'auth/too-many-requests':
+                setErrorMessage({ active: true, text: 'Too many invalid requests, wait a couple of minutes before trying again.' });
+                break;
+            }
+            setUserLogged(false);
+            setUserClicked(true);
+          });
   };
   const handleLogout = async () => {
-    auth.signOut().then((e) => setUserLogged(false));
+    auth.signOut().then((e) => {
+      setUserLogged(false);
+      setUserData({ username: '', email: '', password: '' });
+      setErrorMessage({ active: false, text: '' });
+    });
   };
 
   return (
@@ -69,7 +115,14 @@ const Navbar = () => {
           </NavLink>
         </li>
       </ul>
-      <Link onClick={() => setUserClicked(!userClicked)}>
+      <Link
+        onClick={() => {
+          setUserClicked(!userClicked);
+          if (errorMessage.active) {
+            setErrorMessage({ active: false, text: '' });
+          }
+        }}
+      >
         <i className='bi bi-person-circle' id='user'></i>
       </Link>
 
@@ -118,19 +171,35 @@ const Navbar = () => {
                   required
                 />
 
+                {errorMessage.active && <Error errorMessage={errorMessage} />}
+
                 <button type='submit'>{noAccount ? 'Create account' : 'Login'}</button>
               </form>
               {noAccount ? (
                 <p>
                   Already have an account?{' '}
-                  <Link onClick={() => setNoAccount(false)} class='opt'>
+                  <Link
+                    onClick={() => {
+                      setNoAccount(false);
+                      if (setErrorMessage({ active: false, text: '' })) {
+                        console.log('first');
+                      }
+                    }}
+                    class='opt'
+                  >
                     Login
                   </Link>
                 </p>
               ) : (
                 <p>
                   Don't have an account?{' '}
-                  <Link onClick={() => setNoAccount(true)} class='opt'>
+                  <Link
+                    onClick={() => {
+                      setNoAccount(true);
+                      setErrorMessage({ active: false, text: '' });
+                    }}
+                    class='opt'
+                  >
                     Create account
                   </Link>
                 </p>
