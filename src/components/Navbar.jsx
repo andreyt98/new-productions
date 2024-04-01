@@ -1,5 +1,5 @@
 import { useRef, useEffect, useContext, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Context } from '../context/Context';
 import { createUser } from '../firebase/createUser';
 import { loginUser } from '../firebase/loginUser';
@@ -9,10 +9,11 @@ import { auth } from '../firebase/firebase.config';
 
 const Navbar = () => {
   const navRef = useRef();
-  const { setCurrentMediaType, userClicked, setUserClicked, userLogged, setUserLogged, noAccount, setNoAccount } = useContext(Context);
+  const { setCurrentMediaType, userClicked, setUserClicked, userLogged, setUserLogged, noAccount, setNoAccount, firebaseActiveUser, setFirebaseActiveUser } = useContext(Context);
 
   const [userData, setUserData] = useState({ username: '', email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState({ active: false, text: '' });
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.addEventListener('scroll', () => {
@@ -37,11 +38,12 @@ const Navbar = () => {
     noAccount
       ? createUser(userData)
           .then((user) => {
-            user.user.displayName = userData.username;
+            setFirebaseActiveUser({ email: user.user.email, uid: user.user.uid });
             setUserLogged(true);
             setUserClicked(false);
             setErrorMessage({ active: false, text: '' });
             setUserData({ username: '', email: '', password: '' });
+            navigate('/profile');
           })
           .catch((error) => {
             switch (error.code) {
@@ -56,11 +58,13 @@ const Navbar = () => {
             }
           })
       : loginUser(userData)
-          .then(() => {
+          .then((user) => {
+            setFirebaseActiveUser({ email: user.user.email, uid: user.user.uid });
             setUserLogged(true);
             setUserClicked(false);
             setErrorMessage({ active: false, text: '' });
             setUserData({ username: '', email: '', password: '' });
+            navigate('/profile');
           })
           .catch((error) => {
             switch (error.code) {
@@ -82,6 +86,8 @@ const Navbar = () => {
       setUserLogged(false);
       setUserData({ username: '', email: '', password: '' });
       setErrorMessage({ active: false, text: '' });
+      setUserClicked(false);
+      navigate('/movies');
     });
   };
 
@@ -130,10 +136,10 @@ const Navbar = () => {
         <div className='user-options'>
           {userLogged ? (
             <>
-              <Link>
-                <i className='bi bi-person'></i> Profile{' '}
+              <Link to={'/profile'}>
+                <i className='bi bi-person' onClick={() => setUserClicked(false)}></i> Profile{' '}
               </Link>
-              <Link onClick={handleLogout}>
+              <Link to={''} onClick={handleLogout}>
                 <i className='bi bi-box-arrow-right'></i> Log out
               </Link>
             </>

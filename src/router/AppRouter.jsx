@@ -7,6 +7,7 @@ import TvSection from '../components/tvSection';
 import Trailer from '../components/Trailer';
 import MediaData from '../components/MediaData'
 import SelectedMedia from '../components/SelectedMedia';
+import Profile from '../pages/Profile/Profile'
 
 const AppRouter = () => {
   return (
@@ -18,6 +19,7 @@ const AppRouter = () => {
         <Route path='/movies' element={<MovieSection />}></Route>
         <Route path='/tvshows' element={<TvSection />}></Route> 
         <Route path='/search' element={<SearchSection />}></Route>
+        <Route path='/profile' element={<Profile/>}></Route>
 
         <Route path='/movies/:id' element={<SelectedMedia />}></Route>
         <Route path='/tvshows/:id' element={<SelectedMedia />}></Route>

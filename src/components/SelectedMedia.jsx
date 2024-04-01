@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { Context } from '../context/Context';
 import { getById } from '../helpers/getById';
 import { getCast } from '../helpers/getCast';
+import { database } from '../firebase/firebase.config';
+import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 
 const SelectedMedia = () => {
   const [heroBackground, setHeroBackground] = useState('');
@@ -12,13 +14,36 @@ const SelectedMedia = () => {
   const [title, setTitle] = useState('');
   const [poster, setPoster] = useState('');
 
-  const { currentId, setOpenTrailer, setTrailerKey, apiData, currentMediaType, cast, setCast } = useContext(Context);
+  const { currentId, setOpenTrailer, setTrailerKey, apiData, currentMediaType, cast, setCast, userLogged, addedToFavs, setAddedToFavs, firebaseActiveUser, setFirebaseActiveUser } = useContext(Context);
 
   const [overview, setOverview] = useState('');
   const [releaseDate, setReleaseDate] = useState();
   const [vote, setVote] = useState(0);
   const [genres, setGenres] = useState([]);
   const navigate = useNavigate();
+
+  //este useffect verifica al renderizar el componente si el id de la pelicula/serie ya se guardo, modificando el estilo del noton de agregar
+  useEffect(() => {
+    if (userLogged) {
+      //verifica si el documento mediaIDS con el valor uid de usuario existe
+      const document = doc(database, 'mediaIDS', firebaseActiveUser.uid);
+
+      getDoc(document)
+        .then((snapshot) => {
+          if (!snapshot.exists()) return;
+
+          const dataSaved = snapshot.data();
+          const savedIds = [...Object.values(dataSaved.mediaID || {})];
+
+          const idAlreadySaved = savedIds.find((el) => el == currentId);
+
+          idAlreadySaved ? setAddedToFavs(true) : setAddedToFavs(false);
+        })
+        .catch((err) => {
+          console.error('Hubo un error al verificar el documento:', err);
+        });
+    }
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -87,6 +112,55 @@ const SelectedMedia = () => {
               </div>
             </div>
             <div className='options'>
+              {userLogged && (
+                <i
+                  data-id={currentId}
+                  id='favs-icon'
+                  className={addedToFavs ? 'bi bi-bookmark-check-fill' : 'bi bi-bookmark-plus-fill'}
+                  onClick={() => {
+                    //verifica si el documento mediaIDS con el valor uid de usuario existe para guardar mas ids dentro de ese documento, de otramanera guardarlos somewhere else
+                    const document = doc(database, 'mediaIDS', firebaseActiveUser.uid);
+
+                    getDoc(document)
+                      .then((snapshot) => {
+                        if (snapshot.exists()) {
+                          //guardamos dentro del mismo documento
+                          console.log('El documento existe');
+                          const dataSaved = snapshot.data();
+                          const idAlreadySaved = [...Object.values(dataSaved.mediaID || {})].find((el) => el == currentId);
+
+                          if (!idAlreadySaved) {
+                            const newData = [...Object.values(dataSaved.mediaID || {}), currentId];
+
+                            updateDoc(document, { mediaID: newData })
+                              .then(() => {
+                                setAddedToFavs(true);
+                                console.log('el documento', document, 'se acutalizo con exito');
+                              })
+                              .catch((err) => console.log('algo paso y el dc no se actualizo', err));
+                          } else {
+                            const newData = [...Object.values(dataSaved.mediaID).filter((el) => el != idAlreadySaved)];
+                            updateDoc(document, { mediaID: newData })
+                              .then(() => {
+                                setAddedToFavs(false);
+                                console.log('el documento', document, 'se acutalizo con exito');
+                              })
+                              .catch((err) => console.log('algo paso y el dc no se actualizo', err));
+
+                            console.log('el elemento', idAlreadySaved, 'ha clickeado nuevamente, osea que lo eliminamos de lalista');
+                          }
+                        } else {
+                          console.log('El documento no existe');
+                          setAddedToFavs(true);
+                          setDoc(doc(database, 'mediaIDS', firebaseActiveUser.uid), { mediaID: [currentId] });
+                        }
+                      })
+                      .catch((err) => {
+                        console.error('Hubo un error al verificar el documento:', err);
+                      });
+                  }}
+                ></i>
+              )}
               <button
                 data-id={currentId}
                 onClick={() => {

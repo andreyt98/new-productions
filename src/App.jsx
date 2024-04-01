@@ -12,6 +12,8 @@ function App() {
   const [userClicked, setUserClicked] = useState(false);
   const [userLogged, setUserLogged] = useState(false);
   const [noAccount, setNoAccount] = useState(true);
+  const [addedToFavs, setAddedToFavs] = useState(false);
+  const [firebaseActiveUser, setFirebaseActiveUser] = useState({email:null, uid:null})
 
   const contextValues = {
     currentId,
@@ -32,6 +34,10 @@ function App() {
     setUserLogged,
     noAccount,
     setNoAccount,
+    addedToFavs,
+    setAddedToFavs,
+    firebaseActiveUser,
+    setFirebaseActiveUser
   };
 
   return (
