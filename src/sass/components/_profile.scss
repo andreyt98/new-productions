@@ -1,0 +1,14 @@
+.profile {
+  padding: 60px;
+  border: 1px solid;
+
+  @extend .flex-col-center;
+  gap: 1rem;
+  text-align: center;
+  padding-top: 5rem;
+  padding-inline: 1.5rem;
+
+  #user-in-profile {
+    color: var(--primary);
+  }
+}
