@@ -4,9 +4,9 @@ import { image } from '../helpers/api.config';
 import { Context } from '../context/Context';
 import { Link } from 'react-router-dom';
 
-const SliderCard = ({ result }) => {
+const SliderCard = ({ result, changeMediaType = null }) => {
   const [poster, setPoster] = useState(null);
-  const {  setCurrentId } = useContext(Context);
+  const { setCurrentId, setCurrentMediaType } = useContext(Context);
 
   useEffect(() => {
     if (result.poster_path != null) {
@@ -14,18 +14,21 @@ const SliderCard = ({ result }) => {
     }
   }, []);
   return (
-    poster &&
+    poster && (
       <Link
         to={`${result.name || result.title}`}
         onClick={() => {
           setCurrentId(result.id);
+          if (changeMediaType) {
+            setCurrentMediaType(changeMediaType == 'movie' ? 'movies' : 'tvshows');
+          }
         }}
       >
         <div className='content' key={result.id}>
           <img src={poster} alt='' />
         </div>
       </Link>
-    
+    )
   );
 };
 

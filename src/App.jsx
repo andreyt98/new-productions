@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Context } from './context/Context';
 import AppRouter from './router/AppRouter';
+import { auth } from './firebase/firebase.config';
 
 function App() {
   const [currentId, setCurrentId] = useState();
@@ -13,7 +14,7 @@ function App() {
   const [userLogged, setUserLogged] = useState(false);
   const [noAccount, setNoAccount] = useState(true);
   const [addedToFavs, setAddedToFavs] = useState(false);
-  const [firebaseActiveUser, setFirebaseActiveUser] = useState({email:null, uid:null})
+  const [firebaseActiveUser, setFirebaseActiveUser] = useState({ email: null, uid: null });
 
   const contextValues = {
     currentId,
@@ -37,8 +38,17 @@ function App() {
     addedToFavs,
     setAddedToFavs,
     firebaseActiveUser,
-    setFirebaseActiveUser
+    setFirebaseActiveUser,
   };
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserLogged(true);
+        setFirebaseActiveUser({ email: user.email, uid: user.uid });
+      }
+    });
+  }, []);
 
   return (
     <Context.Provider value={contextValues}>

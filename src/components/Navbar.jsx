@@ -9,7 +9,7 @@ import { auth } from '../firebase/firebase.config';
 
 const Navbar = () => {
   const navRef = useRef();
-  const { setCurrentMediaType, userClicked, setUserClicked, userLogged, setUserLogged, noAccount, setNoAccount, firebaseActiveUser, setFirebaseActiveUser } = useContext(Context);
+  const { setCurrentMediaType, userClicked, setUserClicked, userLogged, setUserLogged, noAccount, setNoAccount, setFirebaseActiveUser } = useContext(Context);
 
   const [userData, setUserData] = useState({ username: '', email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState({ active: false, text: '' });
@@ -136,8 +136,13 @@ const Navbar = () => {
         <div className='user-options'>
           {userLogged ? (
             <>
-              <Link to={'/profile'}>
-                <i className='bi bi-person' onClick={() => setUserClicked(false)}></i> Profile{' '}
+              <Link
+                to={'/profile'}
+                onClick={() => {
+                  setUserClicked(false);
+                }}
+              >
+                <i className='bi bi-person'></i> Profile{' '}
               </Link>
               <Link to={''} onClick={handleLogout}>
                 <i className='bi bi-box-arrow-right'></i> Log out
