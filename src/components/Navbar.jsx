@@ -4,12 +4,15 @@ import { Context } from '../context/Context';
 import { createUser } from '../firebase/createUser';
 import { loginUser } from '../firebase/loginUser';
 import Error from './Error';
+import Avatar from '@mui/material/Avatar';
+import { deepPurple } from '@mui/material/colors';
+
 
 import { auth } from '../firebase/firebase.config';
 
 const Navbar = () => {
   const navRef = useRef();
-  const { setCurrentMediaType, userClicked, setUserClicked, userLogged, setUserLogged, noAccount, setNoAccount, setFirebaseActiveUser } = useContext(Context);
+  const { setCurrentMediaType, userClicked, setUserClicked, userLogged, setUserLogged, noAccount, setNoAccount,firebaseActiveUser, setFirebaseActiveUser } = useContext(Context);
 
   const [userData, setUserData] = useState({ username: '', email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState({ active: false, text: '' });
@@ -129,7 +132,16 @@ const Navbar = () => {
           }
         }}
       >
-        <i className='bi bi-person-circle' id='user'></i>
+        {userLogged ?
+          <div style={{display:'flex', justifyContent: 'center', alignItems:'center', gap:'.4rem'}}>
+            <Avatar sx={{ bgcolor: deepPurple[500], width: 28, height: 28 }}>{firebaseActiveUser && firebaseActiveUser.email.charAt(0).toUpperCase()}</Avatar>  
+          <i className="bi bi-caret-down-fill" style={{fontSize: '14px'}}></i>
+          </div>
+          :
+          <i className='bi bi-person-circle' id='user'></i>
+        }
+ 
+
       </Link>
 
       {userClicked && (
