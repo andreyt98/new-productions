@@ -98,6 +98,13 @@
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
+
+    .options {
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      gap: 1rem;
+    }
   }
 
   .info {
@@ -153,4 +160,12 @@
       }
     }
   }
+}
+
+#favs-icon {
+  font-size: 300%;
+}
+
+.bi-bookmark-check-fill {
+  color: var(--primary);
 }

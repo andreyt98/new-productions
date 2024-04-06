@@ -13,7 +13,6 @@ const Hero = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     renderInitialContent();
-    
   }, [apiData]);
 
   function renderInitialContent() {
@@ -52,46 +51,43 @@ const Hero = () => {
 
   return (
     <div className={'hero'} style={{ backgroundImage: `url(${heroBackground})` }}>
-      <div className='overlay'></div>      
-          <div className='hero-media-selection'>
-            <h1 className='title'>{title}</h1>
+      <div className='overlay'></div>
+      <div className='hero-media-selection'>
+        <h1 className='title'>{title}</h1>
 
-            <button
-              data-id={currentId}
-              onClick={() => {
-                handleTrailerClick(setOpenTrailer, currentId, currentMediaType, setTrailerKey);
+        <button
+          data-id={currentId}
+          onClick={() => {
+            handleTrailerClick(setOpenTrailer, currentId, currentMediaType, setTrailerKey);
+          }}
+        >
+          {' '}
+          <span>
+            <i className='bi bi-play-circle-fill '></i>
+          </span>{' '}
+          Play Trailer
+        </button>
+
+        <Link className='details' to={`${title}`}>
+          <button> Details </button>
+        </Link>
+      </div>
+
+      <div className='hero-media-thumbnails'>
+        {results.slice(0, 4).map((result) => {
+          return (
+            <div
+              className={'movie ' + (currentId === result.id ? 'isActive' : '')}
+              onClick={(event) => {
+                handleImageClick(event, result);
               }}
+              key={result.id}
             >
-              {' '}
-              <span>
-                <i className='bi bi-play-circle-fill '></i>
-              </span>{' '}
-              Play Trailer
-            </button>
-
-            <Link
-              className='details'
-              to={`${title}`}
-            >
-              <button> Details </button>
-            </Link>
-          </div>
-
-          <div className='hero-media-thumbnails'>
-            {results.slice(0, 4).map((result) => {
-              return (
-                <div
-                  className={'movie ' + (currentId === result.id ? 'isActive' : '')}
-                  onClick={(event) => {
-                    handleImageClick(event, result);
-                  }}
-                  key={result.id}
-                >
-                  <img src={`${image({ size: 500 })}${result.poster_path}`} key={result.id} data-id={result.id} alt='media-image' />
-                </div>
-              );
-            })}
-          </div>
+              <img src={`${image({ size: 500 })}${result.poster_path}`} key={result.id} data-id={result.id} data-media-type={result.media_type} alt='media-image' />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
