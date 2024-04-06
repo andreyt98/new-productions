@@ -51,7 +51,7 @@ const Slider = () => {
 
       <div className={`slider__content ${openTrailer && 'on-trailer'}` } ref={sliderRef}>
         {results.map((result) => {
-          return <SliderCard result={result} />;
+          return <SliderCard result={result} key={result.id}/>;
         })}
       </div>
     </div>

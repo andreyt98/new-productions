@@ -15,21 +15,20 @@ const Profile = () => {
         const document = doc(database, 'mediaIDS', firebaseActiveUser.uid);
         const snapshot = await getDoc(document);
 
-        if (snapshot.exists()) {
-          const dataSaved = snapshot.data();
-          if (dataSaved.mediaID.length > 0) {
-            const temp = await Promise.all(
-              dataSaved.mediaID.map((el) => {
-                return el;
-              })
-            );
-            setSavedResults(temp);
-          }
-        } else {
-          console.log('El documento no existe');
+        if (!snapshot.exists()) return;
+
+        const dataSaved = snapshot.data();
+
+        if (dataSaved.mediaID.length > 0) {
+          const temp = await Promise.all(
+            dataSaved.mediaID.map((el) => {
+              return el;
+            })
+          );
+          setSavedResults(temp);
         }
       } catch (err) {
-        console.error('Hubo un error al verificar el documento:', err);
+        return; //to-do: set error message un screen
       }
     };
 
@@ -44,7 +43,7 @@ const Profile = () => {
 
       {savedResults.length > 0 ? (
         savedResults.map((el) => {
-          return <SliderCard result={el} changeMediaType={el.mediatype} />;
+          return <SliderCard result={el} changeMediaType={el.mediatype} key={el.id}/>;
         })
       ) : (
         <p>save something!</p>
