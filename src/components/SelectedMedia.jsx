@@ -15,7 +15,7 @@ const SelectedMedia = () => {
   const [poster, setPoster] = useState('');
   const mediaTypeRef = useRef(null);
 
-  const { currentId, setOpenTrailer, setTrailerKey, mediaTypeOfSelected,setMediaTypeOfSelected, currentMediaType, cast, setCast, userLogged, addedToFavs, setAddedToFavs, firebaseActiveUser } = useContext(Context);
+  const { currentId, setOpenTrailer, setTrailerKey, currentMediaType, cast, setCast, userLogged, addedToFavs, setAddedToFavs, firebaseActiveUser } = useContext(Context);
 
   const [overview, setOverview] = useState('');
   const [releaseDate, setReleaseDate] = useState();
@@ -40,7 +40,7 @@ const SelectedMedia = () => {
           idAlreadySaved ? setAddedToFavs(true) : setAddedToFavs(false);
         })
         .catch((err) => {
-          console.error('Hubo un error al verificar el documento2:', err);
+          return //to-do: set error message un screen
         });
     }
   }, []);
@@ -119,6 +119,7 @@ const SelectedMedia = () => {
                   data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
                   id='favs-icon'
                   className={addedToFavs ? 'bi bi-bookmark-check-fill' : 'bi bi-bookmark-plus-fill'}
+
                   onClick={() => {
                     //verifica si el documento mediaIDS con el valor uid de usuario existe para guardar mas ids dentro de ese documento, de otramanera guardarlos somewhere else
                     const document = doc(database, 'mediaIDS', firebaseActiveUser.uid);
@@ -126,8 +127,6 @@ const SelectedMedia = () => {
                     getDoc(document)
                       .then((snapshot) => {
                         if (snapshot.exists()) {
-                          //guardamos dentro del mismo documento
-                          console.log('El documento existe');
                           const dataSaved = snapshot.data();
                           const idAlreadySaved = [...Object.values(dataSaved.mediaID || {})].find((el) => el.id == currentId);
 
@@ -136,33 +135,27 @@ const SelectedMedia = () => {
 
                             updateDoc(document, { mediaID: newData })
                               .then(() => {
-                                setAddedToFavs(true);
-                                console.log('el documento', document, 'se acutalizo con exito');
+                                setAddedToFavs(true); //to-do: set data saved correctly message un screen
                               })
-                              .catch((err) => console.log('algo paso y el dc no se actualizo', err));
+                              .catch((err) => {return}); //to-do: set error message un screen
                           } else {
                             const newData = [...Object.values(dataSaved.mediaID).filter((el) => el.id != idAlreadySaved.id)];
                             updateDoc(document, { mediaID: newData })
-                              .then(() => {
-                                setAddedToFavs(false);
-                                console.log('el documento', document, 'se acutalizo con exito');
-                              })
-                              .catch((err) => console.log('algo paso y el dc no se actualizo', err));
-
-                            console.log('el elemento', idAlreadySaved, 'ha clickeado nuevamente, osea que lo eliminamos de lalista');
-                          }
-                        } else {
-                          console.log('El documento no existe');
-                          console.log(mediaTypeRef.current.dataset.mediatype);
-                          setDoc(doc(database, 'mediaIDS', firebaseActiveUser.uid), { mediaID: [{ id: currentId, mediatype: mediaTypeRef.current.dataset.mediatype, title: title, poster_path: poster }] })
                             .then(() => {
-                              setAddedToFavs(true);
+                              setAddedToFavs(false); //to-do: set data saved correctly message un screen
                             })
-                            .catch((err) => console.log(err));
+                            .catch((err) => {return} );//to-do: set error message un screen
+                          }
+                        } else {                          
+                          setDoc(doc(database, 'mediaIDS', firebaseActiveUser.uid), { mediaID: [{ id: currentId, mediatype: mediaTypeRef.current.dataset.mediatype, title: title, poster_path: poster }] })
+                          .then(() => {
+                            setAddedToFavs(true);
+                          })
+                          .catch((err) => {return} ); //to-do: set error message un screen
                         }
                       })
                       .catch((err) => {
-                        console.error('Hubo un error al verificar el documento:', err);
+                        return; //to-do: set error message un screen
                       });
                   }}
                 ></i>
