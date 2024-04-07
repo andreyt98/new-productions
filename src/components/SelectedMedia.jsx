@@ -7,6 +7,9 @@ import { getById } from '../helpers/getById';
 import { getCast } from '../helpers/getCast';
 import { database } from '../firebase/firebase.config';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import Tooltip from '@mui/material/Tooltip';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const SelectedMedia = () => {
   const [heroBackground, setHeroBackground] = useState('');
@@ -14,6 +17,7 @@ const SelectedMedia = () => {
   const [title, setTitle] = useState('');
   const [poster, setPoster] = useState('');
   const mediaTypeRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   const { currentId, setOpenTrailer, setTrailerKey, currentMediaType, cast, setCast, userLogged, addedToFavs, setAddedToFavs, firebaseActiveUser } = useContext(Context);
 
@@ -40,7 +44,7 @@ const SelectedMedia = () => {
           idAlreadySaved ? setAddedToFavs(true) : setAddedToFavs(false);
         })
         .catch((err) => {
-          return //to-do: set error message un screen
+          return; //to-do: set error message un screen
         });
     }
   }, []);
@@ -113,52 +117,78 @@ const SelectedMedia = () => {
             </div>
             <div className='options'>
               {userLogged && (
-                <i
-                  data-id={currentId}
-                  ref={mediaTypeRef}
-                  data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
-                  id='favs-icon'
-                  className={addedToFavs ? 'bi bi-bookmark-check-fill' : 'bi bi-bookmark-plus-fill'}
+                <>
+                  {loading ? (
+                    <CircularProgress color="inherit"  size= {35}  />
+                  ) : (                  
+                    <Tooltip title={addedToFavs ? "Delete from favorites" : "Add to favorites"} placement="top">
+                      <i
+                        data-id={currentId}
+                        ref={mediaTypeRef}
+                        data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
+                        id='favs-icon'
+                        className={addedToFavs ? 'bi bi-check2-circle' : 'bi bi-plus'}
+                        onClick={() => {
+                          //verifica si el documento mediaIDS con el valor uid de usuario existe para guardar mas ids dentro de ese documento, de otramanera guardarlos somewhere else
+                          const document = doc(database, 'mediaIDS', firebaseActiveUser.uid);
+                          
+                          getDoc(document)
+                          .then((snapshot) => {
+                            if (snapshot.exists()) {
+                              // setLoading(true);
+                              const dataSaved = snapshot.data();
+                                const idAlreadySaved = [...Object.values(dataSaved.mediaID || {})].find((el) => el.id == currentId);
 
-                  onClick={() => {
-                    //verifica si el documento mediaIDS con el valor uid de usuario existe para guardar mas ids dentro de ese documento, de otramanera guardarlos somewhere else
-                    const document = doc(database, 'mediaIDS', firebaseActiveUser.uid);
+                                if (!idAlreadySaved) {
+                                  const newData = [...Object.values(dataSaved.mediaID || {}), { id: currentId, mediatype: mediaTypeRef.current.dataset.mediatype, title: title, poster_path: poster }];
+                                  setLoading(true);
 
-                    getDoc(document)
-                      .then((snapshot) => {
-                        if (snapshot.exists()) {
-                          const dataSaved = snapshot.data();
-                          const idAlreadySaved = [...Object.values(dataSaved.mediaID || {})].find((el) => el.id == currentId);
+                                  updateDoc(document, { mediaID: newData })
+                                    .then(() => {
+                                      setAddedToFavs(true); //to-do: set data saved correctly message un screen
+                                      setLoading(false);
+                                    })
+                                    .catch((err) => {
+                                      setLoading(false);
 
-                          if (!idAlreadySaved) {
-                            const newData = [...Object.values(dataSaved.mediaID || {}), { id: currentId, mediatype: mediaTypeRef.current.dataset.mediatype, title: title, poster_path: poster }];
+                                      return;
+                                    }); //to-do: set error message un screen
+                                } else {
+                                  setLoading(true);
+                                  const newData = [...Object.values(dataSaved.mediaID).filter((el) => el.id != idAlreadySaved.id)];
+                                  updateDoc(document, { mediaID: newData })
+                                    .then(() => {
+                                      setAddedToFavs(false); //to-do: set data saved correctly message un screen
+                                      setLoading(false);
+                                    })
+                                    .catch((err) => {
+                                      setLoading(false);
 
-                            updateDoc(document, { mediaID: newData })
-                              .then(() => {
-                                setAddedToFavs(true); //to-do: set data saved correctly message un screen
-                              })
-                              .catch((err) => {return}); //to-do: set error message un screen
-                          } else {
-                            const newData = [...Object.values(dataSaved.mediaID).filter((el) => el.id != idAlreadySaved.id)];
-                            updateDoc(document, { mediaID: newData })
-                            .then(() => {
-                              setAddedToFavs(false); //to-do: set data saved correctly message un screen
+                                      return;
+                                    }); //to-do: set error message un screen
+                                }
+                              } else {
+                                setDoc(doc(database, 'mediaIDS', firebaseActiveUser.uid), { mediaID: [{ id: currentId, mediatype: mediaTypeRef.current.dataset.mediatype, title: title, poster_path: poster }] })
+                                  .then(() => {
+                                    setAddedToFavs(true);
+                                    setLoading(false);
+                                  })
+                                  .catch((err) => {
+                                    setLoading(false);
+
+                                    return;
+                                  }); //to-do: set error message un screen
+                              }
                             })
-                            .catch((err) => {return} );//to-do: set error message un screen
-                          }
-                        } else {                          
-                          setDoc(doc(database, 'mediaIDS', firebaseActiveUser.uid), { mediaID: [{ id: currentId, mediatype: mediaTypeRef.current.dataset.mediatype, title: title, poster_path: poster }] })
-                          .then(() => {
-                            setAddedToFavs(true);
-                          })
-                          .catch((err) => {return} ); //to-do: set error message un screen
-                        }
-                      })
-                      .catch((err) => {
-                        return; //to-do: set error message un screen
-                      });
-                  }}
-                ></i>
+                            .catch((err) => {
+                              setLoading(false);
+                              return; //to-do: set error message un screen
+                            });
+                        }}
+                      ></i>
+                    </Tooltip>
+                  )}
+                </>
               )}
               <button
                 data-id={currentId}
