@@ -107,7 +107,7 @@ const SelectedMedia = () => {
       <div className='selected-media-container'>
           <i className='bi bi-arrow-left' onClick={handleBackClick}></i>
 
-          <div className='media-hero' style={{ backgroundImage: `url(${heroBackground})` }}>
+          <div className='media-hero' style={{ backgroundImage: `url(${heroBackground})`, opacity:'0.6' }}>
             <div className='overlay'></div>
           </div>
 
