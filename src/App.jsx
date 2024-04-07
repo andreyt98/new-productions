@@ -15,6 +15,7 @@ function App() {
   const [noAccount, setNoAccount] = useState(true);
   const [addedToFavs, setAddedToFavs] = useState(false);
   const [firebaseActiveUser, setFirebaseActiveUser] = useState({ email: null, uid: null });
+  const [loadingAllData, setLoadingAllData] = useState(true)
 
   const contextValues = {
     currentId,
@@ -39,6 +40,8 @@ function App() {
     setAddedToFavs,
     firebaseActiveUser,
     setFirebaseActiveUser,
+    loadingAllData,
+    setLoadingAllData
   };
 
   useEffect(() => {

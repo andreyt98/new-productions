@@ -19,7 +19,7 @@ export const mediaProperties = {
 };
 
 const MediaData = () => {
-  const { currentMediaType, setCurrentMediaType, setApiData } = useContext(Context);
+  const { currentMediaType, setCurrentMediaType, setApiData, setLoadingAllData } = useContext(Context);
 
   useEffect(() => {
     if (currentMediaType !== 'movies' && currentMediaType !== 'tvshows') {
@@ -41,9 +41,12 @@ const MediaData = () => {
       }
     }
 
-    callFetch().then((data) => {
+    callFetch()
+    .then((data) => {
       setApiData(data);
-    });
+      setLoadingAllData(false)
+    })
+    .catch(()=>{setLoadingAllData(false)}) //todo: display error to user
   }, []);
 
   return;

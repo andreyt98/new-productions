@@ -9,7 +9,7 @@ import { database } from '../firebase/firebase.config';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import Tooltip from '@mui/material/Tooltip';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import Box from '@mui/material/Box';
 
 const SelectedMedia = () => {
   const [heroBackground, setHeroBackground] = useState('');
@@ -26,6 +26,8 @@ const SelectedMedia = () => {
   const [vote, setVote] = useState(0);
   const [genres, setGenres] = useState([]);
   const navigate = useNavigate();
+  const [loadingAllData, setLoadingAllData] = useState(true);
+  const [loadingCast, setLoadingCast] = useState(true)
 
   useEffect(() => {
     if (userLogged) {
@@ -54,7 +56,8 @@ const SelectedMedia = () => {
 
     const mediaType = currentMediaType == 'movies' ? 'movie' : 'tv';
 
-    getById(mediaType, currentId).then((data) => {
+    getById(mediaType, currentId)
+    .then((data) => {
       const { title, original_name, overview, release_date, first_air_date, genres, vote_average, backdrop_path, poster_path } = data;
       setResults({ title, original_name, overview, release_date, first_air_date, genres, vote_average, backdrop_path, poster_path });
 
@@ -69,11 +72,18 @@ const SelectedMedia = () => {
 
       let post = `${image({ size: 500 })}${poster_path}`;
       setPoster(post);
+      setLoadingAllData(false)
 
-      getCast(mediaType, currentId).then((data) => {
+      getCast(mediaType, currentId)
+      .then((data) => {
         setCast(data);
-      });
-    });
+        setLoadingCast(false);
+      }).catch(()=>{
+        throw new Error();
+      })
+
+    }).catch(()=>{ setLoadingCast(false)}) //todo: display error in screen 
+
   }, []);
 
   function handleBackClick() {
@@ -84,148 +94,162 @@ const SelectedMedia = () => {
   }
 
   return (
-    <div className='selected-media-container'>
-      <i className='bi bi-arrow-left' onClick={handleBackClick}></i>
 
-      <div className='media-hero' style={{ backgroundImage: `url(${heroBackground})` }}>
-        <div className='overlay'></div>
+    loadingAllData ? 
+      <div style={{display:'flex', justifyContent: 'center'}} >
+          <CircularProgress color="inherit"  size= {100} style={{marginTop: '100px' }}/>
       </div>
+    :
+      <div className='selected-media-container'>
+          <i className='bi bi-arrow-left' onClick={handleBackClick}></i>
 
-      <div className='hero-selected-media'>
-        <div className='selected-media-info-container'>
-          <img src={poster} alt='' id='poster' />
+          <div className='media-hero' style={{ backgroundImage: `url(${heroBackground})` }}>
+            <div className='overlay'></div>
+          </div>
 
-          <div className='selected-media-info'>
-            <h1 className='title'>{title}</h1>
-            <div className='info'>
-              <span>{releaseDate}</span>
-              <span>
-                {genres.slice(0, 1).join(', ', (genre) => {
-                  return <span>{genre}</span>;
-                })}
-              </span>
-              <span>
-                <i className='bi bi-star-fill' style={{ color: 'yellow' }}></i>
-                {` ${vote}`}
-              </span>
-            </div>
+          <div className='hero-selected-media'>
+            <div className='selected-media-info-container'>
+              <img src={poster} alt='' id='poster' />
 
-            <div className='overview'>
-              <div className='overview_data'>
-                <p>{overview}</p>
+              <div className='selected-media-info'>
+                <h1 className='title'>{title}</h1>
+                <div className='info'>
+                  <span>{releaseDate}</span>
+                  <span>
+                    {genres.slice(0, 1).join(', ', (genre) => {
+                      return <span>{genre}</span>;
+                    })}
+                  </span>
+                  <span>
+                    <i className='bi bi-star-fill' style={{ color: 'yellow' }}></i>
+                    {` ${vote}`}
+                  </span>
+                </div>
+
+                <div className='overview'>
+                  <div className='overview_data'>
+                    <p>{overview}</p>
+                  </div>
+                </div>
+                <div className='options'>
+                  {userLogged && (
+                    <>
+                      {loading ? (
+                        <CircularProgress color="inherit"  size= {35}  />
+                      ) : (                  
+                        <Tooltip title={addedToFavs ? "Delete from favorites" : "Add to favorites"} placement="top">
+                          <i
+                            data-id={currentId}
+                            ref={mediaTypeRef}
+                            data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
+                            id='favs-icon'
+                            className={addedToFavs ? 'bi bi-check2-circle' : 'bi bi-plus'}
+                            onClick={() => {
+                              //verifica si el documento mediaIDS con el valor uid de usuario existe para guardar mas ids dentro de ese documento, de otramanera guardarlos somewhere else
+                              const document = doc(database, 'mediaIDS', firebaseActiveUser.uid);
+                              
+                              getDoc(document)
+                              .then((snapshot) => {
+                                if (snapshot.exists()) {
+                                  // setLoading(true);
+                                  const dataSaved = snapshot.data();
+                                    const idAlreadySaved = [...Object.values(dataSaved.mediaID || {})].find((el) => el.id == currentId);
+
+                                    if (!idAlreadySaved) {
+                                      const newData = [...Object.values(dataSaved.mediaID || {}), { id: currentId, mediatype: mediaTypeRef.current.dataset.mediatype, title: title, poster_path: poster }];
+                                      setLoading(true);
+
+                                      updateDoc(document, { mediaID: newData })
+                                        .then(() => {
+                                          setAddedToFavs(true); //to-do: set data saved correctly message un screen
+                                          setLoading(false);
+                                        })
+                                        .catch((err) => {
+                                          setLoading(false);
+
+                                          return;
+                                        }); //to-do: set error message un screen
+                                    } else {
+                                      setLoading(true);
+                                      const newData = [...Object.values(dataSaved.mediaID).filter((el) => el.id != idAlreadySaved.id)];
+                                      updateDoc(document, { mediaID: newData })
+                                        .then(() => {
+                                          setAddedToFavs(false); //to-do: set data saved correctly message un screen
+                                          setLoading(false);
+                                        })
+                                        .catch((err) => {
+                                          setLoading(false);
+
+                                          return;
+                                        }); //to-do: set error message un screen
+                                    }
+                                  } else {
+                                    setDoc(doc(database, 'mediaIDS', firebaseActiveUser.uid), { mediaID: [{ id: currentId, mediatype: mediaTypeRef.current.dataset.mediatype, title: title, poster_path: poster }] })
+                                      .then(() => {
+                                        setAddedToFavs(true);
+                                        setLoading(false);
+                                      })
+                                      .catch((err) => {
+                                        setLoading(false);
+
+                                        return;
+                                      }); //to-do: set error message un screen
+                                  }
+                                })
+                                .catch((err) => {
+                                  setLoading(false);
+                                  return; //to-do: set error message un screen
+                                });
+                            }}
+                          ></i>
+                        </Tooltip>
+                      )}
+                    </>
+                  )}
+                  <button
+                    data-id={currentId}
+                    onClick={() => {
+                      handleTrailerClick(setOpenTrailer, currentId, currentMediaType, setTrailerKey);
+                    }}
+                  >
+                    Play Trailer
+                  </button>
+                </div>
               </div>
             </div>
-            <div className='options'>
-              {userLogged && (
-                <>
-                  {loading ? (
-                    <CircularProgress color="inherit"  size= {35}  />
-                  ) : (                  
-                    <Tooltip title={addedToFavs ? "Delete from favorites" : "Add to favorites"} placement="top">
-                      <i
-                        data-id={currentId}
-                        ref={mediaTypeRef}
-                        data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
-                        id='favs-icon'
-                        className={addedToFavs ? 'bi bi-check2-circle' : 'bi bi-plus'}
-                        onClick={() => {
-                          //verifica si el documento mediaIDS con el valor uid de usuario existe para guardar mas ids dentro de ese documento, de otramanera guardarlos somewhere else
-                          const document = doc(database, 'mediaIDS', firebaseActiveUser.uid);
-                          
-                          getDoc(document)
-                          .then((snapshot) => {
-                            if (snapshot.exists()) {
-                              // setLoading(true);
-                              const dataSaved = snapshot.data();
-                                const idAlreadySaved = [...Object.values(dataSaved.mediaID || {})].find((el) => el.id == currentId);
 
-                                if (!idAlreadySaved) {
-                                  const newData = [...Object.values(dataSaved.mediaID || {}), { id: currentId, mediatype: mediaTypeRef.current.dataset.mediatype, title: title, poster_path: poster }];
-                                  setLoading(true);
-
-                                  updateDoc(document, { mediaID: newData })
-                                    .then(() => {
-                                      setAddedToFavs(true); //to-do: set data saved correctly message un screen
-                                      setLoading(false);
-                                    })
-                                    .catch((err) => {
-                                      setLoading(false);
-
-                                      return;
-                                    }); //to-do: set error message un screen
-                                } else {
-                                  setLoading(true);
-                                  const newData = [...Object.values(dataSaved.mediaID).filter((el) => el.id != idAlreadySaved.id)];
-                                  updateDoc(document, { mediaID: newData })
-                                    .then(() => {
-                                      setAddedToFavs(false); //to-do: set data saved correctly message un screen
-                                      setLoading(false);
-                                    })
-                                    .catch((err) => {
-                                      setLoading(false);
-
-                                      return;
-                                    }); //to-do: set error message un screen
-                                }
-                              } else {
-                                setDoc(doc(database, 'mediaIDS', firebaseActiveUser.uid), { mediaID: [{ id: currentId, mediatype: mediaTypeRef.current.dataset.mediatype, title: title, poster_path: poster }] })
-                                  .then(() => {
-                                    setAddedToFavs(true);
-                                    setLoading(false);
-                                  })
-                                  .catch((err) => {
-                                    setLoading(false);
-
-                                    return;
-                                  }); //to-do: set error message un screen
+              {loadingCast ?
+                <Box sx={{ display: 'flex' }}>
+                  <CircularProgress color="inherit"  size= {40}  />
+                </Box>              
+                :
+                cast &&
+                <section className='selected-media-cast'>
+                  <h3>Cast</h3>
+                  <div className='cast'>
+                      {cast.map((cast) => {
+                        return (
+                          <div className='cast__member' key={cast.id + 543425}>
+                            <img
+                              src={
+                                cast.profile_path
+                                  ? `${image({ size: 500 })}${cast.profile_path}`
+                                  : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
                               }
-                            })
-                            .catch((err) => {
-                              setLoading(false);
-                              return; //to-do: set error message un screen
-                            });
-                        }}
-                      ></i>
-                    </Tooltip>
-                  )}
-                </>
-              )}
-              <button
-                data-id={currentId}
-                onClick={() => {
-                  handleTrailerClick(setOpenTrailer, currentId, currentMediaType, setTrailerKey);
-                }}
-              >
-                Play Trailer
-              </button>
-            </div>
-          </div>
-        </div>
+                              alt='cast-member'
+                            />
+                            <p className='cast__member__name'>{cast.name}</p>
+                            <p className='cast__member__character'>{cast.character}</p>
+                          </div>
+                        );
+                      })    }              
+                  </div>                        
+                </section>
+              }
 
-        <section className='selected-media-cast'>
-          <h3>Cast</h3>
-          <div className='cast'>
-            {cast &&
-              cast.map((cast) => {
-                return (
-                  <div className='cast__member' key={cast.id + 543425}>
-                    <img
-                      src={
-                        cast.profile_path
-                          ? `${image({ size: 500 })}${cast.profile_path}`
-                          : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
-                      }
-                      alt='cast-member'
-                    />
-                    <p className='cast__member__name'>{cast.name}</p>
-                    <p className='cast__member__character'>{cast.character}</p>
-                  </div>
-                );
-              })}
-          </div>
-        </section>
+          </div>      
       </div>
-    </div>
+
   );
 };
 

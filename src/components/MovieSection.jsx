@@ -1,12 +1,22 @@
 import Hero from './Hero';
 import Slider from './Slider';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useContext } from 'react';
+import { Context } from '../context/Context';
 
 const MovieSection = () => {
+  const {loadingAllData} = useContext(Context);
+
   return (
-    <section>
-      <Hero />
-      <Slider />
-    </section>
+    loadingAllData?
+      <div style={{display:'flex', justifyContent: 'center'}} >
+        <CircularProgress color="inherit"  size= {100} style={{marginTop: '100px' }}/>
+      </div>
+    :
+      <section>
+        <Hero />
+        <Slider />
+      </section>
   );
 };
 
