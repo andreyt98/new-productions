@@ -1,20 +1,22 @@
 .profile {
   padding: 60px;
   height: 100%;
-
+  
   @extend .flex-col-center;
   gap: 1rem;
   text-align: center;
   padding-top: 5rem;
   padding-inline: 1.5rem;
-
+  
   #user-in-profile {
     color: var(--primary);
   }
-
+  
   .results {
+    // border: 1px solid;
+    max-height: 1500px;
     padding: 0.5rem;
-    overflow: hidden;
+    overflow: auto;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
