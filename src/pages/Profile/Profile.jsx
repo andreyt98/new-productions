@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { Context } from '../../context/Context';
 import { database } from '../../firebase/firebase.config';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc,updateDoc } from 'firebase/firestore';
 import SliderCard from '../../components/SliderCard';
 import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/system';
@@ -14,7 +14,7 @@ import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
 
 
 const Profile = () => {
-  const { firebaseActiveUser } = useContext(Context);
+  const { firebaseActiveUser,editFavorites, setEditFavorites,checkedMedia,setCheckedMedia } = useContext(Context);
 
   const [savedFavoritesResults, setSavedFavoritesResults] = useState([]);
   const [savedWatchlistResults, setSetsavedWatchlistResults] = useState([])
@@ -48,7 +48,7 @@ const Profile = () => {
     .then(() => {
       setLoading(false);
     });
-  }, []);
+  }, [,savedFavoritesResults]);
 
   return (
     <div className='profile'>
@@ -75,10 +75,50 @@ const Profile = () => {
               </TabsList>
  
               <TabPanel value={0}>
+                {savedFavoritesResults.length > 0 && 
+                <span style={{display:'flex', justifyContent:'right',gap:'1rem'}}>
+
+                 <p style={{textAlign:'right', cursor:'pointer', marginBottom:'10px'}} onClick={()=>{setEditFavorites(!editFavorites), setCheckedMedia([])}} ><i className="bi bi-pencil-square"></i> Edit</p> 
+                 {checkedMedia.length>0 &&
+                   <p style={{cursor:'pointer'}}
+                    onClick={()=>{
+                      const document = doc(database, 'mediaIDS', firebaseActiveUser.uid);
+
+                      getDoc(document)
+                        .then((snapshot) => {
+                          if (snapshot.exists()) {
+                              const dataSaved = snapshot.data();
+                              const newData = dataSaved.mediaID.filter(el => !checkedMedia.includes(el.id.toString()))
+                              setLoading(true);
+                              setEditFavorites(false);
+                              setCheckedMedia([]);
+                              updateDoc(document, { mediaID: newData })
+                              .then(() => {                               
+                                setSavedFavoritesResults(newData);
+                              })
+                              .catch((err) => {
+                                setLoading(false);
+                                return;
+                              }); //to-do: set error message un screen
+                            } else {
+                               return;
+                            }
+                          })
+                        .catch((err) => {
+                          setLoading(false);
+                          return; //to-do: set error message un screen
+                        });
+                    }}
+                   ><i class="bi bi-trash3"></i> Delete</p>
+                 }
+                </span>
+                
+                }
                 <div className='results'>
                   { savedFavoritesResults.length > 0 && 
-                    savedFavoritesResults.slice().reverse().map((el) => {
-                      return <SliderCard result={el} changeMediaType={el.mediatype} key={el.id} />;
+                  
+                    savedFavoritesResults.slice().reverse().map((favorite) => {
+                      return <SliderCard result={favorite} changeMediaType={favorite.mediatype} key={favorite.id} />;
                     })
                   }
                 </div>
