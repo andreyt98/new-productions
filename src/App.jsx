@@ -14,6 +14,7 @@ function App() {
   const [userLogged, setUserLogged] = useState(false);
   const [noAccount, setNoAccount] = useState(true);
   const [addedToFavs, setAddedToFavs] = useState(false);
+  const [addedtoWatchList, setAddedtoWatchList] = useState(false)
   const [firebaseActiveUser, setFirebaseActiveUser] = useState({ email: null, uid: null });
   const [loadingAllData, setLoadingAllData] = useState(true)
 
@@ -38,6 +39,8 @@ function App() {
     setNoAccount,
     addedToFavs,
     setAddedToFavs,
+    addedtoWatchList,
+    setAddedtoWatchList,
     firebaseActiveUser,
     setFirebaseActiveUser,
     loadingAllData,

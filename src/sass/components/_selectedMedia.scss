@@ -163,10 +163,10 @@
   }
 }
 
-#favs-icon {
+#favs-icon,#watchlist-icon {
   font-size: 250%;
 }
 
-.bi-check2-circle {
+.bi-check2-circle,.bi-eye-fill {
   color: var(--primary);
 }

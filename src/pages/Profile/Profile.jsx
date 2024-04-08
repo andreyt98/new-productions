@@ -16,34 +16,36 @@ import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
 const Profile = () => {
   const { firebaseActiveUser } = useContext(Context);
 
-  const [savedResults, setSavedResults] = useState([]);
+  const [savedFavoritesResults, setSavedFavoritesResults] = useState([]);
+  const [savedWatchlistResults, setSetsavedWatchlistResults] = useState([])
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const document = doc(database, 'mediaIDS', firebaseActiveUser.uid);
-        const snapshot = await getDoc(document);
+  const fetchData = async (documentName, setStateFunction) => {
+    try {
+      const document = doc(database, documentName, firebaseActiveUser.uid);
+      const snapshot = await getDoc(document);
 
-        if (!snapshot.exists()) return;
+      if (!snapshot.exists()) return;
 
-        const dataSaved = snapshot.data();
+      const dataSaved = snapshot.data();
 
-        if (dataSaved.mediaID.length > 0) {
-          const temp = await Promise.all(
-            dataSaved.mediaID.map((el) => {
-              return el;
-            })
-          );
-          setSavedResults(temp);
-        }
-      } catch (err) {
-        setLoading(false);
-        return; //to-do: set error message un screen
+      if (dataSaved.mediaID.length > 0) {
+        const temp = await Promise.all(
+          dataSaved.mediaID.map((el) => {
+            return el;
+          })
+        );
+        setStateFunction(temp);
       }
-    };
+    } catch (err) {
+      setLoading(false);
+      return; //to-do: set error message un screen
+    }
+  };
 
-    fetchData().then(() => {
+  useEffect(() => {    
+    fetchData('mediaIDS',setSavedFavoritesResults)
+    .then(() => {
       setLoading(false);
     });
   }, []);
@@ -62,13 +64,20 @@ const Profile = () => {
               <TabsList>
                 <Tab value={0} style={{border:'none'}}>Favorites </Tab>
                 <Tab value={1} style={{border:'none'}}>Lists</Tab>
-                <Tab value={2} style={{border:'none'}}>Watchlist</Tab>
+                <span  onClick={()=>{
+                    fetchData('watchlistIDS',setSetsavedWatchlistResults)
+                    .then(() => {
+                      setLoading(false);
+                    });
+                  }}>
+                  <Tab value={2} style={{border:'none'}}>Watchlist</Tab>
+                </span>
               </TabsList>
  
               <TabPanel value={0}>
                 <div className='results'>
-                  { savedResults.length > 0 && 
-                    savedResults.slice().reverse().map((el) => {
+                  { savedFavoritesResults.length > 0 && 
+                    savedFavoritesResults.slice().reverse().map((el) => {
                       return <SliderCard result={el} changeMediaType={el.mediatype} key={el.id} />;
                     })
                   }
@@ -78,7 +87,13 @@ const Profile = () => {
               <p>soon..</p>
               </TabPanel>
               <TabPanel value={2}>
-              <p>soon..</p>
+              <div className='results'>
+                { savedWatchlistResults.length > 0 && 
+                  savedWatchlistResults.slice().reverse().map((el) => {
+                    return <SliderCard result={el} changeMediaType={el.mediatype} key={el.id} />;
+                  })
+                }
+              </div>
               </TabPanel>
             </Tabs>
         
