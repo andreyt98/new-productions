@@ -167,6 +167,7 @@
   font-size: 250%;
 }
 
-.bi-check2-circle,.bi-eye-fill {
+.bi-check-circle-fill,.bi-eye-fill {
+  transition: all 0.2s;
   color: var(--primary);
 }

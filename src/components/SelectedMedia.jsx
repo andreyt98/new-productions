@@ -14,6 +14,10 @@ import { Tabs } from '@mui/base/Tabs';
 import { TabsList as BaseTabsList } from '@mui/base/TabsList';
 import { TabPanel as BaseTabPanel } from '@mui/base/TabPanel';
 import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
+
 
 const SelectedMedia = () => {
   const [heroBackground, setHeroBackground] = useState('');
@@ -22,8 +26,8 @@ const SelectedMedia = () => {
   const [poster, setPoster] = useState('');
   const mediaTypeRef = useRef(null);
   const mediaTypeRef2 = useRef(null);
-  const [loadingFavs, setLoadingFavs] = useState(false);
-  const [loadingWatchlist, setLoadingWatchlist] = useState(false);
+  const [loadingFavs, setLoadingFavs] = useState(true);
+  const [loadingWatchlist, setLoadingWatchlist] = useState(true);
 
   const { currentId, setOpenTrailer, setTrailerKey, currentMediaType, cast, setCast, userLogged, addedToFavs, setAddedToFavs, addedtoWatchList, setAddedtoWatchList, firebaseActiveUser } = useContext(Context);
 
@@ -35,50 +39,42 @@ const SelectedMedia = () => {
   const [loadingAllData, setLoadingAllData] = useState(true);
   const [loadingCast, setLoadingCast] = useState(true);
 
-  useEffect(() => {
-    if (userLogged) {
-      setLoadingFavs(true)
-      setLoadingWatchlist(true)
-      //verifica si el documento mediaIDS con el valor uid de usuario existe
-      const favoritesDocument = doc(database, 'mediaIDS', firebaseActiveUser.uid);
-      const watchlistDocument = doc(database, 'watchlistIDS', firebaseActiveUser.uid);
 
-      getDoc(favoritesDocument)
-        .then((snapshot) => {
-          if (!snapshot.exists()) return;
+  //error message component
+  const [open, setOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null)
 
-          const dataSaved = snapshot.data();
-          const savedIds = [...Object.values(dataSaved.mediaID || {})];
+  const showError = () => {
+    setOpen(true);
+  };
 
-          const idAlreadySaved = savedIds.find((el) => el.id == currentId);
-
-          idAlreadySaved ? setAddedToFavs(true): setAddedToFavs(false);
-          setLoadingFavs(false);
-        })
-        .catch((err) => {
-          return; //to-do: set error message un screen
-        });
-
-      getDoc(watchlistDocument)
-        .then((snapshot) => {
-          if (!snapshot.exists()) return;
-
-          const dataSaved = snapshot.data();
-          const savedIds = [...Object.values(dataSaved.mediaID || {})];
-
-          const idAlreadySaved = savedIds.find((el) => el.id == currentId);
-
-          idAlreadySaved ? setAddedtoWatchList(true) : setAddedtoWatchList(false);
-          setLoadingWatchlist(false);
-        })
-        .catch((err) => {
-          return; //to-do: set error message un screen
-        });
-
-
-
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
     }
-  }, []);
+    setOpen(false);
+  };
+  //end of error message code
+
+  const getFromFirestore = ( documentName,fieldName, callbackToUpdateUIComponent, callbackToStopLoader )=>{
+    const document = doc(database, 'users', documentName);
+
+    getDoc(document)
+    .then((documentResult) => {
+      if (!documentResult.exists()) {callbackToStopLoader(false); return};
+
+        const allFieldsFromDocument = documentResult.data();
+        const savedIds = [...Object.values(allFieldsFromDocument[fieldName] || {})];
+
+        const idAlreadySaved = savedIds.find((el) => el.id == currentId);
+
+        idAlreadySaved ? callbackToUpdateUIComponent(true): callbackToUpdateUIComponent(false);
+        callbackToStopLoader(false)
+      })
+      .catch((err) => {
+        return; //todo: set error message un screen
+      });
+  }
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -113,7 +109,53 @@ const SelectedMedia = () => {
 
     }).catch(()=>{ setLoadingCast(false)}) //todo: display error in screen 
 
+    if (userLogged) {
+      getFromFirestore(firebaseActiveUser.uid,'favorites', setAddedToFavs, setLoadingFavs);
+      getFromFirestore(firebaseActiveUser.uid,'watchlist', setAddedtoWatchList, setLoadingWatchlist);
+    }
   }, []);
+
+
+  const handleSaveOrDelete = (documentName, referenceOfClickedElement,title,poster,fieldName, callbackToUpdateUIComponent) =>{
+    //reference of document 'documentName' from 'users' colection 
+    const document = doc(database, 'users', documentName);
+    
+    getDoc(document)
+    .then((documentResult) => {
+      if (documentResult.exists()) {
+        const dataSaved = documentResult.data();
+          const idAlreadySaved = [...Object.values(dataSaved[fieldName] || {})].find((el) => el.id == currentId);
+          
+          if (!idAlreadySaved) {
+            const newData = [...Object.values(dataSaved[fieldName] || {}), { id: currentId, mediatype: referenceOfClickedElement.current.dataset.mediatype, title: title, poster_path: poster }];
+
+            const updateData = {};
+            updateData[fieldName] = newData;
+            updateDoc(document, updateData)
+            callbackToUpdateUIComponent(true); 
+
+          } else {
+            const newData = [...Object.values(dataSaved[fieldName]).filter((el) => el.id != idAlreadySaved.id)];
+            const updateData = {};
+            updateData[fieldName] = newData;
+            updateDoc(document, updateData)
+            
+            callbackToUpdateUIComponent(false); //to-do: set data saved correctly message un screen
+          }
+        } else {
+          const updateData = {};
+          updateData[fieldName] =[{ id: currentId, mediatype: referenceOfClickedElement.current.dataset.mediatype, title: title, poster_path: poster }] 
+          setDoc(doc(database, 'users', documentName),updateData )
+          callbackToUpdateUIComponent(true);
+        }
+      })
+      .catch((err) => {
+        setErrorMessage("Error saving to favorites, try again later!")
+        showError();
+        return; //todo: set error message un screen
+      });
+  } 
+
 
   function handleBackClick() {
     window.scrollTo(0, 0);
@@ -164,7 +206,7 @@ const SelectedMedia = () => {
                   {userLogged && (
                     <>
                       {loadingFavs ? (
-                        <CircularProgress color="inherit"  size= {35}  />
+                        <CircularProgress color="inherit"  size= {10}  />
                       ) : (                  
                         <Tooltip title={addedToFavs ? "Delete from favorites" : "Add to favorites"} placement="top">
                           <i
@@ -172,71 +214,17 @@ const SelectedMedia = () => {
                             ref={mediaTypeRef}
                             data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
                             id='favs-icon'
-                            className={addedToFavs ? 'bi bi-check2-circle' : 'bi bi-plus'}
+                            className={addedToFavs ? 'bi bi-check-circle-fill' : 'bi bi-plus-circle'}
+                            style={{fontSize:'200%',}}
                             onClick={() => {
-                              //todo: put all this in a reusable function
-                              //verifica si el documento mediaIDS con el valor uid de usuario existe para guardar mas ids dentro de ese documento, de otramanera guardarlos somewhere else
-                              const document = doc(database, 'mediaIDS', firebaseActiveUser.uid);
-                              
-                              getDoc(document)
-                              .then((snapshot) => {
-                                if (snapshot.exists()) {
-                                  // setLoading(true);
-                                  const dataSaved = snapshot.data();
-                                    const idAlreadySaved = [...Object.values(dataSaved.mediaID || {})].find((el) => el.id == currentId);
-
-                                    if (!idAlreadySaved) {
-                                      const newData = [...Object.values(dataSaved.mediaID || {}), { id: currentId, mediatype: mediaTypeRef.current.dataset.mediatype, title: title, poster_path: poster }];
-                                      setLoadingFavs(true);
-
-                                      updateDoc(document, { mediaID: newData })
-                                        .then(() => {
-                                          setAddedToFavs(true); //to-do: set data saved correctly message un screen
-                                          setLoadingFavs(false);
-                                        })
-                                        .catch((err) => {
-                                          setLoadingFavs(false);
-
-                                          return;
-                                        }); //to-do: set error message un screen
-                                    } else {
-                                      setLoadingFavs(true);
-                                      const newData = [...Object.values(dataSaved.mediaID).filter((el) => el.id != idAlreadySaved.id)];
-                                      updateDoc(document, { mediaID: newData })
-                                        .then(() => {
-                                          setAddedToFavs(false); //to-do: set data saved correctly message un screen
-                                          setLoadingFavs(false);
-                                        })
-                                        .catch((err) => {
-                                          setLoadingFavs(false);
-
-                                          return;
-                                        }); //to-do: set error message un screen
-                                    }
-                                  } else {
-                                    setDoc(doc(database, 'mediaIDS', firebaseActiveUser.uid), { mediaID: [{ id: currentId, mediatype: mediaTypeRef.current.dataset.mediatype, title: title, poster_path: poster }] })
-                                      .then(() => {
-                                        setAddedToFavs(true);
-                                        setLoadingFavs(false);
-                                      })
-                                      .catch((err) => {
-                                        setLoadingFavs(false);
-
-                                        return;
-                                      }); //to-do: set error message un screen
-                                  }
-                                })
-                                .catch((err) => {
-                                  setLoadingFavs(false);
-                                  return; //to-do: set error message un screen
-                                });
+                              handleSaveOrDelete(firebaseActiveUser.uid,mediaTypeRef,title,poster,'favorites',setAddedToFavs);
                             }}
                           ></i>
                         </Tooltip>
                       )}
 
                       {loadingWatchlist ? (
-                        <CircularProgress color="inherit"  size= {35}  />
+                        <CircularProgress color="inherit"  size= {10}  />
                       ) : (
                         <Tooltip title={addedtoWatchList ? "Delete from watchlist" : "Add to watchlist"} placement="top">
                         <i
@@ -246,64 +234,7 @@ const SelectedMedia = () => {
                           id='watchlist-icon'
                           className={addedtoWatchList ? 'bi bi-eye-fill' : 'bi bi-eye'}
                           onClick={() => {
-
-                            //todo: put all this in a reusable function
-                            //verifica si el documento watchlistIDS con el valor uid de usuario existe para guardar mas ids dentro de ese documento, de otramanera guardarlos somewhere else
-                            const document = doc(database, 'watchlistIDS', firebaseActiveUser.uid);
-                            
-                            getDoc(document)
-                            .then((snapshot) => {
-                              if (snapshot.exists()) {
-                                setLoadingWatchlist(true);
-                                const dataSaved = snapshot.data();
-                                  const idAlreadySaved = [...Object.values(dataSaved.mediaID || {})].find((el) => el.id == currentId);
-
-                                  if (!idAlreadySaved) {
-                                    const newData = [...Object.values(dataSaved.mediaID || {}), { id: currentId, mediatype: mediaTypeRef2.current.dataset.mediatype, title: title, poster_path: poster }];
-                                    setLoadingWatchlist(true);
-
-                                    updateDoc(document, { mediaID: newData })
-                                      .then(() => {
-                                        setAddedtoWatchList(true); //to-do: set data saved correctly message un screen
-                                        setLoadingWatchlist(false);
-                                      })
-                                      .catch((err) => {
-                                        setLoadingWatchlist(false);
-
-                                        return;
-                                      }); //to-do: set error message un screen
-                                  } else {
-                                    setLoadingWatchlist(true);
-                                    const newData = [...Object.values(dataSaved.mediaID).filter((el) => el.id != idAlreadySaved.id)];
-                                    updateDoc(document, { mediaID: newData })
-                                      .then(() => {
-                                        setAddedtoWatchList(false); //to-do: set data saved correctly message un screen
-                                        setLoadingWatchlist(false);
-                                      })
-                                      .catch((err) => {
-                                        setLoadingWatchlist(false);
-
-                                        return;
-                                      }); //to-do: set error message un screen
-                                  }
-                                } else {
-
-                                  setDoc(doc(database, 'watchlistIDS', firebaseActiveUser.uid), { mediaID: [{ id: currentId, mediatype: mediaTypeRef2.current.dataset.mediatype, title: title, poster_path: poster }] })
-                                    .then(() => {
-                                      setAddedtoWatchList(true); //to-do: set data saved correctly message un screen
-                                      setLoadingWatchlist(false);
-                                    })
-                                    .catch((err) => {
-                                      setLoadingWatchlist(false);
-
-                                      return; //to-do: set error message un screen
-                                    });                                   
-                                }
-                              })
-                            .catch((err) => {
-                              setLoadingWatchlist(false);
-                              return; //to-do: set error message un screen
-                            });
+                            handleSaveOrDelete(firebaseActiveUser.uid,mediaTypeRef2,title,poster,'watchlist',setAddedtoWatchList);
                           }}                       
                         ></i>
                         </Tooltip>
@@ -365,7 +296,18 @@ const SelectedMedia = () => {
               </TabPanel>
             </Tabs>
 
-          </div>      
+          </div>     
+
+        <Snackbar open={open} autoHideDuration={3500} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity="error"
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            {errorMessage}
+          </Alert>
+      </Snackbar>
       </div>
 
   );

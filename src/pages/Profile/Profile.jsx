@@ -9,29 +9,52 @@ import { Tabs } from '@mui/base/Tabs';
 import { TabsList as BaseTabsList } from '@mui/base/TabsList';
 import { TabPanel as BaseTabPanel } from '@mui/base/TabPanel';
 import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
-
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 
 
 const Profile = () => {
-  const { firebaseActiveUser,editFavorites, setEditFavorites,checkedMedia,setCheckedMedia } = useContext(Context);
+  const { firebaseActiveUser,edit, setEdit,checkedMedia,setCheckedMedia } = useContext(Context);
 
   const [savedFavoritesResults, setSavedFavoritesResults] = useState([]);
-  const [savedWatchlistResults, setSetsavedWatchlistResults] = useState([])
+  const [savedWatchlistResults, setSavedWatchlistResults] = useState([])
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState(0)
 
-  const fetchData = async (documentName, setStateFunction) => {
+ //error message component
+ const [open, setOpen] = useState(false);
+ const [message, setMessage] = useState({message:null, severity:null})
+
+ const showMessage = () => {
+   setOpen(true);
+ };
+
+ const handleClose = (event, reason) => {
+   if (reason === 'clickaway') {
+     return;
+   }
+   setOpen(false);
+ };
+ //end of error message code
+
+ const handleClickExternalElement = (newTabIndex) => {
+  setActiveTab(newTabIndex);
+};
+
+
+  const fetchData = async (fieldName, setStateFunction) => {
     try {
-      const document = doc(database, documentName, firebaseActiveUser.uid);
-      const snapshot = await getDoc(document);
+      const document = doc(database, 'users', firebaseActiveUser.uid);
+      const documentResults = await getDoc(document);
 
-      if (!snapshot.exists()) return;
+      if (!documentResults.exists()) return;
 
-      const dataSaved = snapshot.data();
+      const dataSaved = documentResults.data();
 
-      if (dataSaved.mediaID.length > 0) {
+      if (dataSaved[fieldName].length > 0) {
         const temp = await Promise.all(
-          dataSaved.mediaID.map((el) => {
+          dataSaved[fieldName].map((el) => {
             return el;
           })
         );
@@ -39,16 +62,59 @@ const Profile = () => {
       }
     } catch (err) {
       setLoading(false);
+      setMessage("couldn't load data");
+      showMessage();
       return; //to-do: set error message un screen
     }
   };
 
   useEffect(() => {    
-    fetchData('mediaIDS',setSavedFavoritesResults)
+    fetchData('favorites',setSavedFavoritesResults)
     .then(() => {
       setLoading(false);
     });
   }, [,savedFavoritesResults]);
+
+  useEffect(() => {    
+    fetchData('watchlist',setSavedWatchlistResults)
+    .then(() => {
+      setLoading(false);
+    });
+  }, [savedWatchlistResults]);
+
+
+  const deleteFromFireStore = (fieldName,callbackToUpdateArrayOfFields, message) => {
+    const document = doc(database, 'users', firebaseActiveUser.uid);
+
+    getDoc(document)
+      .then((documentResult) => {
+          if (!documentResult.exists()) return;
+
+          const dataSaved = documentResult.data();
+          const newData = dataSaved[fieldName].filter(el => !checkedMedia.includes(el.id.toString()))
+         setLoading(true);
+          setEdit(false);
+          setCheckedMedia([]);
+
+          const updateData = {};
+          updateData[fieldName] = newData;
+
+          updateDoc(document,updateData)
+          .then(() => {                               
+            setLoading(false);
+          })          
+          callbackToUpdateArrayOfFields(updateData);
+          setMessage({message: message ,severity:"success"})
+          showMessage();
+        })
+      .catch((err) => {
+        setMessage({message:"Error deleting data, try again later",severity:"error"})
+        showMessage();
+        setLoading(false);
+        return; //todo: set error message un screen
+      });
+  }
+
 
   return (
     <div className='profile'>
@@ -60,59 +126,35 @@ const Profile = () => {
           <CircularProgress color="inherit" size= {100} />
         :
 
-        <Tabs defaultValue={0} style={{width:'100%', display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center'}}>
-              <TabsList>
-                <Tab value={0} style={{border:'none'}}>Favorites </Tab>
-                <Tab value={1} style={{border:'none'}}>Lists</Tab>
+        <Tabs value={activeTab} onChange={(event, newValue) => setActiveTab(newValue)} style={{width:'100%', display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center'}}>
+            <TabsList>
+                <Tab  style={{border:'none'}}>Favorites </Tab>
+                <Tab  style={{border:'none'}}  >Lists</Tab>
                 <span  onClick={()=>{
-                    fetchData('watchlistIDS',setSetsavedWatchlistResults)
+                    fetchData('watchlist',setSavedWatchlistResults)
                     .then(() => {
                       setLoading(false);
                     });
                   }}>
-                  <Tab value={2} style={{border:'none'}}>Watchlist</Tab>
+                  <Tab  style={{border:'none'}}>Watchlist</Tab>
                 </span>
               </TabsList>
  
-              <TabPanel value={0}>
+              <TabPanel value={0} >
                 {savedFavoritesResults.length > 0 && 
-                <span style={{display:'flex', justifyContent:'right',gap:'1rem'}}>
+                  <span style={{display:'flex', justifyContent:'right',gap:'1rem'}}>
 
-                 <p style={{textAlign:'right', cursor:'pointer', marginBottom:'10px'}} onClick={()=>{setEditFavorites(!editFavorites), setCheckedMedia([])}} ><i className="bi bi-pencil-square"></i> Edit</p> 
-                 {checkedMedia.length>0 &&
-                   <p style={{cursor:'pointer'}}
-                    onClick={()=>{
-                      const document = doc(database, 'mediaIDS', firebaseActiveUser.uid);
+                    <p style={{textAlign:'right', cursor:'pointer', marginBottom:'10px'}} onClick={()=>{setEdit(!edit), setCheckedMedia([])}} ><i className="bi bi-pencil-square">
+                      </i> Edit</p> 
 
-                      getDoc(document)
-                        .then((snapshot) => {
-                          if (snapshot.exists()) {
-                              const dataSaved = snapshot.data();
-                              const newData = dataSaved.mediaID.filter(el => !checkedMedia.includes(el.id.toString()))
-                              setLoading(true);
-                              setEditFavorites(false);
-                              setCheckedMedia([]);
-                              updateDoc(document, { mediaID: newData })
-                              .then(() => {                               
-                                setSavedFavoritesResults(newData);
-                              })
-                              .catch((err) => {
-                                setLoading(false);
-                                return;
-                              }); //to-do: set error message un screen
-                            } else {
-                               return;
-                            }
-                          })
-                        .catch((err) => {
-                          setLoading(false);
-                          return; //to-do: set error message un screen
-                        });
-                    }}
-                   ><i class="bi bi-trash3"></i> Delete</p>
-                 }
-                </span>
-                
+                    {checkedMedia.length>0 &&
+                      <p style={{cursor:'pointer'}}
+                        onClick={()=>{ deleteFromFireStore('favorites', setSavedFavoritesResults,"Favorites updated!");}}
+                      ><i class="bi bi-trash3">                    
+                      </i> Delete</p>
+                    }
+
+                  </span>               
                 }
                 <div className='results'>
                   { savedFavoritesResults.length > 0 && 
@@ -123,22 +165,51 @@ const Profile = () => {
                   }
                 </div>
               </TabPanel>
-              <TabPanel value={1}>
+              <TabPanel value={1} >
               <p>soon..</p>
               </TabPanel>
-              <TabPanel value={2}>
-              <div className='results'>
+              <TabPanel value={2} >
                 { savedWatchlistResults.length > 0 && 
-                  savedWatchlistResults.slice().reverse().map((el) => {
-                    return <SliderCard result={el} changeMediaType={el.mediatype} key={el.id} />;
-                  })
+                  <span style={{display:'flex', justifyContent:'right',gap:'1rem'}}>
+
+                    <p style={{textAlign:'right', cursor:'pointer', marginBottom:'10px'}} onClick={()=>{setEdit(!edit), setCheckedMedia([])}} ><i className="bi bi-pencil-square">
+                    </i> Edit</p> 
+
+                    {checkedMedia.length>0 &&
+                      <p style={{cursor:'pointer'}}
+                        onClick={()=>{ deleteFromFireStore('watchlist', setSavedWatchlistResults,"Watchlist updated!"); handleClickExternalElement(2); 
+                       
+                      }}
+                      ><i class="bi bi-trash3">                    
+                      </i> Delete</p>
+                    }
+
+                  </span>  
                 }
-              </div>
+
+                <div className='results'>
+                  { savedWatchlistResults.length > 0 && 
+                  
+                    savedWatchlistResults.slice().reverse().map((el) => {
+                      return <SliderCard result={el} changeMediaType={el.mediatype} key={el.id} />;
+                    })
+                  }
+                </div>
+
               </TabPanel>
             </Tabs>
         
       }
- 
+      <Snackbar open={open} autoHideDuration={3500} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity={message.severity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {message.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

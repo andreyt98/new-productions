@@ -17,7 +17,7 @@ function App() {
   const [addedtoWatchList, setAddedtoWatchList] = useState(false)
   const [firebaseActiveUser, setFirebaseActiveUser] = useState({ email: null, uid: null });
   const [loadingAllData, setLoadingAllData] = useState(true)
-  const [editFavorites, setEditFavorites] = useState(false)
+  const [edit, setEdit] = useState(false)
   const [checkedMedia, setCheckedMedia] = useState([])
 
   const contextValues = {
@@ -47,8 +47,8 @@ function App() {
     setFirebaseActiveUser,
     loadingAllData,
     setLoadingAllData,
-    editFavorites,
-    setEditFavorites,
+    edit,
+    setEdit,
     checkedMedia,
     setCheckedMedia
   };

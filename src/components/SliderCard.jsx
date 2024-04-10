@@ -10,7 +10,7 @@ import Checkbox from '@mui/material/Checkbox';
 
 const SliderCard = ({ result, changeMediaType = null }) => {
   const [poster, setPoster] = useState(null);
-  const { setCurrentId, setCurrentMediaType,editFavorites,checkedMedia, setCheckedMedia } = useContext(Context);
+  const { setCurrentId, setCurrentMediaType,edit, checkedMedia, setCheckedMedia } = useContext(Context);
 
   const [checked, setChecked] = useState(true);
 
@@ -50,7 +50,7 @@ const SliderCard = ({ result, changeMediaType = null }) => {
             <img src={poster} alt='' />
           </div>
         </Link>
-        {editFavorites &&
+        {edit &&
         
         <span>
           <Checkbox
