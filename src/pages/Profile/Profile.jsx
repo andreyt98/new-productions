@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { Context } from '../../context/Context';
 import { database } from '../../firebase/firebase.config';
-import { doc, getDoc,updateDoc } from 'firebase/firestore';
+import { doc, getDoc,updateDoc,onSnapshot } from 'firebase/firestore';
 import SliderCard from '../../components/SliderCard';
 import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/system';
@@ -25,6 +25,20 @@ const Profile = () => {
  //error message component
  const [open, setOpen] = useState(false);
  const [message, setMessage] = useState({message:null, severity:null})
+
+
+ useEffect(() => {
+    //subscription to db to get real time changes
+    const document = doc(database, 'users', firebaseActiveUser.uid);
+    const unsub = onSnapshot(document, (doc) => {
+       setSavedFavoritesResults(doc.data.favorites);
+       setSavedWatchlistResults(doc.data.watchlist);       
+    });
+
+    // return 'unsub' on component unmount to avoid too many subscription to db
+    return ()=> {unsub(); }
+}, []);
+
 
  const showMessage = () => {
    setOpen(true);
@@ -52,17 +66,21 @@ const Profile = () => {
 
       const dataSaved = documentResults.data();
 
-      if (dataSaved[fieldName].length > 0) {
-        const temp = await Promise.all(
-          dataSaved[fieldName].map((el) => {
-            return el;
-          })
-        );
-        setStateFunction(temp);
+      if(Object.entries(dataSaved).length>0){
+
+        if (dataSaved[fieldName].length > 0) {
+          const temp = await Promise.all(
+            dataSaved[fieldName].map((el) => {
+              return el;
+            })
+          );
+          setStateFunction(temp);
+        }
       }
     } catch (err) {
       setLoading(false);
       setMessage("couldn't load data");
+      console.log("error aqui", err)
       showMessage();
       return; //to-do: set error message un screen
     }
@@ -83,7 +101,7 @@ const Profile = () => {
   }, [savedWatchlistResults]);
 
 
-  const deleteFromFireStore = (fieldName,callbackToUpdateArrayOfFields, message) => {
+  const deleteFromFireStore = (fieldName, message) => {
     const document = doc(database, 'users', firebaseActiveUser.uid);
 
     getDoc(document)
@@ -92,7 +110,7 @@ const Profile = () => {
 
           const dataSaved = documentResult.data();
           const newData = dataSaved[fieldName].filter(el => !checkedMedia.includes(el.id.toString()))
-         setLoading(true);
+          setLoading(true);
           setEdit(false);
           setCheckedMedia([]);
 
@@ -103,7 +121,6 @@ const Profile = () => {
           .then(() => {                               
             setLoading(false);
           })          
-          callbackToUpdateArrayOfFields(updateData);
           setMessage({message: message ,severity:"success"})
           showMessage();
         })
@@ -141,7 +158,7 @@ const Profile = () => {
               </TabsList>
  
               <TabPanel value={0} >
-                {savedFavoritesResults.length > 0 && 
+                {savedFavoritesResults && savedFavoritesResults.length > 0 && 
                   <span style={{display:'flex', justifyContent:'right',gap:'1rem'}}>
 
                     <p style={{textAlign:'right', cursor:'pointer', marginBottom:'10px'}} onClick={()=>{setEdit(!edit), setCheckedMedia([])}} ><i className="bi bi-pencil-square">
@@ -149,15 +166,15 @@ const Profile = () => {
 
                     {checkedMedia.length>0 &&
                       <p style={{cursor:'pointer'}}
-                        onClick={()=>{ deleteFromFireStore('favorites', setSavedFavoritesResults,"Favorites updated!");}}
-                      ><i class="bi bi-trash3">                    
+                        onClick={()=>{ deleteFromFireStore('favorites',"Favorites updated!");}}
+                      ><i className="bi bi-trash3">                    
                       </i> Delete</p>
                     }
 
                   </span>               
                 }
                 <div className='results'>
-                  { savedFavoritesResults.length > 0 && 
+                  { savedFavoritesResults && savedFavoritesResults.length > 0 && 
                   
                     savedFavoritesResults.slice().reverse().map((favorite) => {
                       return <SliderCard result={favorite} changeMediaType={favorite.mediatype} key={favorite.id} />;
@@ -169,7 +186,7 @@ const Profile = () => {
               <p>soon..</p>
               </TabPanel>
               <TabPanel value={2} >
-                { savedWatchlistResults.length > 0 && 
+                { savedWatchlistResults && savedWatchlistResults.length > 0 && 
                   <span style={{display:'flex', justifyContent:'right',gap:'1rem'}}>
 
                     <p style={{textAlign:'right', cursor:'pointer', marginBottom:'10px'}} onClick={()=>{setEdit(!edit), setCheckedMedia([])}} ><i className="bi bi-pencil-square">
@@ -177,10 +194,10 @@ const Profile = () => {
 
                     {checkedMedia.length>0 &&
                       <p style={{cursor:'pointer'}}
-                        onClick={()=>{ deleteFromFireStore('watchlist', setSavedWatchlistResults,"Watchlist updated!"); handleClickExternalElement(2); 
+                        onClick={()=>{ deleteFromFireStore('watchlist',"Watchlist updated!"); handleClickExternalElement(2); 
                        
                       }}
-                      ><i class="bi bi-trash3">                    
+                      ><i className="bi bi-trash3">                    
                       </i> Delete</p>
                     }
 
@@ -188,7 +205,7 @@ const Profile = () => {
                 }
 
                 <div className='results'>
-                  { savedWatchlistResults.length > 0 && 
+                  { savedWatchlistResults && savedWatchlistResults.length > 0 && 
                   
                     savedWatchlistResults.slice().reverse().map((el) => {
                       return <SliderCard result={el} changeMediaType={el.mediatype} key={el.id} />;

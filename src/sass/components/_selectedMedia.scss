@@ -5,16 +5,17 @@
 
   .bi-arrow-left {
     position: absolute;
-    top: 60px;
-    left: 10px;
+    top: 65px;
+    left: 15px;
     z-index: 5;
-    font-size: 140%;
-    background-color: rgba(54, 54, 54, 0.504);
-    border-radius: 25px;
-    padding: 0.2rem 0.4rem;
-
+    font-size: 140%;    
     @media #{$md} {
-      top: 85px;
+      top: 90px;
+    }
+    
+    &:hover{
+      color: #ffffffdf;
+      transform: translate(-1px);
     }
   }
 }
