@@ -18,7 +18,9 @@ function App() {
   const [firebaseActiveUser, setFirebaseActiveUser] = useState({ email: null, uid: null });
   const [loadingAllData, setLoadingAllData] = useState(true)
   const [edit, setEdit] = useState(false)
-  const [checkedMedia, setCheckedMedia] = useState([])
+  const [checkedMedia, setCheckedMedia] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+
 
   const contextValues = {
     currentId,
@@ -50,7 +52,9 @@ function App() {
     edit,
     setEdit,
     checkedMedia,
-    setCheckedMedia
+    setCheckedMedia,
+    searchResults,
+    setSearchResults
   };
 
   useEffect(() => {
