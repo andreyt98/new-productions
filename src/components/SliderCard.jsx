@@ -17,6 +17,14 @@ const SliderCard = ({ result, changeMediaType = null }) => {
   const handleChange = (event) => {
     setChecked(event.target.checked);
 
+    const card = event.target.parentElement.parentElement.parentElement;
+
+    if(event.target.checked){
+      card.style.border= '3px solid #0080ff';
+    }else{
+      card.style.border= '3px solid transparent';
+    }
+
     if(event.target.checked){
       if(!checkedMedia.includes(event.target.id)){     
         setCheckedMedia( [...checkedMedia,event.target.id])
