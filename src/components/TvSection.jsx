@@ -13,7 +13,7 @@ const TvSection = () => {
         <CircularProgress color="inherit"  size= {100} style={{marginTop: '100px' }}/>
       </div>
     :
-      <section className='tv-section'>
+      <section >
         <Hero />
         <Slider />
       </section>
