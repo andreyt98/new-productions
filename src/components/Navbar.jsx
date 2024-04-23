@@ -72,7 +72,7 @@ const Navbar = () => {
           .catch((error) => {
             switch (error.code) {
               case 'auth/invalid-credential':
-                setErrorMessage({ active: true, text: 'Correo o password incorrecto, intente nuevamente.' });
+                setErrorMessage({ active: true, text: 'incorrect email o password, try again.' });
                 break;
             }
             switch (error.code) {
