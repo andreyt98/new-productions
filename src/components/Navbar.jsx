@@ -35,18 +35,21 @@ const Navbar = () => {
     });
   }, []);
 
+  function setAppForActiveUser(){
+    setFirebaseActiveUser({ email: user.user.email, uid: user.user.uid });
+    setUserLogged(true);
+    setUserClicked(false);
+    setErrorMessage({ active: false, text: '' });
+    setUserData({ username: '', email: '', password: '' });
+    navigate('/profile');
+  }
   const handleSubmit = async (evt) => {
     evt.preventDefault();
 
     noAccount
       ? createUser(userData)
           .then((user) => {
-            setFirebaseActiveUser({ email: user.user.email, uid: user.user.uid });
-            setUserLogged(true);
-            setUserClicked(false);
-            setErrorMessage({ active: false, text: '' });
-            setUserData({ username: '', email: '', password: '' });
-            navigate('/profile');
+            setAppForActiveUser();
           })
           .catch((error) => {
             switch (error.code) {
@@ -62,12 +65,7 @@ const Navbar = () => {
           })
       : loginUser(userData)
           .then((user) => {
-            setFirebaseActiveUser({ email: user.user.email, uid: user.user.uid });
-            setUserLogged(true);
-            setUserClicked(false);
-            setErrorMessage({ active: false, text: '' });
-            setUserData({ username: '', email: '', password: '' });
-            navigate('/profile');
+            setAppForActiveUser();
           })
           .catch((error) => {
             switch (error.code) {
@@ -204,10 +202,8 @@ const Navbar = () => {
                   <Link
                     onClick={() => {
                       setNoAccount(false);
-                      if (setErrorMessage({ active: false, text: '' })) {
-                        console.log('first');
-                      }
-                    }}
+                      setErrorMessage({ active: false, text: '' }
+                    )}}
                     class='opt'
                   >
                     Login
