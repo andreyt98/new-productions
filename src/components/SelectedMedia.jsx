@@ -41,20 +41,16 @@ const SelectedMedia = () => {
 
 
   //error message component
-  const [open, setOpen] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null)
-
-  const showError = () => {
-    setOpen(true);
-  };
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-    setOpen(false);
+    setShowError(false);
   };
-  //end of error message code
+ // end of error message code
 
   const getFromFirestore = ( documentName,fieldName, callbackToUpdateUIComponent, callbackToStopLoader )=>{
     const document = doc(database, 'users', documentName);
@@ -151,7 +147,7 @@ const SelectedMedia = () => {
       })
       .catch((err) => {
         setErrorMessage("Error saving to favorites, try again later!")
-        showError();
+        setShowError(true);
         return; //todo: set error message un screen
       });
   } 
@@ -298,7 +294,7 @@ const SelectedMedia = () => {
 
           </div>     
 
-        <Snackbar open={open} autoHideDuration={3500} onClose={handleClose}>
+        <Snackbar open={showError} autoHideDuration={3500} onClose={handleClose}>
           <Alert
             onClose={handleClose}
             severity="error"
