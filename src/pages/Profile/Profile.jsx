@@ -171,13 +171,13 @@ const Profile = () => {
                     if (edit) {
                       // TODO: use react
                       document.querySelectorAll('.card').forEach((card) => {
-                        card.style.border = '3px solid transparent';
+                        card.style.border = '3px solid transparent';                        
                       });
                     }
                     setCheckedMedia([]);
                   }}
                 >
-                  <i className='bi bi-pencil-square'></i> Edit
+                  <i className='bi bi-pencil-square'></i> {edit? 'Done' : 'Edit'}
                 </p>
 
                 {checkedMedia.length > 0 && (
@@ -262,7 +262,7 @@ const Profile = () => {
                     setCheckedMedia([]);
                   }}
                 >
-                  <i className='bi bi-pencil-square'></i> Edit
+                  <i className='bi bi-pencil-square'></i> {edit? 'Done' : 'Edit'}
                 </p>
 
                 {checkedMedia.length > 0 && (
