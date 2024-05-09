@@ -7,7 +7,6 @@ import Error from './Error';
 import Avatar from '@mui/material/Avatar';
 import { deepPurple } from '@mui/material/colors';
 
-
 import { auth } from '../firebase/firebase.config';
 
 const Navbar = () => {
@@ -56,12 +55,12 @@ const Navbar = () => {
               case 'auth/email-already-in-use':
                 setErrorMessage({ active: true, text: 'That email is already registered' });
                 break;
-            }
-            switch (error.code) {
               case 'auth/weak-password':
-                setErrorMessage({ active: true, text: 'password should have at least 6 characters' });
+                  setErrorMessage({ active: true, text: 'password should have at least 6 characters' });
                 break;
-            }
+              default:
+                setErrorMessage({ active: true, text: 'There was an unexpected error, please trying again.' });
+            }            
           })
       : loginUser(userData)
           .then((user) => {
@@ -72,11 +71,11 @@ const Navbar = () => {
               case 'auth/invalid-credential':
                 setErrorMessage({ active: true, text: 'incorrect email o password, try again.' });
                 break;
-            }
-            switch (error.code) {
               case 'auth/too-many-requests':
                 setErrorMessage({ active: true, text: 'Too many invalid requests, wait a couple of minutes before trying again.' });
                 break;
+              default:
+                setErrorMessage({ active: true, text: 'There was an unexpected error, please trying again.' });
             }
             setUserLogged(false);
             setUserClicked(true);
@@ -138,8 +137,6 @@ const Navbar = () => {
           :
           <i className='bi bi-person-circle' id='user'></i>
         }
- 
-
       </Link>
 
       {userClicked && (
