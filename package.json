@@ -7,8 +7,9 @@
     "dev": "vite --host --open",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "firebase deploy --only hosting",
-    "deployall": "npm run build && git push && npm run deploy"
+    "deploy": "vite build && firebase deploy --only hosting",
+    "testdeploy": "vite build && firebase hosting:channel:deploy test",
+    "deployandpush": "npm run deploy && git push "
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
