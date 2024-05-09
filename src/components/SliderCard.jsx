@@ -45,6 +45,10 @@ const SliderCard = ({ result, changeMediaType = null }) => {
   return (
     poster && (
       <div className='card' data-id={result.id}>
+        <span className='vote'>{result.vote_average.toString().slice(0,3)}</span>
+        {changeMediaType? 
+        <span className='mediatype'>{result.mediatype ||result.media_type}</span>: null  
+      }
         <Link
           to={`${result.name || result.title}`}
           onClick={() => {
@@ -60,7 +64,7 @@ const SliderCard = ({ result, changeMediaType = null }) => {
         </Link>
         {edit &&
         
-        <span>
+        <span id='checkbox'>
           <Checkbox
             onChange={handleChange}
             inputProps={{ 'aria-label': 'controlled' }}

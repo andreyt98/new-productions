@@ -113,4 +113,14 @@
       }
     }
   }
+
+  .vote {
+    background-color: #0c0c0cbb;    border-radius: 15px;
+    padding: .1rem .5rem;
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    font-size: 65%;
+    border: 1px solid #00a48190;    
+  }
 }

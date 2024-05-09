@@ -83,6 +83,8 @@ const Hero = () => {
               }}
               key={result.id}
             >
+              <span className='vote'>{result.vote_average.toString().slice(0,3)}</span>
+
               <img src={`${image({ size: 500 })}${result.poster_path}`} key={result.id} data-id={result.id} data-media-type={result.media_type} alt='media-image' />
             </div>
           );

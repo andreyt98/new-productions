@@ -86,7 +86,7 @@ const SelectedMedia = () => {
       setOverview(overview);
       setReleaseDate(release_date?.slice(0, 4) || first_air_date?.slice(0, 4));
       setGenres(genres.map((genre) => genre.name));
-      setVote(String(vote_average).slice(0, 1));
+      setVote(String(vote_average).slice(0, 3));
 
       let initialBackground = window.innerWidth >= 640 ? `${image({ size: 1280 })}${backdrop_path}` : `${image({ size: 500 })}${poster_path}`;
       setHeroBackground(initialBackground);
@@ -112,7 +112,7 @@ const SelectedMedia = () => {
   }, []);
 
 
-  const handleSaveOrDelete = (documentName, referenceOfClickedElement,title,poster,fieldName, callbackToUpdateUIComponent) =>{
+  const handleSaveOrDelete = (documentName, referenceOfClickedElement,title,poster,vote,fieldName, callbackToUpdateUIComponent) =>{
     //reference of document 'documentName' from 'users' colection 
     const document = doc(database, 'users', documentName);
     
@@ -123,7 +123,7 @@ const SelectedMedia = () => {
           const idAlreadySaved = [...Object.values(dataSaved[fieldName] || {})].find((el) => el.id == currentId);
           
           if (!idAlreadySaved) {
-            const newData = [...Object.values(dataSaved[fieldName] || {}), { id: currentId, mediatype: referenceOfClickedElement.current.dataset.mediatype, title: title, poster_path: poster }];
+            const newData = [...Object.values(dataSaved[fieldName] || {}), { id: currentId, mediatype: referenceOfClickedElement.current.dataset.mediatype, title: title,vote_average:vote, poster_path: poster }];
 
             const updateData = {};
             updateData[fieldName] = newData;
@@ -140,7 +140,7 @@ const SelectedMedia = () => {
           }
         } else {
           const updateData = {};
-          updateData[fieldName] =[{ id: currentId, mediatype: referenceOfClickedElement.current.dataset.mediatype, title: title, poster_path: poster }] 
+          updateData[fieldName] =[{ id: currentId, mediatype: referenceOfClickedElement.current.dataset.mediatype, title: title,vote_average:vote, poster_path: poster }] 
           setDoc(doc(database, 'users', documentName),updateData )
           callbackToUpdateUIComponent(true);
         }
@@ -213,7 +213,7 @@ const SelectedMedia = () => {
                             className={addedToFavs ? 'bi bi-check-circle-fill' : 'bi bi-plus-circle'}
                             style={{fontSize:'200%',}}
                             onClick={() => {
-                              handleSaveOrDelete(firebaseActiveUser.uid,mediaTypeRef,title,poster,'favorites',setAddedToFavs);
+                              handleSaveOrDelete(firebaseActiveUser.uid,mediaTypeRef,title,poster,vote,'favorites',setAddedToFavs);
                             }}
                           ></i>
                         </Tooltip>
@@ -230,7 +230,7 @@ const SelectedMedia = () => {
                           id='watchlist-icon'
                           className={addedtoWatchList ? 'bi bi-eye-fill' : 'bi bi-eye'}
                           onClick={() => {
-                            handleSaveOrDelete(firebaseActiveUser.uid,mediaTypeRef2,title,poster,'watchlist',setAddedtoWatchList);
+                            handleSaveOrDelete(firebaseActiveUser.uid,mediaTypeRef2,title,poster,vote,'watchlist',setAddedtoWatchList);
                           }}                       
                         ></i>
                         </Tooltip>

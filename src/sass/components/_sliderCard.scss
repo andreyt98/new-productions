@@ -5,10 +5,29 @@
   transition: all 0.2s;
   overflow: hidden;
 
-  span{
+  #checkbox{
     position: absolute;
     top: 2px;
     right: 2px;
+  }
+
+  .vote,.mediatype {
+    border-radius: 15px;
+    padding: .1rem .5rem;
+    position: absolute;
+    font-size: 65%;
+    z-index: 2;
+    border: 1px solid #00a48190;    
+  }
+  .vote{
+    background-color: #0c0c0cbb;
+    top: 5px;
+    left:  5px;  
+  }
+  .mediatype{
+    background-color: #0c0c0cbb;
+    left: 5px;
+    bottom: 12px;
   }
 }
 .content {
@@ -19,3 +38,4 @@
     object-fit: cover;
   }
 }
+
