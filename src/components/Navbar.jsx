@@ -34,7 +34,7 @@ const Navbar = () => {
     });
   }, []);
 
-  function setAppForActiveUser(){
+  function setAppForActiveUser(user){
     setFirebaseActiveUser({ email: user.user.email, uid: user.user.uid });
     setUserLogged(true);
     setUserClicked(false);
@@ -48,7 +48,7 @@ const Navbar = () => {
     noAccount
       ? createUser(userData)
           .then((user) => {
-            setAppForActiveUser();
+            setAppForActiveUser(user);
           })
           .catch((error) => {
             switch (error.code) {
@@ -64,7 +64,7 @@ const Navbar = () => {
           })
       : loginUser(userData)
           .then((user) => {
-            setAppForActiveUser();
+            setAppForActiveUser(user);
           })
           .catch((error) => {
             switch (error.code) {
