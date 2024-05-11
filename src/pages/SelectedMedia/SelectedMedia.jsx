@@ -17,6 +17,7 @@ import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { selectedMedia_InitialState, selectedM_Actions, reducerFunction } from '../../helpers/reducerSelectedMedia';
+import { getFromDB } from '../../firebase/getFromDB';
 
 const SelectedMedia = () => {
   const [state, dispatch] = useReducer(reducerFunction, selectedMedia_InitialState);
@@ -43,29 +44,6 @@ const SelectedMedia = () => {
     setShowError(false);
   };
   // end of error message code
-
-  const getFromFirestore = (documentName, fieldName, callbackToUpdateUIComponent, callbackToStopLoader) => {
-    const document = doc(database, 'users', documentName);
-
-    getDoc(document)
-      .then((documentResult) => {
-        if (!documentResult.exists()) {
-          callbackToStopLoader(false);
-          return;
-        }
-
-        const allFieldsFromDocument = documentResult.data();
-        const savedIds = [...Object.values(allFieldsFromDocument[fieldName] || {})];
-
-        const idAlreadySaved = savedIds.find((el) => el.id == currentId);
-
-        idAlreadySaved ? callbackToUpdateUIComponent(true) : callbackToUpdateUIComponent(false);
-        callbackToStopLoader(false);
-      })
-      .catch((err) => {
-        return; //todo: set error message un screen
-      });
-  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -103,8 +81,8 @@ const SelectedMedia = () => {
       }); //todo: display error in screen
 
     if (userLogged) {
-      getFromFirestore(firebaseActiveUser.uid, 'favorites', setAddedToFavs, setLoadingFavs);
-      getFromFirestore(firebaseActiveUser.uid, 'watchlist', setAddedtoWatchList, setLoadingWatchlist);
+      getFromDB(firebaseActiveUser.uid, 'favorites', setAddedToFavs, setLoadingFavs,currentId);
+      getFromDB(firebaseActiveUser.uid, 'watchlist', setAddedtoWatchList, setLoadingWatchlist,currentId);
     }
   }, []);
 
