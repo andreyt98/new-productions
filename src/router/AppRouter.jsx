@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import MovieSection from '../components/MovieSection';
+import MovieSection from '../pages/MovieSection/MovieSection';
 import Navbar from '../components/Navbar';
 import SearchSection from '../pages/SearchSection/index';
-import TvSection from '../components/TvSection';
+import TvSection from '../pages/TvSection/TvSection';
 import Trailer from '../components/Trailer';
 import MediaData from '../components/MediaData';
-import SelectedMedia from '../components/SelectedMedia';
+import SelectedMedia from '../pages/SelectedMedia/SelectedMedia';
 import Profile from '../pages/Profile/Profile';
 
 const AppRouter = () => {
