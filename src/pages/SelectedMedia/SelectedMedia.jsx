@@ -5,8 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { Context } from '../../context/Context';
 import { getById } from '../../helpers/getById';
 import { getCast } from '../../helpers/getCast';
-import { database } from '../../firebase/firebase.config';
-import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import Tooltip from '@mui/material/Tooltip';
 import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/system';
@@ -18,6 +16,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { selectedMedia_InitialState, selectedM_Actions, reducerFunction } from '../../helpers/reducerSelectedMedia';
 import { getFromDB } from '../../firebase/getFromDB';
+import { handle_favs_watchlists } from '../../firebase/handle_favs_watchlists';
 
 const SelectedMedia = () => {
   const [state, dispatch] = useReducer(reducerFunction, selectedMedia_InitialState);
@@ -86,45 +85,6 @@ const SelectedMedia = () => {
     }
   }, []);
 
-  const handleSaveOrDelete = (documentName, referenceOfClickedElement, title, poster, vote, fieldName, callbackToUpdateUIComponent) => {
-    //reference of document 'documentName' from 'users' colection
-    const document = doc(database, 'users', documentName);
-
-    getDoc(document)
-      .then((documentResult) => {
-        if (documentResult.exists()) {
-          const dataSaved = documentResult.data();
-          const idAlreadySaved = [...Object.values(dataSaved[fieldName] || {})].find((el) => el.id == currentId);
-
-          if (!idAlreadySaved) {
-            const newData = [...Object.values(dataSaved[fieldName] || {}), { id: currentId, mediatype: referenceOfClickedElement.current.dataset.mediatype, title: state.title, vote_average: state.vote, poster_path: state.poster }];
-
-            const updateData = {};
-            updateData[fieldName] = newData;
-            updateDoc(document, updateData);
-            callbackToUpdateUIComponent(true);
-          } else {
-            const newData = [...Object.values(dataSaved[fieldName]).filter((el) => el.id != idAlreadySaved.id)];
-            const updateData = {};
-            updateData[fieldName] = newData;
-            updateDoc(document, updateData);
-
-            callbackToUpdateUIComponent(false); //to-do: set data saved correctly message un screen
-          }
-        } else {
-          const updateData = {};
-          updateData[fieldName] = [{ id: currentId, mediatype: referenceOfClickedElement.current.dataset.mediatype, title: title, vote_average: vote, poster_path: poster }];
-          setDoc(doc(database, 'users', documentName), updateData);
-          callbackToUpdateUIComponent(true);
-        }
-      })
-      .catch((err) => {
-        setErrorMessage('Error saving to favorites, try again later!');
-        setShowError(true);
-        return; //todo: set error message un screen
-      });
-  };
-
   function handleBackClick() {
     window.scrollTo(0, 0);
     const fullPath = window.location.pathname;
@@ -183,7 +143,8 @@ const SelectedMedia = () => {
                         className={addedToFavs ? 'bi bi-check-circle-fill' : 'bi bi-plus-circle'}
                         style={{ fontSize: '200%' }}
                         onClick={() => {
-                          handleSaveOrDelete(firebaseActiveUser.uid, mediaTypeRef, state.title, state.poster, state.vote, 'favorites', setAddedToFavs);
+                          handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef, state, 'favorites', setAddedToFavs,currentId,setErrorMessage,
+                          setShowError);
                         }}
                       ></i>
                     </Tooltip>
@@ -200,7 +161,8 @@ const SelectedMedia = () => {
                         id='watchlist-icon'
                         className={addedtoWatchList ? 'bi bi-eye-fill' : 'bi bi-eye'}
                         onClick={() => {
-                          handleSaveOrDelete(firebaseActiveUser.uid, mediaTypeRef2, state.title, state.poster, state.vote, 'watchlist', setAddedtoWatchList);
+                          handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef2, state, 'watchlist', setAddedtoWatchList,currentId,setErrorMessage,
+                          setShowError);
                         }}
                       ></i>
                     </Tooltip>
