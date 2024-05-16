@@ -7,7 +7,6 @@ import Checkbox from '@mui/material/Checkbox';
 
 
 
-
 const SliderCard = ({ result, changeMediaType = null }) => {
   const [poster, setPoster] = useState(null);
   const { setCurrentId, setCurrentMediaType,edit, checkedMedia, setCheckedMedia } = useContext(Context);
@@ -48,9 +47,9 @@ const SliderCard = ({ result, changeMediaType = null }) => {
         <span className='vote'>{result.vote_average.toString().slice(0,3)}</span>
         {changeMediaType? 
         <span className='mediatype'>{result.mediatype ||result.media_type}</span>: null  
-      }
+        }      
         <Link
-          to={`${result.name || result.title}`}
+          to={`/${changeMediaType == 'movie' ? 'movies' : 'tvshows'}/${result.name || result.title}`}
           onClick={() => {
             setCurrentId(result.id);
             if (changeMediaType) {

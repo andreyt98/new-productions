@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useRef, useReducer } from 'react';
 import { image } from '../../helpers/api.config';
 import { handleTrailerClick } from '../../helpers/getTrailer';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Context } from '../../context/Context';
 import { getById } from '../../helpers/getById';
 import { getCast } from '../../helpers/getCast';
@@ -17,10 +17,15 @@ import Alert from '@mui/material/Alert';
 import { selectedMedia_InitialState, selectedM_Actions, reducerFunction } from '../../helpers/reducerSelectedMedia';
 import { getFromDB } from '../../firebase/getFromDB';
 import { handle_favs_watchlists } from '../../firebase/handle_favs_watchlists';
+import {getSimilar}  from '../../helpers/getSimilar';
+import SliderCard from '../../components/SliderCard';
+import Slider from '../../components/Slider';
 
 const SelectedMedia = () => {
+  const {id} = useParams();
   const [state, dispatch] = useReducer(reducerFunction, selectedMedia_InitialState);
 
+  const [similar, setSimilar] = useState([]);
   const [loadingCast, setLoadingCast] = useState(true);
   const [loadingFavs, setLoadingFavs] = useState(true);
   const [loadingWatchlist, setLoadingWatchlist] = useState(true);
@@ -35,6 +40,7 @@ const SelectedMedia = () => {
   //error message component
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [routeKey, setRouteKey] = useState(0); // Agrega un estado para la clave
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -74,6 +80,14 @@ const SelectedMedia = () => {
           .catch(() => {
             throw new Error();
           });
+
+          getSimilar(mediaType, currentId)
+          .then((data) => {
+            setSimilar(data.results);
+          })
+          .catch(() => {
+            throw new Error();
+          });
       })
       .catch(() => {
         setLoadingCast(false);
@@ -83,7 +97,9 @@ const SelectedMedia = () => {
       getFromDB(firebaseActiveUser.uid, 'favorites', setAddedToFavs, setLoadingFavs,currentId);
       getFromDB(firebaseActiveUser.uid, 'watchlist', setAddedtoWatchList, setLoadingWatchlist,currentId);
     }
-  }, []);
+    setRouteKey(prevKey => prevKey + 1);
+
+  }, [id]);
 
   function handleBackClick() {
     window.scrollTo(0, 0);
@@ -181,7 +197,7 @@ const SelectedMedia = () => {
           </div>
         </div>
 
-        <Tabs defaultValue={0} style={{ marginTop: '50px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+        <Tabs key={routeKey} defaultValue={0} style={{ marginTop: '50px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           <TabsList>
             <Tab value={0} style={{ border: 'none' }}>
               Cast{' '}
@@ -226,7 +242,15 @@ const SelectedMedia = () => {
             <p>soon..</p>
           </TabPanel>
           <TabPanel value={2}>
-            <p>soon..</p>
+            <div className="similar">
+            {
+              similar.map((result)=>{
+                return(
+                  <SliderCard result={result} changeMediaType={currentMediaType == 'movies'? 'movie' : 'tv'}/>
+                )
+              })
+            }
+            </div>
           </TabPanel>
         </Tabs>
       </div>
