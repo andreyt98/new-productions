@@ -1,7 +1,5 @@
 .selected-media-container {
-  height: 1000px;
   position: relative;
-  overflow: auto;
 
   .bi-arrow-left {
     position: absolute;
@@ -171,4 +169,20 @@
 .bi-check-circle-fill,.bi-eye-fill {
   transition: all 0.2s;
   color: var(--primary);
+}
+
+.similar {
+  padding: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  @media #{$xss} {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media #{$sm} {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @media #{$md} {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
