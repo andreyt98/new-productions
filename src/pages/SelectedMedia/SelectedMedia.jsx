@@ -17,12 +17,11 @@ import Alert from '@mui/material/Alert';
 import { selectedMedia_InitialState, selectedM_Actions, reducerFunction } from '../../helpers/reducerSelectedMedia';
 import { getFromDB } from '../../firebase/getFromDB';
 import { handle_favs_watchlists } from '../../firebase/handle_favs_watchlists';
-import {getSimilar}  from '../../helpers/getSimilar';
+import { getSimilar } from '../../helpers/getSimilar';
 import SliderCard from '../../components/SliderCard';
-import Slider from '../../components/Slider';
 
 const SelectedMedia = () => {
-  const {id} = useParams();
+  const { id } = useParams();
   const [state, dispatch] = useReducer(reducerFunction, selectedMedia_InitialState);
 
   const [similar, setSimilar] = useState([]);
@@ -68,7 +67,7 @@ const SelectedMedia = () => {
             releaseDate: release_date?.slice(0, 4) || first_air_date?.slice(0, 4),
             vote: String(vote_average).slice(0, 3),
             genres: genres.map((genre) => genre.name),
-            loadingAllData: false
+            loadingAllData: false,
           },
         });
 
@@ -81,7 +80,7 @@ const SelectedMedia = () => {
             throw new Error();
           });
 
-          getSimilar(mediaType, currentId)
+        getSimilar(mediaType, currentId)
           .then((data) => {
             setSimilar(data.results);
           })
@@ -94,11 +93,10 @@ const SelectedMedia = () => {
       }); //todo: display error in screen
 
     if (userLogged) {
-      getFromDB(firebaseActiveUser.uid, 'favorites', setAddedToFavs, setLoadingFavs,currentId);
-      getFromDB(firebaseActiveUser.uid, 'watchlist', setAddedtoWatchList, setLoadingWatchlist,currentId);
+      getFromDB(firebaseActiveUser.uid, 'favorites', setAddedToFavs, setLoadingFavs, currentId);
+      getFromDB(firebaseActiveUser.uid, 'watchlist', setAddedtoWatchList, setLoadingWatchlist, currentId);
     }
-    setRouteKey(prevKey => prevKey + 1);
-
+    setRouteKey((prevKey) => prevKey + 1);
   }, [id]);
 
   function handleBackClick() {
@@ -113,14 +111,13 @@ const SelectedMedia = () => {
       <CircularProgress color='inherit' size={100} style={{ marginTop: '100px' }} />
     </div>
   ) : (
-    <div className='selected-media-container'>
-      <i className='bi bi-arrow-left' onClick={handleBackClick}></i>
-
+    <>
       <div className='media-hero' style={{ backgroundImage: `url(${state.heroBackground})`, opacity: '0.6' }}>
         <div className='overlay'></div>
       </div>
 
       <div className='hero-selected-media'>
+        <i className='bi bi-arrow-left' onClick={handleBackClick}></i>
         <div className='selected-media-info-container'>
           <img src={state.poster} alt='' id='poster' />
 
@@ -159,8 +156,7 @@ const SelectedMedia = () => {
                         className={addedToFavs ? 'bi bi-check-circle-fill' : 'bi bi-plus-circle'}
                         style={{ fontSize: '200%' }}
                         onClick={() => {
-                          handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef, state, 'favorites', setAddedToFavs,currentId,setErrorMessage,
-                          setShowError);
+                          handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef, state, 'favorites', setAddedToFavs, currentId, setErrorMessage, setShowError);
                         }}
                       ></i>
                     </Tooltip>
@@ -177,8 +173,7 @@ const SelectedMedia = () => {
                         id='watchlist-icon'
                         className={addedtoWatchList ? 'bi bi-eye-fill' : 'bi bi-eye'}
                         onClick={() => {
-                          handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef2, state, 'watchlist', setAddedtoWatchList,currentId,setErrorMessage,
-                          setShowError);
+                          handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef2, state, 'watchlist', setAddedtoWatchList, currentId, setErrorMessage, setShowError);
                         }}
                       ></i>
                     </Tooltip>
@@ -197,62 +192,60 @@ const SelectedMedia = () => {
           </div>
         </div>
 
-        <Tabs key={routeKey} defaultValue={0} style={{ marginTop: '50px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          <TabsList>
-            <Tab value={0} style={{ border: 'none' }}>
-              Cast{' '}
-            </Tab>
-            <Tab value={1} style={{ border: 'none' }}>
-              Reviews
-            </Tab>
-            <Tab value={2} style={{ border: 'none' }}>
-              Similar
-            </Tab>
-          </TabsList>
+        <div className='tabs'>
+          <Tabs defaultValue={0} style={{ marginTop: '50px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+            <TabsList>
+              <Tab value={0} style={{ border: 'none' }}>
+                Cast{' '}
+              </Tab>
+              <Tab value={1} style={{ border: 'none' }}>
+                Reviews
+              </Tab>
+              <Tab value={2} style={{ border: 'none' }}>
+                Similar
+              </Tab>
+            </TabsList>
 
-          <TabPanel value={0}>
-            {loadingCast ? (
-              <CircularProgress color='inherit' size={40} />
-            ) : (
-              cast && (
-                <section className='selected-media-cast'>
-                  <div className='cast'>
-                    {cast.map((cast) => {
-                      return (
-                        <div className='cast__member' key={cast.id + 543425}>
-                          <img
-                            src={
-                              cast.profile_path
-                                ? `${image({ size: 500 })}${cast.profile_path}`
-                                : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
-                            }
-                            alt='cast-member'
-                          />
-                          <p className='cast__member__name'>{cast.name}</p>
-                          <p className='cast__member__character'>{cast.character}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </section>
-              )
-            )}
-          </TabPanel>
-          <TabPanel value={1}>
-            <p>soon..</p>
-          </TabPanel>
-          <TabPanel value={2}>
-            <div className="similar">
-            {
-              similar.map((result)=>{
-                return(
-                  <SliderCard result={result} changeMediaType={currentMediaType == 'movies'? 'movie' : 'tv'}/>
+            <TabPanel value={0}>
+              {loadingCast ? (
+                <CircularProgress color='inherit' size={40} />
+              ) : (
+                cast && (
+                  <section className='selected-media-cast'>
+                    <div className='cast'>
+                      {cast.map((cast) => {
+                        return (
+                          <div className='cast__member' key={cast.id + 543425}>
+                            <img
+                              src={
+                                cast.profile_path
+                                  ? `${image({ size: 500 })}${cast.profile_path}`
+                                  : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
+                              }
+                              alt='cast-member'
+                            />
+                            <p className='cast__member__name'>{cast.name}</p>
+                            <p className='cast__member__character'>{cast.character}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
                 )
-              })
-            }
-            </div>
-          </TabPanel>
-        </Tabs>
+              )}
+            </TabPanel>
+            <TabPanel value={1}>
+              <p>soon..</p>
+            </TabPanel>
+            <TabPanel value={2}>
+              <div className='similar'>
+                {similar.map((result) => {
+                  return <SliderCard result={result} changeMediaType={currentMediaType == 'movies' ? 'movie' : 'tv'} />;
+                })}
+              </div>
+            </TabPanel>
+          </Tabs>
+        </div>
       </div>
 
       <Snackbar open={showError} autoHideDuration={3500} onClose={handleClose}>
@@ -260,7 +253,7 @@ const SelectedMedia = () => {
           {errorMessage}
         </Alert>
       </Snackbar>
-    </div>
+    </>
   );
 };
 
