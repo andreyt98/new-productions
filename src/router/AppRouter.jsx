@@ -8,13 +8,14 @@ import Trailer from '../components/Trailer';
 import MediaData from '../components/MediaData';
 import SelectedMedia from '../pages/SelectedMedia/SelectedMedia';
 import Profile from '../pages/Profile/Profile';
+import FirstTimeVisitModal from '../components/FirstTimeVisitModal';
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
       <Navbar />
       <MediaData />
-
+      <FirstTimeVisitModal/>
       <Routes>
         <Route path='/movies' element={<MovieSection />}></Route>
         <Route path='/tvshows' element={<TvSection />}></Route>
