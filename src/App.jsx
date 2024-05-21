@@ -21,6 +21,8 @@ function App() {
   const [checkedMedia, setCheckedMedia] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
 
+  const [isMember, setIsMember] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const contextValues = {
     currentId,
@@ -54,7 +56,10 @@ function App() {
     checkedMedia,
     setCheckedMedia,
     searchResults,
-    setSearchResults
+    setSearchResults,
+    isMember,
+    openDialog,
+    setOpenDialog
   };
 
   useEffect(() => {
@@ -62,6 +67,14 @@ function App() {
       if (user) {
         setUserLogged(true);
         setFirebaseActiveUser({ email: user.email, uid: user.uid });
+
+        setIsMember(true);
+        setOpenDialog(false);
+      } else {
+        setTimeout(() => {
+          setIsMember(false);
+          setOpenDialog(true);
+        }, 7000);
       }
     });
   }, []);
