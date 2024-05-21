@@ -89,20 +89,8 @@ const AuthModal = () => {
         </>
       ) : (
         <>
+        {noAccount? 'Sign up' : 'Login'}
           <form onSubmit={(e) => handleSubmit(e)}>
-            {noAccount && (
-              <>
-                <label htmlFor=''>Username</label>
-                <input
-                  type='text'
-                  value={userData.username}
-                  onChange={(e) => {
-                    setUserData({ ...userData, username: e.target.value });
-                  }}
-                  required
-                />
-              </>
-            )}
             <label htmlFor=''>Email</label>
             <input
               type='Email'
