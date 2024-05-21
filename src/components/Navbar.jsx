@@ -6,7 +6,7 @@ import AuthModal from './AuthModal';
 
 const Navbar = () => {
   const navRef = useRef();
-  const { setCurrentMediaType, userClicked, setUserClicked, userLogged, firebaseActiveUser } = useContext(Context);
+  const { setCurrentMediaType, userClicked, setUserClicked } = useContext(Context);
   const [errorMessage, setErrorMessage] = useState({ active: false, text: '' });
 
   useEffect(() => {
@@ -59,6 +59,7 @@ const Navbar = () => {
       </ul>
       <Link className='nav-item-box'
         onClick={() => {
+          localStorage.setItem("auth",JSON.stringify("auth clicked"));
           setUserClicked(!userClicked);
           if (errorMessage.active) {
             setErrorMessage({ active: false, text: '' });

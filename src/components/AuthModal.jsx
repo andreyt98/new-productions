@@ -6,8 +6,13 @@ import { loginUser } from '../firebase/loginUser';
 import Error from './Error';
 import { auth } from '../firebase/firebase.config';
 
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+
 const AuthModal = () => {
-  const { setUserClicked, userLogged, setUserLogged, noAccount, setNoAccount, setFirebaseActiveUser } = useContext(Context);
+  const { setUserClicked, userClicked, userLogged, setUserLogged, noAccount, setNoAccount, setFirebaseActiveUser } = useContext(Context);
 
   const [userData, setUserData] = useState({ username: '', email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState({ active: false, text: '' });
@@ -72,89 +77,102 @@ const AuthModal = () => {
   };
 
   return (
-    <div className='user-options'>
-      {userLogged ? (
-        <>
-          <Link
-            to={'/profile'}
-            onClick={() => {
-              setUserClicked(false);
-            }}
-          >
-            <i className='bi bi-person'></i> Profile{' '}
-          </Link>
-          <Link to={''} onClick={handleLogout}>
-            <i className='bi bi-box-arrow-right'></i> Log out
-          </Link>
-        </>
-      ) : (
-        <>
-          <form onSubmit={(e) => handleSubmit(e)}>
-            {noAccount && (
+    <>
+      <Dialog style={{backgroundColor: '#0000005e'}}
+        open={userClicked}
+        onClose={() => {
+          setUserClicked(false);
+        }}
+        aria-labelledby='responsive-dialog-title'
+      >
+
+      <DialogActions  style={{backgroundColor:'white', padding: '0'}}>
+        <Button
+          style={{ backgroundColor: '', color: 'black' }}
+          className='button'
+          onClick={() => {
+            setUserClicked(false);
+          }}
+        >
+          <i class="bi bi-x-circle"></i>
+        </Button>
+      </DialogActions>
+
+        <DialogContent style={{ backgroundColor: 'white', textShadow: 'none', color:'black' }}>
+          <div className='user-options'>
+            {userLogged ? (
               <>
-                <label htmlFor=''>Username</label>
-                <input
-                  type='text'
-                  value={userData.username}
-                  onChange={(e) => {
-                    setUserData({ ...userData, username: e.target.value });
+                <Link
+                  to={'/profile'}
+                  onClick={() => {
+                    setUserClicked(false);
                   }}
-                  required
-                />
+                >
+                  <i className='bi bi-person'></i> Profile{' '}
+                </Link>
+                <Link to={''} onClick={handleLogout}>
+                  <i className='bi bi-box-arrow-right'></i> Log out
+                </Link>
+              </>
+            ) : (
+              <>
+                {noAccount ? 'Sign up' : 'Login'}
+                <form onSubmit={(e) => handleSubmit(e)}>
+                  <label htmlFor=''>Email</label>
+                  <input
+                    type='Email'
+                    onChange={(e) => {
+                      setUserData({ ...userData, email: e.target.value });
+                    }}
+                    required
+                  />
+
+                  <label htmlFor=''>Password</label>
+                  <input
+                    type='password'
+                    onChange={(e) => {
+                      setUserData({ ...userData, password: e.target.value });
+                    }}
+                    required
+                  />
+
+                  {errorMessage.active && <Error errorMessage={errorMessage} />}
+
+                  <button type='submit'>{noAccount ? 'Create account' : 'Login'}</button>
+                </form>
+                {noAccount ? (
+                  <p>
+                    Already have an account?{' '}
+                    <Link
+                      onClick={() => {
+                        setNoAccount(false);
+                        setErrorMessage({ active: false, text: '' });
+                      }}
+                      className='opt'
+                    >
+                      Login
+                    </Link>
+                  </p>
+                ) : (
+                  <p>
+                    Don't have an account?{' '}
+                    <Link
+                      onClick={() => {
+                        setNoAccount(true);
+                        setErrorMessage({ active: false, text: '' });
+                      }}
+                      className='opt'
+                    >
+                      Create account
+                    </Link>
+                  </p>
+                )}
               </>
             )}
-            <label htmlFor=''>Email</label>
-            <input
-              type='Email'
-              onChange={(e) => {
-                setUserData({ ...userData, email: e.target.value });
-              }}
-              required
-            />
-
-            <label htmlFor=''>Password</label>
-            <input
-              type='password'
-              onChange={(e) => {
-                setUserData({ ...userData, password: e.target.value });
-              }}
-              required
-            />
-
-            {errorMessage.active && <Error errorMessage={errorMessage} />}
-
-            <button type='submit'>{noAccount ? 'Create account' : 'Login'}</button>
-          </form>
-          {noAccount ? (
-            <p>
-              Already have an account?{' '}
-              <Link
-                onClick={() => {
-                  setNoAccount(false);
-                  setErrorMessage({ active: false, text: '' });
-                }}
-                className='opt'
-              >
-                Login
-              </Link>
-            </p>
-          ) : (
-            <p>
-              Don't have an account?{' '}
-              <Link
-                onClick={() => {
-                  setNoAccount(true);
-                  setErrorMessage({ active: false, text: '' });
-                }}
-                className='opt'
-              >
-                Create account
-              </Link>
-            </p>
-          )}
-        </>
-      )}
-    </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

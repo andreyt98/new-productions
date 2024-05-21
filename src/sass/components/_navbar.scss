@@ -81,25 +81,14 @@
 .user-options {
   @extend .flex-col-center;
   gap: 1.5rem;
-  position: absolute;
-  height: 400px;
-  bottom: 75px;
-  background-color: rgba(0, 0, 0, 0.949);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.304);
-
-  width: 95%;
-  left: 50%;
-  transform: translateX(-50%);
-
-  @media #{$sm} {
-    padding: 2rem 1.7rem;
-    right: 20px;
-    top: 55px;
-  }
-
-  a:hover {
-    color: var(--primary);
+  text-align: center;
+  padding: 2rem 2.5rem;
+  
+  a{
+    color: black;
+    &:hover{
+      color: var(--primary);
+    }
   }
 
   form {
@@ -110,12 +99,10 @@
     }
 
     input {
-      border: none;
+      border: 1px solid #00000072;
       border-radius: 12px;
       padding: 0.2rem 0.5rem;
-      outline: none;
     }
-
     button {
       margin-top: 10px;
       padding-block: 0.4rem;
@@ -140,4 +127,8 @@
   @extend .flex-col-center;
   align-items: center;
   gap: 0.2rem;
+}
+
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper {
+  width: 100%;
 }
