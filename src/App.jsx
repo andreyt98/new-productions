@@ -14,10 +14,10 @@ function App() {
   const [userLogged, setUserLogged] = useState(false);
   const [noAccount, setNoAccount] = useState(true);
   const [addedToFavs, setAddedToFavs] = useState(false);
-  const [addedtoWatchList, setAddedtoWatchList] = useState(false)
+  const [addedtoWatchList, setAddedtoWatchList] = useState(false);
   const [firebaseActiveUser, setFirebaseActiveUser] = useState({ email: null, uid: null });
-  const [loadingAllData, setLoadingAllData] = useState(true)
-  const [edit, setEdit] = useState(false)
+  const [loadingAllData, setLoadingAllData] = useState(true);
+  const [edit, setEdit] = useState(false);
   const [checkedMedia, setCheckedMedia] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
 
@@ -59,11 +59,14 @@ function App() {
     setSearchResults,
     isMember,
     openDialog,
-    setOpenDialog
+    setOpenDialog,
   };
 
   useEffect(() => {
+    let userInititalValue;
     auth.onAuthStateChanged((user) => {
+      userInititalValue = user;
+
       if (user) {
         setUserLogged(true);
         setFirebaseActiveUser({ email: user.email, uid: user.uid });
@@ -72,8 +75,10 @@ function App() {
         setOpenDialog(false);
       } else {
         setTimeout(() => {
-          setIsMember(false);
-          setOpenDialog(true);
+          if (!user && !localStorage.getItem('auth')) {
+            setIsMember(false);
+            setOpenDialog(true);
+          }
         }, 7000);
       }
     });
