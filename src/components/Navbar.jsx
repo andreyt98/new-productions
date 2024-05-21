@@ -1,8 +1,6 @@
 import { useRef, useEffect, useContext, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Context } from '../context/Context';
-import Avatar from '@mui/material/Avatar';
-import { deepPurple } from '@mui/material/colors';
 
 import AuthModal from './AuthModal';
 
@@ -30,50 +28,45 @@ const Navbar = () => {
 
   return (
     <nav className='nav' ref={navRef}>
-      <NavLink to='search' id='search-btn'>
+      <NavLink to='search' id='search-btn' className='nav-item-box'>
         <i className='bi bi-search'></i>
+        <p className='to-hide-on-desk'>search</p>
       </NavLink>
 
       <ul className={` links`}>
         <li>
-          <NavLink
+          <NavLink className='nav-item-box' 
             to='movies'
             onClick={() => {
               setCurrentMediaType('movies');
             }}
           >
-            {' '}
-            Movies
+            <i className="bi bi-camera-reels to-hide-on-desk"></i>
+            <p>Movies</p>
           </NavLink>
         </li>
         <li>
-          <NavLink
+          <NavLink className='nav-item-box'
             to='tvshows'
             onClick={() => {
               setCurrentMediaType('tvshows');
             }}
           >
-            {' '}
-            TV Shows
+            <i className="bi bi-tv to-hide-on-desk"></i>
+            <p>TV Shows</p>
           </NavLink>
         </li>
       </ul>
-      <Link
+      <Link className='nav-item-box'
         onClick={() => {
           setUserClicked(!userClicked);
           if (errorMessage.active) {
             setErrorMessage({ active: false, text: '' });
           }
-        }}
+        }}        
       >
-        {userLogged ? (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '.4rem' }}>
-            <Avatar sx={{ bgcolor: deepPurple[500], width: 28, height: 28 }}>{firebaseActiveUser && firebaseActiveUser.email.charAt(0).toUpperCase()}</Avatar>
-            <i className='bi bi-caret-down-fill' style={{ fontSize: '14px' }}></i>
-          </div>
-        ) : (
-          <i className='bi bi-person-circle' id='user'></i>
-        )}
+        <i className='bi bi-person-circle' id='user'></i>
+        <p className='to-hide-on-desk'>Me</p>
       </Link>
 
       {userClicked && (
