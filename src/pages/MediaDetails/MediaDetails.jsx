@@ -112,140 +112,139 @@ const SelectedMedia = () => {
     </div>
   ) : (
     <>
-      <div className='media-hero' style={{ backgroundImage: `url(${state.heroBackground})`, opacity: '0.6' }}>
+      <div className='media-details' style={{ backgroundImage: `url(${state.heroBackground})` }}>
         <div className='overlay'></div>
-      </div>
-
-      <div className='hero-selected-media'>
         <i className='bi bi-arrow-left' onClick={handleBackClick}></i>
-        <div className='selected-media-info-container'>
-          <img src={state.poster} alt='' id='poster' />
 
-          <div className='selected-media-info'>
-            <h1 className='title'>{state.title}</h1>
-            <div className='info'>
-              <span>{state.releaseDate}</span>
-              <span>
-                {state.genres.slice(0, 1).join(', ', (genre) => {
-                  return <span>{genre}</span>;
-                })}
-              </span>
-              <span>
-                <i className='bi bi-star-fill' style={{ color: 'yellow' }}></i>
-                {` ${state.vote}`}
-              </span>
-            </div>
+        <div className='media-details__initial-content' style={{ position: 'relative', height: '100%', width: '100%', zIndex: '5' }}>
+          <div className='media-details__info-container'>
+            <img src={state.poster} alt='' id='poster' />
 
-            <div className='overview'>
-              <div className='overview_data'>
-                <p>{state.overview}</p>
+            <div className='info-container-text'>
+              <h1 className='title'>{state.title}</h1>
+              <div className='info'>
+                <span>{state.releaseDate}</span>
+                <span>
+                  {state.genres.slice(0, 1).join(', ', (genre) => {
+                    return <span>{genre}</span>;
+                  })}
+                </span>
+                <span>
+                  <i className='bi bi-star-fill' style={{ color: 'yellow' }}></i>
+                  {` ${state.vote}`}
+                </span>
               </div>
-            </div>
-            <div className='options'>
-              {userLogged && (
-                <>
-                  {loadingFavs ? (
-                    <CircularProgress color='inherit' size={10} />
-                  ) : (
-                    <Tooltip title={addedToFavs ? 'Delete from favorites' : 'Add to favorites'} placement='top'>
-                      <i
-                        data-id={currentId}
-                        ref={mediaTypeRef}
-                        data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
-                        id='favs-icon'
-                        className={addedToFavs ? 'bi bi-check-circle-fill' : 'bi bi-plus-circle'}
-                        style={{ fontSize: '200%' }}
-                        onClick={() => {
-                          handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef, state, 'favorites', setAddedToFavs, currentId, setErrorMessage, setShowError);
-                        }}
-                      ></i>
-                    </Tooltip>
-                  )}
 
-                  {loadingWatchlist ? (
-                    <CircularProgress color='inherit' size={10} />
-                  ) : (
-                    <Tooltip title={addedtoWatchList ? 'Delete from watchlist' : 'Add to watchlist'} placement='top'>
-                      <i
-                        data-id={currentId}
-                        ref={mediaTypeRef2}
-                        data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
-                        id='watchlist-icon'
-                        className={addedtoWatchList ? 'bi bi-eye-fill' : 'bi bi-eye'}
-                        onClick={() => {
-                          handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef2, state, 'watchlist', setAddedtoWatchList, currentId, setErrorMessage, setShowError);
-                        }}
-                      ></i>
-                    </Tooltip>
-                  )}
-                </>
-              )}
-              <button
-                data-id={currentId}
-                onClick={() => {
-                  handleTrailerClick(setOpenTrailer, currentId, currentMediaType, setTrailerKey);
-                }}
-              >
-                Play Trailer
-              </button>
+              <div className='overview'>
+                <div className='overview_data'>
+                  <p>{state.overview}</p>
+                </div>
+              </div>
+              <div className='options'>
+                {userLogged && (
+                  <>
+                    {loadingFavs ? (
+                      <CircularProgress color='inherit' size={10} />
+                    ) : (
+                      <Tooltip title={addedToFavs ? 'Delete from favorites' : 'Add to favorites'} placement='top'>
+                        <i
+                          data-id={currentId}
+                          ref={mediaTypeRef}
+                          data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
+                          id='favs-icon'
+                          className={addedToFavs ? 'bi bi-check-circle-fill' : 'bi bi-plus-circle'}
+                          style={{ fontSize: '200%' }}
+                          onClick={() => {
+                            handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef, state, 'favorites', setAddedToFavs, currentId, setErrorMessage, setShowError);
+                          }}
+                        ></i>
+                      </Tooltip>
+                    )}
+
+                    {loadingWatchlist ? (
+                      <CircularProgress color='inherit' size={10} />
+                    ) : (
+                      <Tooltip title={addedtoWatchList ? 'Delete from watchlist' : 'Add to watchlist'} placement='top'>
+                        <i
+                          data-id={currentId}
+                          ref={mediaTypeRef2}
+                          data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
+                          id='watchlist-icon'
+                          className={addedtoWatchList ? 'bi bi-eye-fill' : 'bi bi-eye'}
+                          onClick={() => {
+                            handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef2, state, 'watchlist', setAddedtoWatchList, currentId, setErrorMessage, setShowError);
+                          }}
+                        ></i>
+                      </Tooltip>
+                    )}
+                  </>
+                )}
+                <button
+                  data-id={currentId}
+                  onClick={() => {
+                    handleTrailerClick(setOpenTrailer, currentId, currentMediaType, setTrailerKey);
+                  }}
+                >
+                  Play Trailer
+                </button>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+      <div className='tabs'>
+        <Tabs defaultValue={0} style={{ marginTop: '50px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+          <TabsList>
+            <Tab value={0} style={{ border: 'none' }}>
+              Cast{' '}
+            </Tab>
+            <Tab value={1} style={{ border: 'none' }}>
+              Reviews
+            </Tab>
+            <Tab value={2} style={{ border: 'none' }}>
+              Similar
+            </Tab>
+          </TabsList>
 
-        <div className='tabs'>
-          <Tabs defaultValue={0} style={{ marginTop: '50px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-            <TabsList>
-              <Tab value={0} style={{ border: 'none' }}>
-                Cast{' '}
-              </Tab>
-              <Tab value={1} style={{ border: 'none' }}>
-                Reviews
-              </Tab>
-              <Tab value={2} style={{ border: 'none' }}>
-                Similar
-              </Tab>
-            </TabsList>
-
-            <TabPanel value={0}>
-              {loadingCast ? (
-                <CircularProgress color='inherit' size={40} />
-              ) : (
-                cast && (
-                  <section className='selected-media-cast'>
-                    <div className='cast'>
-                      {cast.map((cast) => {
-                        return (
-                          <div className='cast__member' key={cast.id + 543425}>
-                            <img
-                              src={
-                                cast.profile_path
-                                  ? `${image({ size: 500 })}${cast.profile_path}`
-                                  : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
-                              }
-                              alt='cast-member'
-                            />
-                            <p className='cast__member__name'>{cast.name}</p>
-                            <p className='cast__member__character'>{cast.character}</p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </section>
-                )
-              )}
-            </TabPanel>
-            <TabPanel value={1}>
-              <p>soon..</p>
-            </TabPanel>
-            <TabPanel value={2}>
-              <div className='similar'>
-                {similar.map((result) => {
-                  return <SliderCard result={result} changeMediaType={currentMediaType == 'movies' ? 'movie' : 'tv'} />;
-                })}
-              </div>
-            </TabPanel>
-          </Tabs>
-        </div>
+          <TabPanel value={0}>
+            {loadingCast ? (
+              <CircularProgress color='inherit' size={40} />
+            ) : (
+              cast && (
+                <section className='selected-media-cast'>
+                  <div className='cast'>
+                    {cast.map((cast) => {
+                      return (
+                        <div className='cast__member' key={cast.id + 543425}>
+                          <img
+                            src={
+                              cast.profile_path
+                                ? `${image({ size: 500 })}${cast.profile_path}`
+                                : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
+                            }
+                            alt='cast-member'
+                          />
+                          <p className='cast__member__name'>{cast.name}</p>
+                          <p className='cast__member__character'>{cast.character}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              )
+            )}
+          </TabPanel>
+          <TabPanel value={1}>
+            <p>soon..</p>
+          </TabPanel>
+          <TabPanel value={2}>
+            <div className='similar'>
+              {similar.map((result) => {
+                return <SliderCard result={result} changeMediaType={currentMediaType == 'movies' ? 'movie' : 'tv'} />;
+              })}
+            </div>
+          </TabPanel>
+        </Tabs>
       </div>
 
       <Snackbar open={showError} autoHideDuration={3500} onClose={handleClose}>
