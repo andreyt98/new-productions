@@ -136,6 +136,10 @@
   gap: 0.2rem;
 }
 
+.MuiDialog-root{
+  z-index: 99999;
+  position: relative;
+}
 .css-1t1j96h-MuiPaper-root-MuiDialog-paper {
   width: 100%;
 }
