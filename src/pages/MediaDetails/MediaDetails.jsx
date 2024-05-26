@@ -14,7 +14,7 @@ import { TabPanel as BaseTabPanel } from '@mui/base/TabPanel';
 import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { selectedMedia_InitialState, selectedM_Actions, reducerFunction } from '../../helpers/reducerSelectedMedia';
+import { mediaDetails_InitialState, mediaD_Actions, reducerFunction } from '../../helpers/reducerSelectedMedia';
 import { getFromDB } from '../../firebase/getFromDB';
 import { handle_favs_watchlists } from '../../firebase/handle_favs_watchlists';
 import { getSimilar } from '../../helpers/getSimilar';
@@ -22,7 +22,7 @@ import SliderCard from '../../components/SliderCard';
 
 const MediaDetails = () => {
   const { id } = useParams();
-  const [state, dispatch] = useReducer(reducerFunction, selectedMedia_InitialState);
+  const [state, dispatch] = useReducer(reducerFunction, mediaDetails_InitialState);
 
   const [similar, setSimilar] = useState([]);
   const [loadingCast, setLoadingCast] = useState(true);
@@ -58,7 +58,7 @@ const MediaDetails = () => {
       .then((data) => {
         const { title, original_name, overview, release_date, first_air_date, genres, vote_average, backdrop_path, poster_path } = data;
         dispatch({
-          type: selectedM_Actions.set_Media_Values,
+          type: mediaD_Actions.set_Media_Values,
           payload: {
             heroBackground: window.innerWidth >= 640 ? `${image({ size: 1280 })}${backdrop_path}` : `${image({ size: 500 })}${poster_path}`,
             title: title || original_name,
@@ -244,7 +244,6 @@ const MediaDetails = () => {
           <TabPanel value={2}>
             <p>soon..</p>
           </TabPanel>
-          
         </Tabs>
       </div>
 

@@ -1,4 +1,4 @@
-export const selectedMedia_InitialState = {
+export const mediaDetails_InitialState = {
   results:[],
   heroBackground:'',
   title:'',
@@ -13,14 +13,14 @@ export const selectedMedia_InitialState = {
   loadingCast:true
 }
 
-export const selectedM_Actions = {
+export const mediaD_Actions = {
   set_Media_Values: 'set_Media_Values',
 }
 
 export const reducerFunction = (state, action) => {
   switch(action.type){
    
-    case selectedM_Actions.set_Media_Values:
+    case mediaD_Actions.set_Media_Values:
       return{
         ...state,
         results:action.payload.results,
