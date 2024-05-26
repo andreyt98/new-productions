@@ -20,7 +20,7 @@ import { handle_favs_watchlists } from '../../firebase/handle_favs_watchlists';
 import { getSimilar } from '../../helpers/getSimilar';
 import SliderCard from '../../components/SliderCard';
 
-const SelectedMedia = () => {
+const MediaDetails = () => {
   const { id } = useParams();
   const [state, dispatch] = useReducer(reducerFunction, selectedMedia_InitialState);
 
@@ -196,17 +196,24 @@ const SelectedMedia = () => {
         <Tabs defaultValue={0} style={{ marginTop: '50px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           <TabsList>
             <Tab value={0} style={{ border: 'none' }}>
-              Cast{' '}
+              Similar
             </Tab>
             <Tab value={1} style={{ border: 'none' }}>
-              Reviews
+              Cast{' '}
             </Tab>
             <Tab value={2} style={{ border: 'none' }}>
-              Similar
+              Reviews
             </Tab>
           </TabsList>
 
           <TabPanel value={0}>
+            <div className='similar'>
+              {similar.map((result) => {
+                return <SliderCard result={result} changeMediaType={currentMediaType == 'movies' ? 'movie' : 'tv'} />;
+              })}
+            </div>
+          </TabPanel>
+          <TabPanel value={1}>
             {loadingCast ? (
               <CircularProgress color='inherit' size={40} />
             ) : (
@@ -234,16 +241,10 @@ const SelectedMedia = () => {
               )
             )}
           </TabPanel>
-          <TabPanel value={1}>
+          <TabPanel value={2}>
             <p>soon..</p>
           </TabPanel>
-          <TabPanel value={2}>
-            <div className='similar'>
-              {similar.map((result) => {
-                return <SliderCard result={result} changeMediaType={currentMediaType == 'movies' ? 'movie' : 'tv'} />;
-              })}
-            </div>
-          </TabPanel>
+          
         </Tabs>
       </div>
 
@@ -256,7 +257,7 @@ const SelectedMedia = () => {
   );
 };
 
-export default SelectedMedia;
+export default MediaDetails;
 
 // base of tab
 const TabsList = styled(BaseTabsList)(

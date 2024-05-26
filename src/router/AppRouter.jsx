@@ -6,7 +6,7 @@ import SearchSection from '../pages/SearchSection/index';
 import TvSection from '../pages/TvSection/TvSection';
 import Trailer from '../components/Trailer';
 import MediaData from '../components/MediaData';
-import SelectedMedia from '../pages/SelectedMedia/SelectedMedia';
+import MediaDetails from '../pages/MediaDetails/MediaDetails';
 import Profile from '../pages/Profile/Profile';
 import FirstTimeVisitModal from '../components/FirstTimeVisitModal';
 
@@ -21,11 +21,11 @@ const AppRouter = () => {
         <Route path='/tvshows' element={<TvSection />}></Route>
         <Route path='/search' element={<SearchSection />}></Route>
         <Route path='/profile' element={<Profile />}></Route>
-        <Route path='/profile/:id' element={<SelectedMedia />}></Route>
+        <Route path='/profile/:id' element={<MediaDetails />}></Route>
 
-        <Route path='/movies/:id' element={<SelectedMedia />}></Route>
-        <Route path='/tvshows/:id' element={<SelectedMedia />}></Route>
-        <Route path='/search/:id' element={<SelectedMedia />}></Route>
+        <Route path='/movies/:id' element={<MediaDetails />}></Route>
+        <Route path='/tvshows/:id' element={<MediaDetails />}></Route>
+        <Route path='/search/:id' element={<MediaDetails />}></Route>
 
         <Route path='*' element={<Navigate to='/movies' />} />
       </Routes>
