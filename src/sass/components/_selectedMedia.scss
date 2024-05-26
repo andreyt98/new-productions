@@ -8,7 +8,15 @@
   background-repeat: no-repeat;
   height: 450px;
   overflow: hidden;
-
+  
+  @media #{$xxl}{
+    height: 800px;
+    background-position: center;
+  }
+  @media #{$fourK}{
+    height: 900px;
+    background-position: top;
+  }
   .overlay {
     background: linear-gradient(to top, #000000, #000000f1, #00000010);
     position: absolute;
