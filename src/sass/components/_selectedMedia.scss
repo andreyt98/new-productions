@@ -178,9 +178,6 @@
   overflow: auto;
   gap: .5rem;
   
-  .card{
-    overflow: visible;
-  }
   @media #{$sm} {
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
@@ -189,5 +186,18 @@
   @media #{$lg} {
     grid-template-columns: repeat(6, 1fr);
     gap: 1rem;
+  }
+  @media #{$xxl} {
+    height: 775px;
+  }
+  @media #{$xxl} {
+    height: 775px;
+  }
+  @media #{$fourK} {
+    grid-template-columns: repeat(8, 1fr);
+    height: 775px;
+  }
+  .card{
+    overflow: visible;
   }
 }
