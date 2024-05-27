@@ -40,7 +40,7 @@ const SliderCard = ({ result, changeMediaType = null }) => {
     if (result.poster_path != null) {
       setPoster(`${image({ size: 500 })}${result.poster_path}`);
     }
-  }, []);
+  }, [result]);
   return (
     poster && (
       <div className='card' data-id={result.id}>
