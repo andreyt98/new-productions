@@ -116,7 +116,7 @@ const MediaDetails = () => {
         <div className='overlay'></div>
         <i className='bi bi-arrow-left' onClick={handleBackClick}></i>
 
-        <div className='media-details__initial-content' style={{ position: 'relative', height: '100%', width: '100%', zIndex: '5' }}>
+        <div className='media-details__initial-content' >
           <div className='media-details__info-container'>
             <img src={state.poster} alt='' id='poster' />
 
