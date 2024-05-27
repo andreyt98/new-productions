@@ -42,6 +42,9 @@
     @media #{$lg} {
       grid-auto-columns: 15%;
     }
+    @media #{$xxl} {
+      grid-auto-columns: 14%;
+    }
     &::-webkit-scrollbar {
       height: 0;
     }    
