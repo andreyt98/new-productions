@@ -29,7 +29,12 @@ const MediaDetails = () => {
   const mediaTypeRef = useRef(null);
   const mediaTypeRef2 = useRef(null);
 
+  const similarContainerRef = useRef(null);
+  const castContainerRef = useRef(null);
+
   const navigate = useNavigate();
+  const [similarMaximized, setSimilarMaximized] = useState(false);
+  const [castMaximized, setCastMaximized] = useState(false);
 
   //error message component
   const [showError, setShowError] = useState(false);
@@ -46,7 +51,7 @@ const MediaDetails = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-
+    setCastMaximized(false);
     const mediaType = currentMediaType == 'movies' ? 'movie' : 'tv';
 
     getById(mediaType, currentId)
@@ -92,6 +97,15 @@ const MediaDetails = () => {
       getFromDB(firebaseActiveUser.uid, 'watchlist', setAddedtoWatchList, setLoadingWatchlist, currentId);
     }
     setRouteKey((prevKey) => prevKey + 1);
+
+    setSimilarMaximized(false);
+
+    if (similarContainerRef.current) {
+      similarContainerRef.current.style.height = '350px';
+    }
+    if (castContainerRef.current) {
+      castContainerRef.current.style.height = '200px';
+    }
   }, [id]);
 
   function handleBackClick() {
@@ -190,23 +204,42 @@ const MediaDetails = () => {
       <div className='extra-data'>
         <span style={{ display: 'flex', justifyContent: 'space-between' }}>
           <h3>Similar</h3>
-          <p style={{ cursor: 'pointer' }}>see all <i className="bi bi-chevron-right"></i></p>
         </span>
-        <div className='similar'>
+        <div className='similar' ref={similarContainerRef} style={{ height: '350px', position: 'relative', zIndex: '1' }}>
           {similar.map((result) => {
             return <SliderCard result={result} changeMediaType={currentMediaType == 'movies' ? 'movie' : 'tv'} />;
           })}
+          <span
+            style={{
+              display: similarMaximized ? 'none' : 'block',
+              zIndex: '2',
+              height: '150px',
+              width: '100%',
+              position: 'absolute',
+              bottom: '0',
+              left: '0',
+              background: similar.length > 10 ? 'linear-gradient(transparent, #000000de, black)' : 'none',
+            }}
+          >
+            <p
+              onClick={() => {
+                (similarContainerRef.current.style.height = '100%'), setSimilarMaximized(true);
+              }}
+              style={{ cursor: 'pointer', textAlign: 'center', position: 'absolute', bottom: '0', left: '50%', transform: 'translate(-50%)' }}
+            >
+              See all
+            </p>
+          </span>
         </div>
 
         <span style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px' }}>
           <h3>Cast</h3>
-          <p style={{ cursor: 'pointer' }}>see all <i className="bi bi-chevron-right"></i></p>
         </span>
         {loadingCast ? (
           <CircularProgress color='inherit' size={40} />
         ) : (
           cast && (
-            <div className='cast'>
+            <div className='cast' ref={castContainerRef} style={{ zIndex: '1', height: cast.length < 10 ? '100%' : '200px', position: 'relative' }}>
               {cast.map((cast) => {
                 return (
                   <div className='cast__member' key={cast.id + 543425}>
@@ -223,6 +256,28 @@ const MediaDetails = () => {
                   </div>
                 );
               })}
+              <span
+                style={{
+                  cursor: 'pointer',
+                  display: cast.length < 10 ? 'none' : 'block',
+                  zIndex: '2',
+                  height: castMaximized ? '0' : '120px',
+                  width: '100%',
+                  position: 'absolute',
+                  bottom: '0',
+                  left: '0',
+                  background: cast.length >= 10 ? 'linear-gradient(rgba(0, 0, 0, 0.12), rgb(0 0 0 / 89%), black)' : 'none',
+                }}
+              >
+                <p
+                  onClick={() => {
+                    (castContainerRef.current.style.height = '100%'), setCastMaximized(true);
+                  }}
+                  style={{ display: castMaximized ? 'none' : 'block', textAlign: 'center', position: 'absolute', bottom: '10px', left: '50%', transform: 'translate(-50%)' }}
+                >
+                  See all
+                </p>
+              </span>
             </div>
           )
         )}
