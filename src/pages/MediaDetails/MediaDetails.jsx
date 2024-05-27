@@ -7,11 +7,6 @@ import { getById } from '../../helpers/getById';
 import { getCast } from '../../helpers/getCast';
 import Tooltip from '@mui/material/Tooltip';
 import CircularProgress from '@mui/material/CircularProgress';
-import { styled } from '@mui/system';
-import { Tabs } from '@mui/base/Tabs';
-import { TabsList as BaseTabsList } from '@mui/base/TabsList';
-import { TabPanel as BaseTabPanel } from '@mui/base/TabPanel';
-import { Tab as BaseTab, tabClasses } from '@mui/base/Tab';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { mediaDetails_InitialState, mediaD_Actions, reducerFunction } from '../../helpers/reducerSelectedMedia';
@@ -116,7 +111,7 @@ const MediaDetails = () => {
         <div className='overlay'></div>
         <i className='bi bi-arrow-left' onClick={handleBackClick}></i>
 
-        <div className='media-details__initial-content' >
+        <div className='media-details__initial-content'>
           <div className='media-details__info-container'>
             <img src={state.poster} alt='' id='poster' />
 
@@ -192,59 +187,45 @@ const MediaDetails = () => {
           </div>
         </div>
       </div>
-      <div className='tabs'>
-        <Tabs defaultValue={0} style={{ marginTop: '50px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          <TabsList>
-            <Tab value={0} style={{ border: 'none' }}>
-              Similar
-            </Tab>
-            <Tab value={1} style={{ border: 'none' }}>
-              Cast{' '}
-            </Tab>
-            <Tab value={2} style={{ border: 'none' }}>
-              Reviews
-            </Tab>
-          </TabsList>
+      <div className='extra-data'>
+        <span style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <h3>Similar</h3>
+          <p style={{ cursor: 'pointer' }}>see all <i className="bi bi-chevron-right"></i></p>
+        </span>
+        <div className='similar'>
+          {similar.map((result) => {
+            return <SliderCard result={result} changeMediaType={currentMediaType == 'movies' ? 'movie' : 'tv'} />;
+          })}
+        </div>
 
-          <TabPanel value={0}>
-            <div className='similar'>
-              {similar.map((result) => {
-                return <SliderCard result={result} changeMediaType={currentMediaType == 'movies' ? 'movie' : 'tv'} />;
+        <span style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px' }}>
+          <h3>Cast</h3>
+          <p style={{ cursor: 'pointer' }}>see all <i className="bi bi-chevron-right"></i></p>
+        </span>
+        {loadingCast ? (
+          <CircularProgress color='inherit' size={40} />
+        ) : (
+          cast && (
+            <div className='cast'>
+              {cast.map((cast) => {
+                return (
+                  <div className='cast__member' key={cast.id + 543425}>
+                    <img
+                      src={
+                        cast.profile_path
+                          ? `${image({ size: 500 })}${cast.profile_path}`
+                          : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
+                      }
+                      alt='cast-member'
+                    />
+                    <p className='cast__member__name'>{cast.name}</p>
+                    <p className='cast__member__character'>{cast.character}</p>
+                  </div>
+                );
               })}
             </div>
-          </TabPanel>
-          <TabPanel value={1}>
-            {loadingCast ? (
-              <CircularProgress color='inherit' size={40} />
-            ) : (
-              cast && (
-                <section className='selected-media-cast'>
-                  <div className='cast'>
-                    {cast.map((cast) => {
-                      return (
-                        <div className='cast__member' key={cast.id + 543425}>
-                          <img
-                            src={
-                              cast.profile_path
-                                ? `${image({ size: 500 })}${cast.profile_path}`
-                                : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
-                            }
-                            alt='cast-member'
-                          />
-                          <p className='cast__member__name'>{cast.name}</p>
-                          <p className='cast__member__character'>{cast.character}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </section>
-              )
-            )}
-          </TabPanel>
-          <TabPanel value={2}>
-            <p>soon..</p>
-          </TabPanel>
-        </Tabs>
+          )
+        )}
       </div>
 
       <Snackbar open={showError} autoHideDuration={3500} onClose={handleClose}>
@@ -257,46 +238,3 @@ const MediaDetails = () => {
 };
 
 export default MediaDetails;
-
-// base of tab
-const TabsList = styled(BaseTabsList)(
-  ({ theme }) => `
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  align-content: space-between;
-  `
-);
-
-//tab buttons
-const Tab = styled(BaseTab)`
-  color: #fff;
-  cursor: pointer;
-  font-size: 0.9rem;
-  background-color: transparent;
-  width: 100%;
-  padding: 10px 12px;
-  margin: 1px;
-  display: flex;
-  justify-content: center;
-  transition: all 0.5s;
-
-  &.${tabClasses.selected} {
-    background-color: #00a87e;
-    color: #fff;
-
-    &:hover {
-      background-color: #00a87e;
-      color: #fff;
-    }
-  }
-`;
-
-//tab content
-const TabPanel = styled(BaseTabPanel)(
-  ({ theme }) => `
-  width: 90%;
-  font-size: 0.875rem;
-  padding: 20px 12px;
-  `
-);
