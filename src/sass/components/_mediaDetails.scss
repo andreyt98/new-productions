@@ -109,14 +109,14 @@
         }
         @media #{$lg} {
           gap: 1rem;
-          font-size: 100%;
         }
-        @media #{$xl} {
+
+        @media #{$xxl} {
           font-size: 110%;
         }
 
         button {
-          @media #{$xl} {
+          @media #{$xxl} {
             font-size: 110%;
           }
         }
@@ -166,19 +166,32 @@
 }
 
 .extra-data {
-  width: 100%;
+  max-width: 100%;
   height: 100%;
   margin-bottom: 4rem;
-  padding-inline: .8rem;
+  padding-inline: 0.8rem;
+  margin: 0 auto;
+  @media #{$lg} {
+    max-width: 85%;
+  }
+  @media #{$xxl} {
+    max-width: 80%;
+  }
   .cast {
-    // border: 1px solid;
     display: grid;
-    grid-gap: .5rem;
+    grid-gap: 0.5rem;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     width: 100%;
     height: 100%;
     padding-block: 0.8rem;
     overflow: hidden;
+
+    @media #{$lg} {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    @media #{$xxl} {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
 
     &__member {
       text-align: center;
@@ -203,14 +216,14 @@
   }
 
   .similar {
-    // border: 1px solid;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     padding-block: 0.8rem;
-   height: 475px;
-   overflow: hidden;
+    height: 475px;
+    overflow: hidden;
     gap: 0.5rem;
+    margin: 0 auto;
 
     @media #{$sm} {
       grid-template-columns: repeat(4, 1fr);
@@ -220,9 +233,6 @@
     @media #{$lg} {
       grid-template-columns: repeat(6, 1fr);
       gap: 1rem;
-    }
-    @media #{$xxl} {
-      height: 775px;
     }
     @media #{$xxl} {
       height: 775px;
@@ -239,7 +249,7 @@
 
 #favs-icon,
 #watchlist-icon {
-  font-size: 250%;
+  font-size: 230%;
 }
 
 .bi-check-circle-fill,

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useRef, useReducer } from 'react';
-import { image } from '../../helpers/api.config';
+import { image, imageWithSize } from '../../helpers/api.config';
 import { handleTrailerClick } from '../../helpers/getTrailer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Context } from '../../context/Context';
@@ -14,6 +14,7 @@ import { getFromDB } from '../../firebase/getFromDB';
 import { handle_favs_watchlists } from '../../firebase/handle_favs_watchlists';
 import { getSimilar } from '../../helpers/getSimilar';
 import SliderCard from '../../components/SliderCard';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const MediaDetails = () => {
   const { id } = useParams();
@@ -60,9 +61,9 @@ const MediaDetails = () => {
         dispatch({
           type: mediaD_Actions.set_Media_Values,
           payload: {
-            heroBackground: window.innerWidth >= 640 ? `${image({ size: 1280 })}${backdrop_path}` : `${image({ size: 500 })}${poster_path}`,
+            heroBackground: window.innerWidth >= 640 ? `${image}${backdrop_path}` : `${image}${poster_path}`,
             title: title || original_name,
-            poster: `${image({ size: 500 })}${poster_path}`,
+            poster: `${imageWithSize('780')}${poster_path}`,
             overview,
             releaseDate: release_date?.slice(0, 4) || first_air_date?.slice(0, 4),
             vote: String(vote_average).slice(0, 3),
@@ -120,14 +121,14 @@ const MediaDetails = () => {
       <CircularProgress color='inherit' size={100} style={{ marginTop: '100px' }} />
     </div>
   ) : (
-    <>
+    <div style={{ paddingBlockEnd: '7rem' }}>
       <div className='media-details' style={{ backgroundImage: `url(${state.heroBackground})` }}>
         <div className='overlay'></div>
         <i className='bi bi-arrow-left' onClick={handleBackClick}></i>
 
         <div className='media-details__initial-content'>
           <div className='media-details__info-container'>
-            <img src={state.poster} alt='' id='poster' />
+            <LazyLoadImage src={state.poster} alt='' id='poster' />
 
             <div className='info-container-text'>
               <h1 className='title'>{state.title}</h1>
@@ -225,7 +226,7 @@ const MediaDetails = () => {
               onClick={() => {
                 (similarContainerRef.current.style.height = '100%'), setSimilarMaximized(true);
               }}
-              style={{ cursor: 'pointer', textAlign: 'center', position: 'absolute', bottom: '0', left: '50%', transform: 'translate(-50%)' }}
+              style={{ textDecoration: 'underline', cursor: 'pointer', textAlign: 'center', position: 'absolute', bottom: '0', left: '50%', transform: 'translate(-50%)' }}
             >
               See all
             </p>
@@ -244,11 +245,7 @@ const MediaDetails = () => {
                 return (
                   <div className='cast__member' key={cast.id + 543425}>
                     <img
-                      src={
-                        cast.profile_path
-                          ? `${image({ size: 500 })}${cast.profile_path}`
-                          : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
-                      }
+                      src={cast.profile_path ? `${imageWithSize('185')}${cast.profile_path}` : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'}
                       alt='cast-member'
                     />
                     <p className='cast__member__name'>{cast.name}</p>
@@ -273,7 +270,7 @@ const MediaDetails = () => {
                   onClick={() => {
                     (castContainerRef.current.style.height = '100%'), setCastMaximized(true);
                   }}
-                  style={{ display: castMaximized ? 'none' : 'block', textAlign: 'center', position: 'absolute', bottom: '10px', left: '50%', transform: 'translate(-50%)' }}
+                  style={{ textDecoration: 'underline', display: castMaximized ? 'none' : 'block', textAlign: 'center', position: 'absolute', bottom: '10px', left: '50%', transform: 'translate(-50%)' }}
                 >
                   See all
                 </p>
@@ -288,7 +285,7 @@ const MediaDetails = () => {
           {errorMessage}
         </Alert>
       </Snackbar>
-    </>
+    </div>
   );
 };
 

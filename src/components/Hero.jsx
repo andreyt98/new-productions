@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
-import { image } from '../helpers/api.config';
+import { image,imageWithSize } from '../helpers/api.config';
 import { handleTrailerClick } from '../helpers/getTrailer';
 import { Link } from 'react-router-dom';
 import { Context } from '../context/Context';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const Hero = () => {
   const [heroBackground, setHeroBackground] = useState('');
@@ -24,7 +25,7 @@ const Hero = () => {
 
         setResults(trendingResults);
 
-        let initialBackground = window.innerWidth >= 640 ? `${image({ size: 1280 })}${trendingResults[0].backdrop_path}` : `${image({ size: 500 })}${trendingResults[0].poster_path}`;
+        let initialBackground = window.innerWidth >= 640 ? `${image}${trendingResults[0].backdrop_path}` : `${image}${trendingResults[0].poster_path}`;
         setHeroBackground(initialBackground);
         setTitle(trendingResults[0].name || trendingResults[0].title);
         setCurrentId(trendingResults[0].id);
@@ -43,7 +44,7 @@ const Hero = () => {
       const elementExistInApi = clickedElement == element.id;
 
       if (elementExistInApi) {
-        setHeroBackground(window.innerWidth >= 640 ? `${image({ size: 1280 })}${element.backdrop_path}` : `${image({ size: 500 })}${element.poster_path}`);
+        setHeroBackground(window.innerWidth >= 640 ? `${image}${element.backdrop_path}` : `${image}${element.poster_path}`);
         setTitle(element.name || element.title);
       }
     });
@@ -83,9 +84,9 @@ const Hero = () => {
               }}
               key={result.id}
             >
-              <span className='vote'>{result.vote_average.toString().slice(0,3)}</span>
+              <span className='vote'>{result.vote_average.toString().slice(0, 3)}</span>
 
-              <img src={`${image({ size: 500 })}${result.poster_path}`} key={result.id} data-id={result.id} data-media-type={result.media_type} alt='media-image' />
+              <LazyLoadImage src={`${imageWithSize('780')}${result.poster_path}`} key={result.id} data-id={result.id} data-media-type={result.media_type} alt='media-image' />
             </div>
           );
         })}
