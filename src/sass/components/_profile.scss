@@ -28,5 +28,11 @@
     @media #{$md} {
       grid-template-columns: repeat(5, 1fr);
     }
+    @media #{$xxl} {
+      grid-template-columns: repeat(7, 1fr);
+    }
+    @media #{$fourK} {
+      grid-template-columns: repeat(8, 1fr);
+    }
   }
 }
