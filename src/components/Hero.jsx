@@ -69,7 +69,7 @@ const Hero = () => {
           Play Trailer
         </button>
 
-        <Link className='details' to={`${title}`}>
+        <Link className='details' to={`${currentId}`}>
           <button> Details </button>
         </Link>
       </div>

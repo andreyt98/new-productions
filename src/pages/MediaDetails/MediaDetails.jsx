@@ -16,8 +16,9 @@ import { getSimilar } from '../../helpers/getSimilar';
 import SliderCard from '../../components/SliderCard';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
+
 const MediaDetails = () => {
-  const { id } = useParams();
+  const { id: idFromUrl } = useParams();
   const [state, dispatch] = useReducer(reducerFunction, mediaDetails_InitialState);
 
   const [similar, setSimilar] = useState([]);
@@ -25,7 +26,7 @@ const MediaDetails = () => {
   const [loadingFavs, setLoadingFavs] = useState(true);
   const [loadingWatchlist, setLoadingWatchlist] = useState(true);
 
-  const { currentId, setOpenTrailer, setTrailerKey, currentMediaType, cast, setCast, userLogged, addedToFavs, setAddedToFavs, addedtoWatchList, setAddedtoWatchList, firebaseActiveUser } = useContext(Context);
+  const { setCurrentId, currentId, setOpenTrailer, setTrailerKey, currentMediaType, cast, setCast, userLogged, addedToFavs, setAddedToFavs, addedtoWatchList, setAddedtoWatchList, firebaseActiveUser } = useContext(Context);
 
   const mediaTypeRef = useRef(null);
   const mediaTypeRef2 = useRef(null);
@@ -42,6 +43,7 @@ const MediaDetails = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [routeKey, setRouteKey] = useState(0); // Agrega un estado para la clave
 
+
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -49,8 +51,15 @@ const MediaDetails = () => {
     setShowError(false);
   };
   // end of error message code
-
+  
   useEffect(() => {
+    if(idFromUrl != currentId){
+      setCurrentId(idFromUrl);
+    }
+  }, [idFromUrl])
+  
+  useEffect(() => {
+    
     window.scrollTo(0, 0);
     setCastMaximized(false);
     const mediaType = currentMediaType == 'movies' ? 'movie' : 'tv';
@@ -107,14 +116,7 @@ const MediaDetails = () => {
     if (castContainerRef.current) {
       castContainerRef.current.style.height = '200px';
     }
-  }, [id]);
-
-  function handleBackClick() {
-    window.scrollTo(0, 0);
-    const fullPath = window.location.pathname;
-    const lastPath = fullPath.lastIndexOf('/');
-    navigate(fullPath.substring(0, lastPath));
-  }
+  }, [currentId]);
 
   return state.loadingAllData ? (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -124,7 +126,7 @@ const MediaDetails = () => {
     <div style={{ paddingBlockEnd: '7rem' }}>
       <div className='media-details' style={{ backgroundImage: `url(${state.heroBackground})` }}>
         <div className='overlay'></div>
-        <i className='bi bi-arrow-left' onClick={handleBackClick}></i>
+        <i className='bi bi-arrow-left' onClick={() => {navigate(-1); window.scrollTo(0, 0);}}></i>
 
         <div className='media-details__initial-content'>
           <div className='media-details__info-container'>

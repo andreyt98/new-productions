@@ -62,6 +62,16 @@ function App() {
     setOpenDialog,
   };
 
+  useEffect(() =>{
+
+    if(currentMediaType.includes("movies")){
+      setCurrentMediaType("movies")
+    }else if(currentMediaType.includes("tvshows")){
+      setCurrentMediaType("tvshows")
+    }
+
+  },[currentMediaType])
+
   useEffect(() => {
     let userInititalValue;
     auth.onAuthStateChanged((user) => {
