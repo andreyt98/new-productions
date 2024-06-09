@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useRef, useReducer } from 'react';
 import { image, imageWithSize } from '../../helpers/api.config';
 import { handleTrailerClick } from '../../helpers/getTrailer';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Context } from '../../context/Context';
 import { getById } from '../../helpers/getById';
 import { getCast } from '../../helpers/getCast';
@@ -15,7 +15,7 @@ import { handle_favs_watchlists } from '../../firebase/handle_favs_watchlists';
 import { getSimilar } from '../../helpers/getSimilar';
 import SliderCard from '../../components/SliderCard';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-
+import NotFound from '../../components/NotFound';
 
 const MediaDetails = () => {
   const { id: idFromUrl } = useParams();
@@ -59,62 +59,71 @@ const MediaDetails = () => {
   }, [idFromUrl])
   
   useEffect(() => {
-    
-    window.scrollTo(0, 0);
-    setCastMaximized(false);
-    const mediaType = currentMediaType == 'movies' ? 'movie' : 'tv';
+    if(idFromUrl == currentId){
 
-    getById(mediaType, currentId)
-      .then((data) => {
-        const { title, original_name, overview, release_date, first_air_date, genres, vote_average, backdrop_path, poster_path } = data;
-        dispatch({
-          type: mediaD_Actions.set_Media_Values,
-          payload: {
-            heroBackground: window.innerWidth >= 640 ? `${image}${backdrop_path}` : `${image}${poster_path}`,
-            title: title || original_name,
-            poster: `${imageWithSize('780')}${poster_path}`,
-            overview,
-            releaseDate: release_date?.slice(0, 4) || first_air_date?.slice(0, 4),
-            vote: String(vote_average).slice(0, 3),
-            genres: genres.map((genre) => genre.name),
-            loadingAllData: false,
-          },
-        });
-
-        getCast(mediaType, currentId)
-          .then((data) => {
-            setCast(data);
-            setLoadingCast(false);
-          })
-          .catch(() => {
-            throw new Error();
+      dispatch({ type: mediaD_Actions.set_All_DataLoader, payload: { loadingAllData: true } });
+  
+      window.scrollTo(0, 0);
+      setCastMaximized(false);
+      const mediaType = currentMediaType == 'movies' ? 'movie' : 'tv';
+  
+      getById(mediaType, currentId)
+        .then((data) => {
+          if (data.status_code === 6) {
+            throw new Error('id not found');
+          }
+          const { title, original_name, overview, release_date, first_air_date, genres, vote_average, backdrop_path, poster_path } = data;
+          dispatch({
+            type: mediaD_Actions.set_Media_Values,
+            payload: {
+              results: [data],
+              heroBackground: window.innerWidth >= 640 ? `${image}${backdrop_path}` : `${image}${poster_path}`,
+              title: title || original_name,
+              poster: `${imageWithSize('780')}${poster_path}`,
+              overview,
+              releaseDate: release_date?.slice(0, 4) || first_air_date?.slice(0, 4),
+              vote: String(vote_average).slice(0, 3),
+              genres: genres.map((genre) => genre.name),
+              loadingAllData: false,
+            },
           });
-
-        getSimilar(mediaType, currentId)
-          .then((data) => {
-            setSimilar(data.results);
-          })
-          .catch(() => {
-            throw new Error();
-          });
-      })
-      .catch(() => {
-        setLoadingCast(false);
-      }); //todo: display error in screen
-
-    if (userLogged) {
-      getFromDB(firebaseActiveUser.uid, 'favorites', setAddedToFavs, setLoadingFavs, currentId);
-      getFromDB(firebaseActiveUser.uid, 'watchlist', setAddedtoWatchList, setLoadingWatchlist, currentId);
-    }
-    setRouteKey((prevKey) => prevKey + 1);
-
-    setSimilarMaximized(false);
-
-    if (similarContainerRef.current) {
-      similarContainerRef.current.style.height = '350px';
-    }
-    if (castContainerRef.current) {
-      castContainerRef.current.style.height = '200px';
+  
+          getCast(mediaType, currentId)
+            .then((data) => {
+              setCast(data);
+              setLoadingCast(false);
+            })
+            .catch(() => {
+              throw new Error();
+            });
+  
+          getSimilar(mediaType, currentId)
+            .then((data) => {
+              setSimilar(data.results);
+            })
+            .catch(() => {
+              throw new Error();
+            });
+        })
+        .catch((er) => {
+          setLoadingCast(false);
+          dispatch({ type: mediaD_Actions.set_All_DataLoader, payload: { loadingAllData: false } });
+        }); //todo: display error in screen
+  
+      if (userLogged) {
+        getFromDB(firebaseActiveUser.uid, 'favorites', setAddedToFavs, setLoadingFavs, currentId);
+        getFromDB(firebaseActiveUser.uid, 'watchlist', setAddedtoWatchList, setLoadingWatchlist, currentId);
+      }
+      setRouteKey((prevKey) => prevKey + 1);
+  
+      setSimilarMaximized(false);
+  
+      if (similarContainerRef.current) {
+        similarContainerRef.current.style.height = '350px';
+      }
+      if (castContainerRef.current) {
+        castContainerRef.current.style.height = '200px';
+      }
     }
   }, [currentId]);
 
@@ -122,7 +131,7 @@ const MediaDetails = () => {
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <CircularProgress color='inherit' size={100} style={{ marginTop: '100px' }} />
     </div>
-  ) : (
+  ) : !state.loadingAllData && state.results.length > 0 ? (
     <div style={{ paddingBlockEnd: '7rem' }}>
       <div className='media-details' style={{ backgroundImage: `url(${state.heroBackground})` }}>
         <div className='overlay'></div>
@@ -210,7 +219,7 @@ const MediaDetails = () => {
         </span>
         <div className='similar' ref={similarContainerRef} style={{ height: '350px', position: 'relative', zIndex: '1' }}>
           {similar.map((result) => {
-            return <SliderCard result={result} changeMediaType={currentMediaType == 'movies' ? 'movie' : 'tv'} />;
+            return <SliderCard result={result} changeMediaType={currentMediaType == 'movies' ? 'movie' : 'tv'} key={result.id +56356} />;
           })}
           <span
             style={{
@@ -247,7 +256,11 @@ const MediaDetails = () => {
                 return (
                   <div className='cast__member' key={cast.id + 543425}>
                     <img
-                      src={cast.profile_path ? `${imageWithSize('185')}${cast.profile_path}` : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'}
+                      src={
+                        cast.profile_path
+                          ? `${imageWithSize('185')}${cast.profile_path}`
+                          : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
+                      }
                       alt='cast-member'
                     />
                     <p className='cast__member__name'>{cast.name}</p>
@@ -288,6 +301,8 @@ const MediaDetails = () => {
         </Alert>
       </Snackbar>
     </div>
+  ) : (
+    <NotFound />
   );
 };
 
