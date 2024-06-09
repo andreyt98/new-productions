@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
+import NotFound from '../components/NotFound';
 
 const MediaDetails = lazy(() => import('../pages/MediaDetails/MediaDetails'));
 const MovieSection = lazy(() => import('../pages/MovieSection/MovieSection'));
@@ -29,7 +30,7 @@ const AppRouter = () => {
           <Route path='/tvshows/:id' element={<MediaDetails />}></Route>
           <Route path='/search/:id' element={<MediaDetails />}></Route>
 
-          <Route path='*' element={<Navigate to='/movies' />} />
+          <Route path='*' element={<NotFound/>}></Route>
         </Routes>
         <Trailer />
       </Suspense>
