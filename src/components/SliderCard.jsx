@@ -44,7 +44,7 @@ const SliderCard = ({ result, changeMediaType = null }) => {
         <span className='vote'>{result.vote_average.toString().slice(0, 3)}</span>
         {changeMediaType ? <span className='mediatype'>{result.mediatype || result.media_type}</span> : null}
         <Link
-          to={`/${changeMediaType == 'movie' ? 'movies' : 'tvshows'}/${result.name || result.title}`}
+          to={`/${changeMediaType == 'movie' ? 'movies' : 'tvshows'}/${result.id}`}
           onClick={() => {
             setCurrentId(result.id);
             if (changeMediaType) {
