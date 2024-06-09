@@ -8,13 +8,12 @@ export const mediaDetails_InitialState = {
   vote:'',
   genres:[],
   loadingAllData:true,
-  loadingFavs:true,
-  loadingWatchlist:true,
   loadingCast:true
 }
 
 export const mediaD_Actions = {
   set_Media_Values: 'set_Media_Values',
+  set_All_DataLoader: 'set_All_DataLoader',
 }
 
 export const reducerFunction = (state, action) => {
@@ -31,6 +30,12 @@ export const reducerFunction = (state, action) => {
         releaseDate:action.payload.releaseDate,
         vote:action.payload.vote,
         genres:action.payload.genres,
+        loadingAllData: action.payload.loadingAllData
+      }
+
+    case mediaD_Actions.set_All_DataLoader:
+      return{
+        ...state,
         loadingAllData: action.payload.loadingAllData
       }
 
