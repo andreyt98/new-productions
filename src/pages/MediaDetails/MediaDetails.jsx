@@ -118,14 +118,6 @@ const MediaDetails = () => {
     }
   }, [currentId]);
 
-  function handleBackClick() {
-    window.scrollTo(0, 0);
-    const fullPath = window.location.pathname;
-    const lastPath = fullPath.lastIndexOf('/');
-    navigate(fullPath.substring(0, lastPath));
-    navigate(fullPath.substring(0, lastPath));
-  }
-
   return state.loadingAllData ? (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <CircularProgress color='inherit' size={100} style={{ marginTop: '100px' }} />
@@ -134,7 +126,7 @@ const MediaDetails = () => {
     <div style={{ paddingBlockEnd: '7rem' }}>
       <div className='media-details' style={{ backgroundImage: `url(${state.heroBackground})` }}>
         <div className='overlay'></div>
-        <i className='bi bi-arrow-left' onClick={handleBackClick}></i>
+        <i className='bi bi-arrow-left' onClick={() => {navigate(-1); window.scrollTo(0, 0);}}></i>
 
         <div className='media-details__initial-content'>
           <div className='media-details__info-container'>
