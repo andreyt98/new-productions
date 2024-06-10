@@ -30,15 +30,14 @@ const SearchSection = () => {
 
   return (
     <section className={`search-section ${openTrailer && 'on-trailer'}`}>
-      <h1>Search for something!</h1>
       <form
         className='searchForm'
         onSubmit={(event) => {
           handleSearch(event);
         }}
       >
-        <input type='search' placeholder='Search something...' value={inputValue} onChange={(event)=>{setInputValue(event.target.value)}}/>
-        <button type='submit'>search</button>
+        <input type='search' placeholder='Search for a movie or tv show...' value={inputValue} onChange={(event)=>{setInputValue(event.target.value)}}/>
+        <button type='submit'><i className="bi bi-search"></i></button>
       </form>
       {loadingSearch ? (
         <CircularProgress color='inherit' size={100} style={{ marginTop: '100px' }} />
