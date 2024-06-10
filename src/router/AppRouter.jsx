@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import NotFound from '../components/NotFound';
+import { routes } from './routes';
 
 const MediaDetails = lazy(() => import('../pages/MediaDetails/MediaDetails'));
 const MovieSection = lazy(() => import('../pages/MovieSection/MovieSection'));
@@ -20,17 +21,18 @@ const AppRouter = () => {
         <MediaData />
         <FirstTimeVisitModal />
         <Routes>
-          <Route path='/movies' element={<MovieSection />}></Route>
+          {routes.home.map((route) => {
+            return <Route path={route} element={<MovieSection />}></Route>;
+          })}
+
           <Route path='/tvshows' element={<TvSection />}></Route>
           <Route path='/search' element={<SearchSection />}></Route>
           <Route path='/profile' element={<Profile />}></Route>
-          <Route path='/profile/:id' element={<MediaDetails />}></Route>
-
-          <Route path='/movies/:id' element={<MediaDetails />}></Route>
-          <Route path='/tvshows/:id' element={<MediaDetails />}></Route>
-          <Route path='/search/:id' element={<MediaDetails />}></Route>
-
-          <Route path='*' element={<NotFound/>}></Route>
+          
+          {routes.details.map((route) => {
+            return <Route path={route} element={<MediaDetails />}></Route>;
+          })}
+          <Route path='*' element={<NotFound />}></Route>
         </Routes>
         <Trailer />
       </Suspense>
