@@ -245,6 +245,76 @@
       overflow: visible;
     }
   }
+  .reviews {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    padding-block: 0.8rem;
+    align-items: center;
+    justify-content: center;
+    height: 475px;
+    overflow: hidden;
+    gap: 3rem;
+    margin: 0 auto;
+
+    .review-content {
+      position: relative;
+      height: 230px;
+      overflow-y: auto;
+      border-radius: 12px;
+
+      background-color: #0c0c0c;
+
+      @media #{$md} {
+        width: 80%;
+        margin: 0 auto;
+      }
+      @media #{$xl} {
+        width: 70%;
+      }
+      @media #{$xxl} {
+        width: 60%;
+        height: 300px;
+      }
+      @media #{$fourK} {
+        width: 45%;
+        height: 350px;
+      }
+
+      .fixed {
+        position: sticky;
+        background-color: #0c0c0c;
+        padding-block: 0.8rem;
+        left: 0;
+        top: 0;
+        z-index: 2;
+        border-bottom: 1px solid #ffffff30;
+        padding-inline: 1.4rem;
+      }
+    }
+
+    #author {
+      font-weight: bolder;
+      color: var(--primary);
+    }
+    .review-text {
+      color: #dfdfdf;
+      font-size: 90%;
+      margin-top: 0.7rem;
+      line-height: 22px;
+      padding-inline: 1.4rem;
+      @media #{$lg} {
+        line-height: 26px;
+        font-size: 100%;
+      }
+      @media #{$xxl} {
+        font-size: 100%;
+      }
+    }
+
+    @media #{$xxl} {
+      height: 775px;
+    }
+  }
 }
 
 #favs-icon,

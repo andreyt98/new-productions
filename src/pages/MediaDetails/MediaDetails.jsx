@@ -16,12 +16,14 @@ import { getSimilar } from '../../helpers/getSimilar';
 import SliderCard from '../../components/SliderCard';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import NotFound from '../../components/NotFound';
+import { getReviews } from '../../helpers/getReviews';
 
 const MediaDetails = () => {
   const { id: idFromUrl } = useParams();
   const [state, dispatch] = useReducer(reducerFunction, mediaDetails_InitialState);
 
   const [similar, setSimilar] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [loadingCast, setLoadingCast] = useState(true);
   const [loadingFavs, setLoadingFavs] = useState(true);
   const [loadingWatchlist, setLoadingWatchlist] = useState(true);
@@ -33,10 +35,12 @@ const MediaDetails = () => {
 
   const similarContainerRef = useRef(null);
   const castContainerRef = useRef(null);
+  const reviewsContainerRef = useRef(null);
 
   const navigate = useNavigate();
   const [similarMaximized, setSimilarMaximized] = useState(false);
   const [castMaximized, setCastMaximized] = useState(false);
+  const [reviewsMaximized, setReviewsMaximized] = useState(false);
 
   //error message component
   const [showError, setShowError] = useState(false);
@@ -61,12 +65,15 @@ const MediaDetails = () => {
   useEffect(() => {
     if(idFromUrl == currentId){
 
+      
+
       dispatch({ type: mediaD_Actions.set_All_DataLoader, payload: { loadingAllData: true } });
   
       window.scrollTo(0, 0);
       setCastMaximized(false);
       const mediaType = currentMediaType == 'movies' ? 'movie' : 'tv';
   
+     
       getById(mediaType, currentId)
         .then((data) => {
           if (data.status_code === 6) {
@@ -102,6 +109,13 @@ const MediaDetails = () => {
               setSimilar(data.results);
             })
             .catch(() => {
+              throw new Error();
+            });
+
+            getReviews(mediaType, currentId)
+            .then((data)=>{
+              setReviews(data.results);
+            }).catch(() => {
               throw new Error();
             });
         })
@@ -214,9 +228,7 @@ const MediaDetails = () => {
         </div>
       </div>
       <div className='extra-data'>
-        <span style={{ display: 'flex', justifyContent: 'space-between' }}>
           <h3>Similar</h3>
-        </span>
         <div className='similar' ref={similarContainerRef} style={{ height: '350px', position: 'relative', zIndex: '1' }}>
           {similar.map((result) => {
             return <SliderCard result={result} changeMediaType={currentMediaType == 'movies' ? 'movie' : 'tv'} key={result.id +56356} />;
@@ -243,10 +255,8 @@ const MediaDetails = () => {
             </p>
           </span>
         </div>
-
-        <span style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px' }}>
-          <h3>Cast</h3>
-        </span>
+    
+        <h3 style={{marginTop: '40px'}}>Cast</h3>
         {loadingCast ? (
           <CircularProgress color='inherit' size={40} />
         ) : (
@@ -293,6 +303,48 @@ const MediaDetails = () => {
             </div>
           )
         )}
+
+        <h3 style={{marginTop: '40px'}}>Reviews</h3>
+        <div className='reviews' ref={reviewsContainerRef} style={{ height: '350px', position: 'relative', zIndex: '1' }}>
+          {reviews.map((result) => {
+            return  (
+              <div className='review-content'>
+                
+                <span className='fixed' style={{display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <p id='author'>
+                  {result.author_details.username}
+                  <p style={{color : 'white', opacity: '0.7', fontSize: '85%'}}>Rating:  { result.author_details.rating}</p>
+                </p>
+                <p style={{opacity: '0.7'}}>{result.created_at.slice(0,10)}</p>
+                </span>
+                
+                
+                <p className='review-text'>{result.content}</p>
+              </div>
+            );
+          })}
+          <span
+            style={{
+              display: reviewsMaximized ? 'none' : 'block',
+              zIndex: '2',
+              height: '150px',
+              width: '100%',
+              position: 'absolute',
+              bottom: '0',
+              left: '0',
+              background: similar.length > 10 ? 'linear-gradient(transparent, #000000de, black)' : 'none',
+            }}
+          >
+            <p
+              onClick={() => {
+                (reviewsContainerRef.current.style.height = '100%'), setReviewsMaximized(true);
+              }}
+              style={{ textDecoration: 'underline', cursor: 'pointer', textAlign: 'center', position: 'absolute', bottom: '0', left: '50%', transform: 'translate(-50%)' }}
+            >
+              See all
+            </p>
+          </span>
+        </div>
       </div>
 
       <Snackbar open={showError} autoHideDuration={3500} onClose={handleClose}>
