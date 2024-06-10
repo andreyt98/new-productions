@@ -177,6 +177,11 @@
   @media #{$xxl} {
     max-width: 80%;
   }
+  h3 {
+    @media #{$lg} {
+      font-size: 170%;
+    }
+  }
   .cast {
     display: grid;
     grid-gap: 0.5rem;
