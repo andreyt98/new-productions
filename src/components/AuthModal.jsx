@@ -94,7 +94,7 @@ const AuthModal = () => {
             setUserClicked(false);
           }}
         >
-          <i class="bi bi-x-circle"></i>
+          <i className="bi bi-x-circle"></i>
         </Button>
       </DialogActions>
 

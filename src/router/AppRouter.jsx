@@ -21,16 +21,16 @@ const AppRouter = () => {
         <MediaData />
         <FirstTimeVisitModal />
         <Routes>
-          {routes.home.map((route) => {
-            return <Route path={route} element={<MovieSection />}></Route>;
+          {routes.home.map((route, index) => {
+            return <Route key={index} path={route} element={<MovieSection />}></Route>;
           })}
 
           <Route path='/tvshows' element={<TvSection />}></Route>
           <Route path='/search' element={<SearchSection />}></Route>
           <Route path='/profile' element={<Profile />}></Route>
-          
-          {routes.details.map((route) => {
-            return <Route path={route} element={<MediaDetails />}></Route>;
+
+          {routes.details.map((route, index) => {
+            return <Route key={index} path={route} element={<MediaDetails />}></Route>;
           })}
           <Route path='*' element={<NotFound />}></Route>
         </Routes>
