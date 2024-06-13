@@ -36,24 +36,35 @@ const SearchSection = () => {
           handleSearch(event);
         }}
       >
-        <input type='search' placeholder='Search for a movie or tv show...' value={inputValue} onChange={(event)=>{setInputValue(event.target.value)}}/>
-        <button type='submit'><i className="bi bi-search"></i></button>
+        <input
+          type='search'
+          placeholder='Search for a movie or tv show...'
+          value={inputValue}
+          onChange={(event) => {
+            setInputValue(event.target.value);
+          }}
+        />
+        <button type='submit'>
+          <i className='bi bi-search'></i>
+        </button>
       </form>
       {loadingSearch ? (
         <CircularProgress color='inherit' size={100} style={{ marginTop: '100px' }} />
       ) : (
         <>
           <div className='results'>
-            {searchResults.length > 0 ? (
-              searchResults.map((result) => {
-                if (result.media_type !== 'person' && result.media_type) {
-                  return <SliderCard result={result} changeMediaType={result.media_type} />;
-                }
-              })
-            ) : (
-              searchStarted &&
-              <p style={{gridColumn:'1/-1'}}>no results</p>
-            )}
+            {searchStarted ? (
+              searchResults.length > 0 ? (
+                searchResults.map((result) => {
+                  if (result.media_type !== 'person' && result.media_type) {
+                    return <SliderCard result={result} changeMediaType={result.media_type} key={result.id} />;
+                  }
+                  return null;
+                })
+              ) : (
+                <p style={{ gridColumn: '1/-1' }}>no results</p>
+              )
+            ) : null}
           </div>
         </>
       )}
