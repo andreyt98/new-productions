@@ -4,12 +4,14 @@ import { database } from './firebase.config';
 export const handle_favs_watchlists = (documentName, referenceOfClickedElement, state, fieldName,
    callbackToUpdateUIComponent,currentId,setErrorMessage,
   setShowError) => {
-    //reference of document 'documentName' from 'users' colection
+    //reference of document 'documentName'(uid from activeUser) within 'users' colection
     const document = doc(database, 'users', documentName);
 
     getDoc(document)
       .then((documentResult) => {
-        if (documentResult.exists()) {
+        if (documentResult.exists()) {//if we found the uid within users collection
+          console.log(documentResult)
+          
           const dataSaved = documentResult.data();
           const idAlreadyExists = [...Object.values(dataSaved[fieldName] || {})].find((el) => el.id == currentId);
 
@@ -31,7 +33,7 @@ export const handle_favs_watchlists = (documentName, referenceOfClickedElement, 
         } else {
           const newDataToSave = {};
           newDataToSave[fieldName] = [{ id: currentId, mediatype: referenceOfClickedElement.current.dataset.mediatype, title: state.title, vote_average: state.vote, poster_path: state.poster }];
-          setDoc(doc(database, 'users', documentName), newDataToSave);
+          setDoc(doc(database, 'users', documentName), newDataToSave, { merge: true }); //'merge' was necessary to save in the document without replacing previous stored data
           callbackToUpdateUIComponent(true);
         }
       })
