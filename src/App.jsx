@@ -73,9 +73,8 @@ function App() {
   },[currentMediaType])
 
   useEffect(() => {
-    let userInititalValue;
+
     auth.onAuthStateChanged((user) => {
-      userInititalValue = user;
 
       if (user) {
         setUserLogged(true);
