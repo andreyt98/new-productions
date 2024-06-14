@@ -5,7 +5,7 @@ import { Context } from '../context/Context';
 import { Link } from 'react-router-dom';
 import Checkbox from '@mui/material/Checkbox';
 
-const SliderCard = ({ result, changeMediaType = null }) => {
+const SliderCard = ({ result, changeMediaType = null, canBeEdited = false }) => {
   const [poster, setPoster] = useState(null);
   const { setCurrentId, setCurrentMediaType, currentMediaType, edit, checkedMedia, setCheckedMedia } = useContext(Context);
 
@@ -56,23 +56,25 @@ const SliderCard = ({ result, changeMediaType = null }) => {
             <img src={poster} alt='' />
           </div>
         </Link>
-        {edit && (
-          <span id='checkbox'>
-            <Checkbox
-              onChange={handleChange}
-              inputProps={{ 'aria-label': 'controlled' }}
-              id={result.id.toString()}
-              sx={{
-                '&:hover': { bgcolor: 'black' },
-                bgcolor: '#0008',
-                color: 'white',
-                '&.Mui-checked': {
-                  bgcolor: '#000',
-                },
-              }}
-            />
-          </span>
-        )}
+        {canBeEdited &&
+          edit && (
+            <span id='checkbox'>
+              <Checkbox
+                onChange={handleChange}
+                inputProps={{ 'aria-label': 'controlled' }}
+                id={result.id.toString()}
+                sx={{
+                  '&:hover': { bgcolor: 'black' },
+                  bgcolor: '#0008',
+                  color: 'white',
+                  '&.Mui-checked': {
+                    bgcolor: '#000',
+                  },
+                }}
+              />
+            </span>
+          )
+        }
       </div>
     )
   );

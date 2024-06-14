@@ -110,7 +110,7 @@ export const Panel = ({ value, panelName, savedElementResults, setLoading, setMe
             .slice()
             .reverse()
             .map((result) => {
-              return <SliderCard result={result} changeMediaType={result.mediatype} key={result.id} />;
+              return <SliderCard result={result} changeMediaType={result.mediatype} key={result.id} canBeEdited={true} />;
             })}
       </div>
     </TabPanel>
