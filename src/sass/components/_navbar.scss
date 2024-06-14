@@ -20,15 +20,8 @@
     background: none;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    padding-block: 0.8rem;
   }
 
-  @media #{$xxl} {
-    padding: 1rem 1.4rem;
-  }
-  @media #{$fourK} {
-    padding: 1.3rem 1.8rem;
-  }
   a {
     color: white;
   }
