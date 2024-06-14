@@ -65,7 +65,7 @@ const SearchSection = () => {
             {searchResults.length > 0
               ? searchResults.map((result) => {
                   if (result.media_type !== 'person' && result.media_type) {
-                    return <SliderCard result={result} changeMediaType={result.media_type} />;
+                    return <SliderCard result={result} changeMediaType={result.media_type} key={result.id} />;
                   }
                 })
               : searchStarted && <p style={{ gridColumn: '1/-1' }}>no results</p>}

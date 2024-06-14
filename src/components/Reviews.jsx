@@ -9,7 +9,7 @@ export const Reviews = ({ reviews }) => {
       {reviews.length > 0 ? (
         <div className='reviews' ref={reviewsContainerRef}>
           {reviews.map((result) => {
-            return <ReviewCard result={result} />;
+            return <ReviewCard result={result} key={result.id}/>;
           })}
         </div>
       ) : (

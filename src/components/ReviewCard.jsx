@@ -20,10 +20,10 @@ const ReviewCard = ({ result }) => {
     <div>
       <div className='review-content'>
         <span className='fixed' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <p id='author'>
+          <span id='author'>
             {result.author_details.username}
             <p style={{ color: 'white', opacity: '0.7', fontSize: '85%' }}>Rating: {result.author_details.rating}</p>
-          </p>
+          </span>
           <p style={{ opacity: '0.7' }}>{result.created_at.slice(0, 10)}</p>
         </span>
 
