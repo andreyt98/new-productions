@@ -13,9 +13,7 @@
   }
 
   .results {
-    max-height: 1500px;
     padding: 0.5rem;
-    overflow: auto;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;

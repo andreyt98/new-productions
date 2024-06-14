@@ -7,10 +7,10 @@ import Checkbox from '@mui/material/Checkbox';
 
 const SliderCard = ({ result, changeMediaType = null, canBeEdited = false }) => {
   const [poster, setPoster] = useState(null);
-  const { setCurrentId, setCurrentMediaType, currentMediaType, edit, checkedMedia, setCheckedMedia } = useContext(Context);
+  const { setCurrentId, setCurrentMediaType, currentMediaType, edit, setEdit, checkedMedia, setCheckedMedia } = useContext(Context);
 
   const [checked, setChecked] = useState(true);
-  const l = `/${changeMediaType === 'movie' ? 'movies' : 'tvshows'}`
+  const l = `/${changeMediaType === 'movie' ? 'movies' : 'tvshows'}`;
   const handleChange = (event) => {
     setChecked(event.target.checked);
 
@@ -34,6 +34,11 @@ const SliderCard = ({ result, changeMediaType = null, canBeEdited = false }) => 
   };
 
   useEffect(() => {
+    return () => {
+      setEdit(false);
+    };
+  }, []);
+  useEffect(() => {
     if (result.poster_path != null) {
       setPoster(`${imageWithSize('780')}${result.poster_path}`);
     }
@@ -56,25 +61,23 @@ const SliderCard = ({ result, changeMediaType = null, canBeEdited = false }) => 
             <img src={poster} alt='' />
           </div>
         </Link>
-        {canBeEdited &&
-          edit && (
-            <span id='checkbox'>
-              <Checkbox
-                onChange={handleChange}
-                inputProps={{ 'aria-label': 'controlled' }}
-                id={result.id.toString()}
-                sx={{
-                  '&:hover': { bgcolor: 'black' },
-                  bgcolor: '#0008',
-                  color: 'white',
-                  '&.Mui-checked': {
-                    bgcolor: '#000',
-                  },
-                }}
-              />
-            </span>
-          )
-        }
+        {canBeEdited && edit && (
+          <span id='checkbox'>
+            <Checkbox
+              onChange={handleChange}
+              inputProps={{ 'aria-label': 'controlled' }}
+              id={result.id.toString()}
+              sx={{
+                '&:hover': { bgcolor: 'black' },
+                bgcolor: '#0008',
+                color: 'white',
+                '&.Mui-checked': {
+                  bgcolor: '#000',
+                },
+              }}
+            />
+          </span>
+        )}
       </div>
     )
   );

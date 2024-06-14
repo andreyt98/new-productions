@@ -2,7 +2,7 @@ import SliderCard from './SliderCard';
 
 import { TabPanel } from '@mui/base';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Context } from '../context/Context';
 import { database, usersCollectionName } from '../firebase/firebase.config';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -37,6 +37,12 @@ export const Panel = ({ value, panelName, savedElementResults, setLoading, setMe
         return; //todo: set error message un screen
       });
   };
+
+  useEffect(() => {
+    return () => {
+      setCheckedMedia([]);
+    };
+  }, []);
 
   return (
     <TabPanel className='tabpanel' value={value}>
