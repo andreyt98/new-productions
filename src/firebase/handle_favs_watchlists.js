@@ -2,8 +2,7 @@ import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { database, usersCollectionName } from './firebase.config';
 
 export const handle_favs_watchlists = (documentName, referenceOfClickedElement, state, fieldName,
-   callbackToUpdateUIComponent,currentId,setErrorMessage,
-  setShowError) => {
+   callbackToUpdateUIComponent,currentId,setMessage) => {
     //reference of document 'documentName'(uid from activeUser) within 'users' colection
     const document = doc(database, usersCollectionName, documentName);
 
@@ -37,8 +36,7 @@ export const handle_favs_watchlists = (documentName, referenceOfClickedElement, 
         }
       })
       .catch((err) => {
-        setErrorMessage(`Error saving to ${fieldName}, try again later!`);
-        setShowError(true);
+        setMessage({ message: `Error saving to ${fieldName}, try again later!`, severity: 'error', open: true });
         return; //todo: set error message un screen
       });
   };
