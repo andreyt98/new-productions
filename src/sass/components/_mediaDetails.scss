@@ -256,15 +256,11 @@
     padding-block: 0.8rem;
     align-items: center;
     justify-content: center;
-    height: 475px;
-    overflow: hidden;
     gap: 3rem;
     margin: 0 auto;
 
     .review-content {
       position: relative;
-      height: 230px;
-      overflow-y: auto;
       border-radius: 12px;
 
       background-color: #0c0c0c;
@@ -278,11 +274,9 @@
       }
       @media #{$xxl} {
         width: 60%;
-        height: 300px;
       }
       @media #{$fourK} {
         width: 45%;
-        height: 350px;
       }
 
       .fixed {
@@ -294,6 +288,17 @@
         z-index: 2;
         border-bottom: 1px solid #ffffff30;
         padding-inline: 1.4rem;
+      }
+    }
+
+    .show-more-btn {
+      cursor: pointer;
+      text-decoration: underline;
+      text-align: center;
+      padding-block: 0.5rem;
+      color: #dfdfdfc4;
+      &:hover {
+        color: white;
       }
     }
 
@@ -314,10 +319,6 @@
       @media #{$xxl} {
         font-size: 100%;
       }
-    }
-
-    @media #{$xxl} {
-      height: 775px;
     }
   }
 }
