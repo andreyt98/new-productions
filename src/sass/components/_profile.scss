@@ -42,11 +42,31 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+    .tablist-container {
+      background-color: #000000;
+      width: 100%;
+
+      position: sticky;
+      top: 0;
+      left: 0;
+      z-index: 4;
+      padding-block: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      @media #{$sm} {
+        top: 3rem;
+      }
+
+      .bi-arrow-left{
+        justify-self: flex-start;
+      }
+    }
     .tablist {
       display: flex;
       align-items: center;
       justify-content: center;
-      align-content: space-between;
+      margin: 0 auto;
     }
 
     .tab {
