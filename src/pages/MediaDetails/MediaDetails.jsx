@@ -1,23 +1,21 @@
-import { useState, useEffect, useContext, useRef, useReducer } from 'react';
+import { useState, useEffect, useContext, useReducer } from 'react';
 import { useParams } from 'react-router-dom';
 import { Context } from '../../context/Context';
-import { image, imageWithSize } from '../../helpers/api.config';
-import { getById } from '../../helpers/getById';
-import { getCast } from '../../helpers/getCast';
-import { getReviews } from '../../helpers/getReviews';
-import { getSimilar } from '../../helpers/getSimilar';
 import { CircularProgress, Snackbar, Alert } from '@mui/material';
-import { mediaDetails_InitialState, mediaD_Actions, reducerFunction } from '../../helpers/reducerSelectedMedia';
-import { getFromDB } from '../../firebase/getFromDB';
+import { mediaDetails_InitialState, reducerFunction } from '../../helpers/reducerSelectedMedia';
 import NotFound from '../../components/NotFound';
 import Similar from '../../components/Similar';
 import Cast from '../../components/Cast';
 import { Reviews } from '../../components/Reviews';
 import MediaInfo from '../../components/MediaInfo';
+import { setListsState, setMediaDetails } from '../../helpers/setMediaDetails';
 
 const MediaDetails = () => {
-  const { id: idFromUrl } = useParams();
+  const { setCurrentId, currentId, currentMediaType, setCast, userLogged, firebaseActiveUser, setAddedToFavs, setAddedtoWatchList } = useContext(Context);
+
   const [state, dispatch] = useReducer(reducerFunction, mediaDetails_InitialState);
+
+  const { id: idFromUrl } = useParams();
 
   const [similar, setSimilar] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -25,15 +23,9 @@ const MediaDetails = () => {
   const [loadingFavs, setLoadingFavs] = useState(true);
   const [loadingWatchlist, setLoadingWatchlist] = useState(true);
 
-  const { setCurrentId, currentId, currentMediaType, setCast, userLogged, setAddedToFavs, setAddedtoWatchList, firebaseActiveUser } = useContext(Context);
-
-  const similarContainerRef = useRef(null);
-  const castContainerRef = useRef(null);
   const [similarMaximized, setSimilarMaximized] = useState(false);
   const [castMaximized, setCastMaximized] = useState(false);
-
   const [message, setMessage] = useState({ message: null, severity: null, open: false });
-
   const [routeKey, setRouteKey] = useState(0); // Agrega un estado para la clave
 
   useEffect(() => {
@@ -43,79 +35,8 @@ const MediaDetails = () => {
   }, [idFromUrl]);
 
   useEffect(() => {
-    if (idFromUrl == currentId) {
-      dispatch({ type: mediaD_Actions.set_All_DataLoader, payload: { loadingAllData: true } });
-
-      window.scrollTo(0, 0);
-      setCastMaximized(false);
-      const mediaType = currentMediaType == 'movies' ? 'movie' : 'tv';
-
-      getById(mediaType, currentId)
-        .then((data) => {
-          if (data.status_code === 6) {
-            throw new Error('id not found');
-          }
-          const { title, original_name, overview, release_date, first_air_date, genres, vote_average, backdrop_path, poster_path } = data;
-          dispatch({
-            type: mediaD_Actions.set_Media_Values,
-            payload: {
-              results: [data],
-              heroBackground: window.innerWidth >= 640 ? `${image}${backdrop_path}` : `${image}${poster_path}`,
-              title: title || original_name,
-              poster: `${imageWithSize('780')}${poster_path}`,
-              overview,
-              releaseDate: release_date?.slice(0, 4) || first_air_date?.slice(0, 4),
-              vote: String(vote_average).slice(0, 3),
-              genres: genres.map((genre) => genre.name),
-              loadingAllData: false,
-            },
-          });
-
-          getCast(mediaType, currentId)
-            .then((data) => {
-              setCast(data);
-              setLoadingCast(false);
-            })
-            .catch(() => {
-              throw new Error();
-            });
-
-          getSimilar(mediaType, currentId)
-            .then((data) => {
-              setSimilar(data.results);
-            })
-            .catch(() => {
-              throw new Error();
-            });
-
-          getReviews(mediaType, currentId)
-            .then((data) => {
-              setReviews(data.results);
-            })
-            .catch(() => {
-              throw new Error();
-            });
-        })
-        .catch((er) => {
-          setLoadingCast(false);
-          dispatch({ type: mediaD_Actions.set_All_DataLoader, payload: { loadingAllData: false } });
-        }); //todo: display error in screen
-
-      if (userLogged) {
-        getFromDB(firebaseActiveUser.uid, 'favorites', setAddedToFavs, setLoadingFavs, currentId);
-        getFromDB(firebaseActiveUser.uid, 'watchlist', setAddedtoWatchList, setLoadingWatchlist, currentId);
-      }
-      setRouteKey((prevKey) => prevKey + 1);
-
-      setSimilarMaximized(false);
-
-      if (similarContainerRef.current) {
-        similarContainerRef.current.style.height = '350px';
-      }
-      if (castContainerRef.current) {
-        castContainerRef.current.style.height = '200px';
-      }
-    }
+    setMediaDetails(currentId, dispatch, setCastMaximized, currentMediaType, setCast, setLoadingCast, setSimilar, setReviews, firebaseActiveUser, setRouteKey, setSimilarMaximized);
+    setListsState(userLogged, firebaseActiveUser, setAddedToFavs, setLoadingFavs, setAddedtoWatchList, setLoadingWatchlist, currentId);
   }, [currentId]);
 
   return state.loadingAllData ? (
