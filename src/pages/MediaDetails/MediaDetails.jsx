@@ -1,22 +1,19 @@
 import { useState, useEffect, useContext, useRef, useReducer } from 'react';
-import { image, imageWithSize } from '../../helpers/api.config';
-import { handleTrailerClick } from '../../helpers/getTrailer';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Context } from '../../context/Context';
+import { image, imageWithSize } from '../../helpers/api.config';
 import { getById } from '../../helpers/getById';
 import { getCast } from '../../helpers/getCast';
-import Tooltip from '@mui/material/Tooltip';
-import CircularProgress from '@mui/material/CircularProgress';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import { getReviews } from '../../helpers/getReviews';
+import { getSimilar } from '../../helpers/getSimilar';
+import { CircularProgress, Snackbar, Alert } from '@mui/material';
 import { mediaDetails_InitialState, mediaD_Actions, reducerFunction } from '../../helpers/reducerSelectedMedia';
 import { getFromDB } from '../../firebase/getFromDB';
-import { handle_favs_watchlists } from '../../firebase/handle_favs_watchlists';
-import { getSimilar } from '../../helpers/getSimilar';
-import SliderCard from '../../components/SliderCard';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 import NotFound from '../../components/NotFound';
-import { getReviews } from '../../helpers/getReviews';
+import Similar from '../../components/Similar';
+import Cast from '../../components/Cast';
+import { Reviews } from '../../components/Reviews';
+import MediaInfo from '../../components/MediaInfo';
 
 const MediaDetails = () => {
   const { id: idFromUrl } = useParams();
@@ -28,32 +25,16 @@ const MediaDetails = () => {
   const [loadingFavs, setLoadingFavs] = useState(true);
   const [loadingWatchlist, setLoadingWatchlist] = useState(true);
 
-  const { setCurrentId, currentId, setOpenTrailer, setTrailerKey, currentMediaType, cast, setCast, userLogged, addedToFavs, setAddedToFavs, addedtoWatchList, setAddedtoWatchList, firebaseActiveUser } = useContext(Context);
-
-  const mediaTypeRef = useRef(null);
-  const mediaTypeRef2 = useRef(null);
+  const { setCurrentId, currentId, currentMediaType, setCast, userLogged, setAddedToFavs, setAddedtoWatchList, firebaseActiveUser } = useContext(Context);
 
   const similarContainerRef = useRef(null);
   const castContainerRef = useRef(null);
-  const reviewsContainerRef = useRef(null);
-
-  const navigate = useNavigate();
   const [similarMaximized, setSimilarMaximized] = useState(false);
   const [castMaximized, setCastMaximized] = useState(false);
-  const [reviewsMaximized, setReviewsMaximized] = useState(false);
 
-  //error message component
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [message, setMessage] = useState({ message: null, severity: null, open: false });
+
   const [routeKey, setRouteKey] = useState(0); // Agrega un estado para la clave
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setShowError(false);
-  };
-  // end of error message code
 
   useEffect(() => {
     if (idFromUrl != currentId) {
@@ -143,223 +124,30 @@ const MediaDetails = () => {
     </div>
   ) : !state.loadingAllData && state.results.length > 0 ? (
     <div style={{ paddingBlockEnd: '7rem' }}>
-      <div className='media-details' style={{ backgroundImage: `url(${state.heroBackground})` }}>
-        <div className='overlay'></div>
-        <i
-          className='bi bi-arrow-left'
-          onClick={() => {
-            navigate(-1);
-            window.scrollTo(0, 0);
-          }}
-        ></i>
-
-        <div className='media-details__initial-content'>
-          <div className='media-details__info-container'>
-            <LazyLoadImage src={state.poster} alt='' id='poster' />
-
-            <div className='info-container-text'>
-              <h1 className='title'>{state.title}</h1>
-              <div className='info'>
-                <span>{state.releaseDate}</span>
-                <span>
-                  {state.genres.slice(0, 1).join(', ', (genre) => {
-                    return <span>{genre}</span>;
-                  })}
-                </span>
-                <span>
-                  <i className='bi bi-star-fill' style={{ color: 'yellow' }}></i>
-                  {` ${state.vote}`}
-                </span>
-              </div>
-
-              <div className='overview'>
-                <div className='overview_data'>
-                  <p>{state.overview}</p>
-                </div>
-              </div>
-              <div className='options'>
-                {userLogged && (
-                  <>
-                    {loadingFavs ? (
-                      <CircularProgress color='inherit' size={10} />
-                    ) : (
-                      <Tooltip title={addedToFavs ? 'Delete from favorites' : 'Add to favorites'} placement='top'>
-                        <i
-                          data-id={currentId}
-                          ref={mediaTypeRef}
-                          data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
-                          id='favs-icon'
-                          className={addedToFavs ? 'bi bi-check-circle-fill' : 'bi bi-plus-circle'}
-                          style={{ fontSize: '200%' }}
-                          onClick={() => {
-                            handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef, state, 'favorites', setAddedToFavs, currentId, setErrorMessage, setShowError);
-                          }}
-                        ></i>
-                      </Tooltip>
-                    )}
-
-                    {loadingWatchlist ? (
-                      <CircularProgress color='inherit' size={10} />
-                    ) : (
-                      <Tooltip title={addedtoWatchList ? 'Delete from watchlist' : 'Add to watchlist'} placement='top'>
-                        <i
-                          data-id={currentId}
-                          ref={mediaTypeRef2}
-                          data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
-                          id='watchlist-icon'
-                          className={addedtoWatchList ? 'bi bi-eye-fill' : 'bi bi-eye'}
-                          onClick={() => {
-                            handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef2, state, 'watchlist', setAddedtoWatchList, currentId, setErrorMessage, setShowError);
-                          }}
-                        ></i>
-                      </Tooltip>
-                    )}
-                  </>
-                )}
-                <button
-                  data-id={currentId}
-                  onClick={() => {
-                    handleTrailerClick(setOpenTrailer, currentId, currentMediaType, setTrailerKey);
-                  }}
-                >
-                  Play Trailer
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <MediaInfo state={state} loadingFavs={loadingFavs} loadingWatchlist={loadingWatchlist} />
 
       <div className='extra-data'>
-        <h3>Similar</h3>
-        {similar.length > 0 ? (
-          <div className='similar' ref={similarContainerRef} style={{ height: '350px', position: 'relative', zIndex: '1' }}>
-            {similar.map((result) => {
-              return <SliderCard result={result} changeMediaType={currentMediaType == 'movies' ? 'movie' : 'tv'} key={result.id + 56356} />;
-            })}
-            <span
-              style={{
-                display: similarMaximized ? 'none' : 'block',
-                zIndex: '2',
-                height: '150px',
-                width: '100%',
-                position: 'absolute',
-                bottom: '0',
-                left: '0',
-                background: similar.length > 10 ? 'linear-gradient(transparent, #000000de, black)' : 'none',
-              }}
-            >
-              <p
-                onClick={() => {
-                  (similarContainerRef.current.style.height = '100%'), setSimilarMaximized(true);
-                }}
-                style={{ textDecoration: 'underline', cursor: 'pointer', textAlign: 'center', position: 'absolute', bottom: '0', left: '50%', transform: 'translate(-50%)' }}
-              >
-                See all
-              </p>
-            </span>
-          </div>
-        ) : (
-          <p style={{ textAlign: 'center' }}>No similar results available</p>
-        )}
-
-        <h3 style={{ marginTop: '40px' }}>Cast</h3>
-        {cast.length > 0 ? (
-          <div className='cast' ref={castContainerRef} style={{ zIndex: '1', height: cast.length < 10 ? '100%' : '200px', position: 'relative' }}>
-            {cast.map((cast) => {
-              return (
-                <div className='cast__member' key={cast.id + 543425}>
-                  <img
-                    src={
-                      cast.profile_path
-                        ? `${imageWithSize('185')}${cast.profile_path}`
-                        : 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
-                    }
-                    alt='cast-member'
-                  />
-                  <p className='cast__member__name'>{cast.name}</p>
-                  <p className='cast__member__character'>{cast.character}</p>
-                </div>
-              );
-            })}
-            <span
-              style={{
-                cursor: 'pointer',
-                display: cast.length < 10 ? 'none' : 'block',
-                zIndex: '2',
-                height: castMaximized ? '0' : '120px',
-                width: '100%',
-                position: 'absolute',
-                bottom: '0',
-                left: '0',
-                background: cast.length >= 10 ? 'linear-gradient(rgba(0, 0, 0, 0.12), rgb(0 0 0 / 89%), black)' : 'none',
-              }}
-            >
-              <p
-                onClick={() => {
-                  (castContainerRef.current.style.height = '100%'), setCastMaximized(true);
-                }}
-                style={{ textDecoration: 'underline', display: castMaximized ? 'none' : 'block', textAlign: 'center', position: 'absolute', bottom: '10px', left: '50%', transform: 'translate(-50%)' }}
-              >
-                See all
-              </p>
-            </span>
-          </div>
-        ) : (
-          <p style={{ textAlign: 'center' }}>No cast available</p>
-        )}
-
-        <h3 style={{ marginTop: '40px' }}>Reviews</h3>
-        {reviews.length > 0 ? (
-          <>
-            <div className='reviews' ref={reviewsContainerRef} style={{ height: reviews.length <2 ? '100%' : '350px', position: 'relative', zIndex: '1' }}>
-              {reviews.map((result) => {
-                return (
-                  <div className='review-content'>
-                    <span className='fixed' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <p id='author'>
-                        {result.author_details.username}
-                        <p style={{ color: 'white', opacity: '0.7', fontSize: '85%' }}>Rating: {result.author_details.rating}</p>
-                      </p>
-                      <p style={{ opacity: '0.7' }}>{result.created_at.slice(0, 10)}</p>
-                    </span>
-
-                    <p className='review-text'>{result.content}</p>
-                  </div>
-                );
-              })}
-
-              <span
-                style={{
-                  display: reviews.length < 2 || reviewsMaximized ? 'none' : 'block',
-                  zIndex: '2',
-                  height: '300px',
-                  width: '100%',
-                  position: 'absolute',
-                  bottom: '0',
-                  left: '0',
-                  background: reviews.length > 1 ? 'linear-gradient(transparent, #000000de, black)' : 'none',
-                }}
-              >
-                <p
-                  onClick={() => {
-                    (reviewsContainerRef.current.style.height = '100%'), setReviewsMaximized(true);
-                  }}
-                  style={{ textDecoration: 'underline', cursor: 'pointer', textAlign: 'center', position: 'absolute', bottom: '0', left: '50%', transform: 'translate(-50%)' }}
-                >
-                  See all
-                </p>
-              </span>
-            </div>
-          </>
-        ) : (
-          <p style={{ textAlign: 'center' }}>No reviews available</p>
-        )}
+        <Similar similar={similar} />
+        <Cast />
+        <Reviews reviews={reviews} />
       </div>
 
-      <Snackbar open={showError} autoHideDuration={3500} onClose={handleClose}>
-        <Alert onClose={handleClose} severity='error' variant='filled' sx={{ width: '100%' }}>
-          {errorMessage}
+      <Snackbar
+        open={message.open}
+        autoHideDuration={3500}
+        onClose={() => {
+          setMessage({ ...message, open: false });
+        }}
+      >
+        <Alert
+          onClose={() => {
+            setMessage({ ...message, open: false });
+          }}
+          severity='error'
+          variant='filled'
+          sx={{ width: '100%' }}
+        >
+          {message.message}
         </Alert>
       </Snackbar>
     </div>
