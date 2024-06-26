@@ -8,7 +8,6 @@ import { handle_favs_watchlists } from '../firebase/handle_favs_watchlists';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const MediaInfo = ({ state, loadingFavs, loadingWatchlist }) => {
-
   const { currentId, setOpenTrailer, setTrailerKey, currentMediaType, userLogged, addedToFavs, setAddedToFavs, addedtoWatchList, setAddedtoWatchList, firebaseActiveUser } = useContext(Context);
 
   const mediaTypeRef = useRef(null);
@@ -58,14 +57,13 @@ const MediaInfo = ({ state, loadingFavs, loadingWatchlist }) => {
                   {loadingFavs ? (
                     <CircularProgress color='inherit' size={10} />
                   ) : (
-                    <Tooltip title={addedToFavs ? 'Delete from favorites' : 'Add to favorites'} placement='top'>
+                    <Tooltip title={addedToFavs ? 'Delete from favorites' : 'Add to favorites'} placement='bottom'>
                       <i
                         data-id={currentId}
                         ref={mediaTypeRef}
                         data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
                         id='favs-icon'
-                        className={addedToFavs ? 'bi bi-check-circle-fill' : 'bi bi-plus-circle'}
-                        style={{ fontSize: '200%' }}
+                        className={addedToFavs ? 'bi bi-file-check-fill' : 'bi bi-file-check'}
                         onClick={() => {
                           handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef, state, 'favorites', setAddedToFavs, currentId, setMessage);
                         }}
@@ -76,29 +74,30 @@ const MediaInfo = ({ state, loadingFavs, loadingWatchlist }) => {
                   {loadingWatchlist ? (
                     <CircularProgress color='inherit' size={10} />
                   ) : (
-                    <Tooltip title={addedtoWatchList ? 'Delete from watchlist' : 'Add to watchlist'} placement='top'>
+                    <Tooltip title={addedtoWatchList ? 'Delete from watchlist' : 'Add to watchlist'} placement='bottom'>
                       <i
                         data-id={currentId}
                         ref={mediaTypeRef2}
                         data-mediatype={currentMediaType == 'movies' ? 'movie' : 'tv'}
                         id='watchlist-icon'
-                        className={addedtoWatchList ? 'bi bi-eye-fill' : 'bi bi-eye'}
+                        className={addedtoWatchList ? 'bi bi-fast-forward-btn-fill' : 'bi bi-fast-forward-btn'}
                         onClick={() => {
                           handle_favs_watchlists(firebaseActiveUser.uid, mediaTypeRef2, state, 'watchlist', setAddedtoWatchList, currentId, setMessage);
                         }}
                       ></i>
                     </Tooltip>
                   )}
+                  <button
+                    id='play-trailer'
+                    data-id={currentId}
+                    onClick={() => {
+                      handleTrailerClick(setOpenTrailer, currentId, currentMediaType, setTrailerKey);
+                    }}
+                  >
+                    Play Trailer
+                  </button>
                 </>
               )}
-              <button
-                data-id={currentId}
-                onClick={() => {
-                  handleTrailerClick(setOpenTrailer, currentId, currentMediaType, setTrailerKey);
-                }}
-              >
-                Play Trailer
-              </button>
             </div>
           </div>
         </div>

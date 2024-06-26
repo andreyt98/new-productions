@@ -78,27 +78,27 @@ const AuthModal = () => {
 
   return (
     <>
-      <Dialog style={{backgroundColor: '#0000005e'}}
+      <Dialog
+        style={{ backgroundColor: '#black', color: 'white' }}
         open={userClicked}
         onClose={() => {
           setUserClicked(false);
         }}
         aria-labelledby='responsive-dialog-title'
       >
+        <DialogActions style={{ backgroundColor: 'black', borderInline: '1px solid gray', borderBlockStart: '1px solid gray', padding: '0' }}>
+          <Button
+            style={{ backgroundColor: '', color: 'white' }}
+            className='button'
+            onClick={() => {
+              setUserClicked(false);
+            }}
+          >
+            <i className='bi bi-x-circle'></i>
+          </Button>
+        </DialogActions>
 
-      <DialogActions  style={{backgroundColor:'white', padding: '0'}}>
-        <Button
-          style={{ backgroundColor: '', color: 'black' }}
-          className='button'
-          onClick={() => {
-            setUserClicked(false);
-          }}
-        >
-          <i className="bi bi-x-circle"></i>
-        </Button>
-      </DialogActions>
-
-        <DialogContent style={{ backgroundColor: 'white', textShadow: 'none', color:'black' }}>
+        <DialogContent style={{ backgroundColor: 'black', borderInline: '1px solid gray', borderBlockEnd: '1px solid gray', textShadow: 'none', color: 'white' }}>
           <div className='user-options'>
             {userLogged ? (
               <>

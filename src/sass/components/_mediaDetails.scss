@@ -325,11 +325,29 @@
 
 #favs-icon,
 #watchlist-icon {
+  &:hover {
+    transform: scale(1.1);
+    transition: all 0.3s;
+  }
+}
+#watchlist-icon {
   font-size: 230%;
 }
 
-.bi-check-circle-fill,
+#favs-icon {
+  font-size: 215%;
+}
+
+.bi-file-check-fill,
 .bi-eye-fill {
   transition: all 0.2s;
-  color: var(--primary);
+  color: #fffffff5;
+}
+
+#play-trailer {
+  border: 1px solid rgb(203, 203, 203);
+  &:hover {
+     transform: scale(1.1);
+    transition: all 0.3s;
+  }
 }
