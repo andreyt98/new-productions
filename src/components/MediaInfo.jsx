@@ -87,17 +87,17 @@ const MediaInfo = ({ state, loadingFavs, loadingWatchlist }) => {
                       ></i>
                     </Tooltip>
                   )}
-                  <button
-                    id='play-trailer'
-                    data-id={currentId}
-                    onClick={() => {
-                      handleTrailerClick(setOpenTrailer, currentId, currentMediaType, setTrailerKey);
-                    }}
-                  >
-                    Play Trailer
-                  </button>
                 </>
               )}
+              <button
+                id='play-trailer'
+                data-id={currentId}
+                onClick={() => {
+                  handleTrailerClick(setOpenTrailer, currentId, currentMediaType, setTrailerKey);
+                }}
+              >
+                Play Trailer
+              </button>
             </div>
           </div>
         </div>
