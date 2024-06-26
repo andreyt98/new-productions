@@ -88,7 +88,7 @@ function App() {
             setIsMember(false);
             setOpenDialog(true);
           }
-        }, 7000);
+        }, 4000);
       }
     });
   }, []);
