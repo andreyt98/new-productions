@@ -1,5 +1,5 @@
 export const routes = {
 
-    home: ['/', '/movies'],
-    details: ['/:id', '/search/:id', '/movies/:id', '/tvshows/:id']
+    home: ['/movies'],
+    details: [ '/search/:id', '/movies/:id', '/tvshows/:id']
 }

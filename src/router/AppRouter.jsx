@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import NotFound from '../components/NotFound';
 import { routes } from './routes';
@@ -21,10 +21,7 @@ const AppRouter = () => {
         <MediaData />
         <FirstTimeVisitModal />
         <Routes>
-          {routes.home.map((route, index) => {
-            return <Route key={index} path={route} element={<MovieSection />}></Route>;
-          })}
-
+          <Route path='/movies' element={<MovieSection />}></Route>
           <Route path='/tvshows' element={<TvSection />}></Route>
           <Route path='/search' element={<SearchSection />}></Route>
           <Route path='/profile' element={<Profile />}></Route>
@@ -32,6 +29,8 @@ const AppRouter = () => {
           {routes.details.map((route, index) => {
             return <Route key={index} path={route} element={<MediaDetails />}></Route>;
           })}
+          <Route path='/' element={<Navigate to='/movies' />}></Route>
+          <Route path='/:id' element={<Navigate to='/movies' />}></Route>
           <Route path='*' element={<NotFound />}></Route>
         </Routes>
         <Trailer />
